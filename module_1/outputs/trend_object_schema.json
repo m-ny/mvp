@@ -1,0 +1,41 @@
+{
+  "schema_name": "xhs_trend_object_run_schema",
+  "schema_version": "1.0.0",
+  "description": "Type-B reviewable output for Module 1 Trend Object Builder.",
+  "top_level_fields": [
+    "run_id",
+    "agent",
+    "decision",
+    "retrieval",
+    "output_type",
+    "time_window",
+    "generated_at_utc",
+    "trend_objects"
+  ],
+  "trend_object_fields": [
+    "trend_id",
+    "label",
+    "category",
+    "summary",
+    "ai_reasoning",
+    "confidence",
+    "labeling_source",
+    "evidence",
+    "metrics",
+    "timestamp"
+  ],
+  "evidence_fields": [
+    "post_ids",
+    "snippets",
+    "posts"
+  ],
+  "metrics_fields": [
+    "post_count",
+    "total_engagement",
+    "avg_engagement",
+    "total_likes",
+    "total_comments",
+    "total_saves",
+    "top_keywords"
+  ]
+}

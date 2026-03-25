@@ -1,0 +1,4 @@
+.env
+__pycache__/
+*.pyc
+MVP_Agent_Python.code-workspace
