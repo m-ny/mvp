@@ -1,0 +1,14 @@
+{
+  "brand_name": "Celine",
+  "aesthetic": "Parisian minimalism, quiet luxury, architectural precision, understated elegance, intellectual femininity",
+  "clientele": "affluent women 28-50, design-conscious, values craftsmanship over logos, appreciates restraint and quality over status signaling",
+  "preferred_sources": ["Chinese luxury fashion KOL", "minimalist lifestyle editorial", "Celine brand accounts", "high-fashion photographers", "luxury lifestyle bloggers"],
+  "avoided_sources": ["streetwear influencers", "mass-market fashion bloggers", "fast fashion accounts", "hypebeast culture", "loud logomania accounts"],
+  "active_categories": ["ready-to-wear", "leather goods"],
+  "category_cadence": {
+    "ready-to-wear": "fast",
+    "leather goods": "medium"
+  },
+  "brand_taboos": ["streetwear", "hypebeast", "fast fashion", "logomania", "athleisure", "gender-neutral mass market", "dupes", "knockoff", "loud branding", "maximalism"],
+  "clienteling_tone": "refined, understated, expert, intellectually curious, quietly confident — never sales-y or flashy"
+}

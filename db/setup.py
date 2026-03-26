@@ -25,6 +25,7 @@ MIGRATIONS_DIR = Path(__file__).parent / "migrations"
 
 MODULE_FILES = {
     1: "module1.sql",
+    2: "module2.sql",
     3: "module3.sql",
     4: "module4.sql",
     5: "module5.sql",
@@ -53,7 +54,7 @@ def run_migration(conn, sql_path: Path, dry_run: bool = False):
 
 def main():
     parser = argparse.ArgumentParser(description="Run Supabase migrations")
-    parser.add_argument("--module", type=int, choices=[1, 3, 4, 5],
+    parser.add_argument("--module", type=int, choices=[1, 2, 3, 4, 5],
                         help="Only run migration for this module number")
     parser.add_argument("--dry-run", action="store_true",
                         help="Print SQL without executing")

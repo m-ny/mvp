@@ -4,7 +4,6 @@ import sys
 import datetime
 from pathlib import Path
 from dotenv import load_dotenv
-import anthropic
 
 # Load API key from .env
 load_dotenv()
@@ -14,11 +13,12 @@ SCRIPT_DIR = Path(__file__).parent
 JSON_PATH = SCRIPT_DIR / "trend_shortlist.json"
 RUN_LOG_PATH = SCRIPT_DIR / "run_log.json"
 
-MODEL = os.environ.get("DEFAULT_MODEL", "claude-haiku-4-5-20251001")
+BRAND_DEFAULT = os.environ.get("BRAND", "Celine")
+MODEL = os.environ.get("DEFAULT_MODEL", "anthropic/claude-3-5-haiku")
 
 # B1: Exact prompt the user inputs
 PROMPT_TEMPLATE = (
-    "You are a Dior trend briefing assistant helping client advisors (CAs) in China "
+    "You are a {brand} trend briefing assistant helping client advisors (CAs) in China "
     "prepare for client interactions — cards are read during slow hours or before a "
     "shift, so they should be memorable and easy to recall on the floor.\n\n"
     "Every claim must be grounded in the provided data, translated into plain selling "
@@ -139,13 +139,13 @@ def load_trends():
 
 
 def get_user_inputs():
-    print("\n=== Dior CA Trend Brief Generator ===\n")
+    print(f"\n=== {BRAND_DEFAULT} CA Trend Brief Generator ===\n")
 
     if sys.stdin.isatty():
-        brand_input = input("Brand (press Enter for Dior): ").strip()
+        brand_input = input(f"Brand (press Enter for {BRAND_DEFAULT}): ").strip()
     else:
         brand_input = ""
-    brand = brand_input if brand_input else "Dior"
+    brand = brand_input if brand_input else BRAND_DEFAULT
 
     print("\nSelect store city:")
     print("  1 — Shanghai")
@@ -303,11 +303,30 @@ def write_report(brand, city, week, source, selected, cards, used_fallback):
 
 
 def main():
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
-    if not api_key:
-        raise EnvironmentError("ANTHROPIC_API_KEY not set. Check your .env file.")
+    try:
+        from openai import OpenAI
+    except ImportError:
+        raise ImportError("openai package not installed. Run: pip install openai")
 
-    client = anthropic.Anthropic(api_key=api_key, base_url="https://openrouter.ai/api/v1")
+    api_key = os.environ.get("OPENROUTER_API_KEY", "")
+    if not api_key:
+        raise EnvironmentError("OPENROUTER_API_KEY not set. Check your .env file.")
+
+    _openai_client = OpenAI(api_key=api_key, base_url="https://openrouter.ai/api/v1")
+
+    class _AnthropicCompat:
+        """Thin shim so existing generate_trend_card code works with OpenRouter."""
+        class messages:
+            @staticmethod
+            def create(model, max_tokens, messages, **kwargs):
+                resp = _openai_client.chat.completions.create(
+                    model=model, max_tokens=max_tokens, messages=messages
+                )
+                class _Resp:
+                    content = [type("C", (), {"text": resp.choices[0].message.content})()]
+                return _Resp()
+
+    client = _AnthropicCompat()
 
     # B1: Get user inputs (brand + city)
     brand, city = get_user_inputs()

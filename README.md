@@ -1,8 +1,27 @@
-# Agent Pipeline — Modules 1–5
+# Agent Pipeline — Modules 1–5 · Brand: Celine
 
-A sequential multi-module AI agent pipeline that scrapes Xiaohongshu (XHS) trends, structures client memory, generates outreach, and persists everything to Supabase automatically.
+A sequential multi-module AI agent pipeline for LVMH luxury clienteling. Scrapes Xiaohongshu (XHS) trends, filters them for brand relevance, generates CA briefing cards, structures client memory, and produces personalized outreach — persisting everything to Supabase automatically.
 
+**Brand:** Celine (configurable via `BRAND` in `.env`)  
 **Live repo:** [github.com/m-ny/mvp](https://github.com/m-ny/mvp)
+
+---
+
+## Pipeline Flow
+
+```
+Module 1 → Module 2 → Module 3 → Module 4 → Module 5
+  XHS        Filter     CA Brief  Client     Outreach
+  Scraper    Agent      Agent     Memory     Agent
+```
+
+| # | Module | Input | Output |
+|---|--------|-------|--------|
+| 1 | XHS Trend Builder | Live XHS scrape | `trend_objects.json` |
+| 2 | Trend Relevance Filter | M1 trend objects | `output_shortlist.json` → M3 `trend_shortlist.json` |
+| 3 | CA Trend Brief | M2 shortlist | Markdown trend cards |
+| 4 | Client Memory Structurer | Voice memo / text | Structured client memory |
+| 5 | Outreach Angle Agent | Client memory + trends | WeChat draft + outreach angle |
 
 ---
 
@@ -10,8 +29,8 @@ A sequential multi-module AI agent pipeline that scrapes Xiaohongshu (XHS) trend
 
 ```
 Agent/
-├── main.py                  ← runs all modules in order (1→5)
-├── config.py                ← global API key + model loader
+├── main.py                  ← runs all 5 modules in order (1→2→3→4→5)
+├── config.py                ← global API key + model + brand loader
 ├── supabase_client.py       ← shared Postgres connection factory
 ├── requirements.txt
 ├── .env.example             ← copy to .env and fill in secrets
@@ -20,17 +39,27 @@ Agent/
 │   ├── setup.py             ← creates all Supabase tables
 │   └── migrations/
 │       ├── module1.sql      ← XHS posts + trend objects + run logs
-│       ├── module3.sql      ← trend briefs
+│       ├── module2.sql      ← trend shortlist + run logs
+│       ├── module3.sql      ← trend briefs + feedback
 │       ├── module4.sql      ← client memory objects
 │       └── module5.sql      ← outreach suggestions
 │
 ├── module_1/                ← XHS Trend Object Builder
 │   ├── xhs_scraper_live.py  ← live XHS scraper (Chrome + DrissionPage)
 │   ├── xhs_trend_builder.py ← clusters posts → trend objects
-│   └── supabase_writer.py   ← writes posts + trends + logs to DB
+│   └── supabase_writer.py
+│
+├── module_2/                ← Trend Relevance & Materiality Filter
+│   ├── agent.py             ← main entry point
+│   ├── evaluator.py         ← LLM scoring engine (OpenRouter)
+│   ├── scorer.py            ← deterministic pre-filter (no LLM)
+│   ├── prompts.py           ← Celine-specific evaluation prompts
+│   ├── brand_profile.json   ← Celine brand config, taboos, categories
+│   └── supabase_writer.py
 │
 ├── module_3/trend_brief_agent/
-│   ├── agent.py             ← generates trend briefs (Anthropic/OpenRouter)
+│   ├── agent.py             ← generates CA trend brief cards (OpenRouter)
+│   ├── trend_shortlist.json ← written here by Module 2
 │   └── supabase_writer.py
 │
 ├── module_4/
@@ -38,7 +67,7 @@ Agent/
 │   └── supabase_writer.py
 │
 └── module_5/
-    ├── agent.py             ← outreach angle + WeChat draft generator
+    ├── agent.py             ← outreach angle + WeChat draft
     └── supabase_writer.py
 ```
 
@@ -52,7 +81,7 @@ Agent/
 pip3 install -r requirements.txt
 ```
 
-For module 1 live scraping (needs a virtual env on Mac):
+For module 1 live scraping (virtual env recommended on Mac):
 ```bash
 cd module_1
 python3 -m venv .venv
@@ -71,6 +100,9 @@ Edit `.env`:
 OPENROUTER_API_KEY=your_openrouter_api_key_here
 DEFAULT_MODEL=openai/gpt-4o-mini
 
+# Brand (used by all modules)
+BRAND=Celine
+
 # Supabase — from your project's connection settings
 SUPABASE_PASSWORD=your_supabase_db_password_here
 SUPABASE_HOST=aws-1-ap-northeast-1.pooler.supabase.com
@@ -85,11 +117,11 @@ SUPABASE_USER=postgres.krfdyudabrlmjixbdcxm
 python3 db/setup.py
 ```
 
-Runs all 4 migration files. Safe to re-run — uses `IF NOT EXISTS` everywhere.
+Runs all 5 migration files. Safe to re-run — uses `IF NOT EXISTS` everywhere.
 
 To only set up one module:
 ```bash
-python3 db/setup.py --module 1
+python3 db/setup.py --module 2
 ```
 
 ### 4. Run the full pipeline
@@ -102,10 +134,14 @@ Or run individual modules:
 ```bash
 # Module 1 — scrape XHS then build trend objects
 cd module_1
-.venv/bin/python3 xhs_scraper_live.py --keywords "LV" "Chanel" "Dior" --times 3
+.venv/bin/python3 xhs_scraper_live.py --keywords "Celine" "法式极简" "小众设计" --times 3
 .venv/bin/python3 xhs_trend_builder.py
 
-# Module 3 — generate trend briefs
+# Module 2 — filter + score trends for brand relevance
+cd module_2
+python3 agent.py
+
+# Module 3 — generate CA trend brief cards
 cd module_3/trend_brief_agent
 python3 agent.py
 
@@ -120,6 +156,32 @@ python3 agent.py
 
 ---
 
+## Module 2 — Trend Relevance & Materiality Filter
+
+Module 2 sits between the raw XHS trend builder and the CA brief generator. It applies a **two-stage qualification pipeline** to eliminate noise and surface only the most brand-relevant trends for Celine.
+
+### What it does
+1. **Deterministic pre-filter** (no LLM cost): rejects trends that are stale (>21 days old), have too little engagement, wrong category, or contain brand taboo keywords.
+2. **LLM evaluation** via OpenRouter: scores each passing trend on 5 dimensions — Freshness, Brand Fit, Category Fit, Materiality, Actionability.
+3. **Shortlist** top 5 trends above composite score 6.5 (weighted: brand fit ×0.30, freshness ×0.20, category fit ×0.20, materiality ×0.15, actionability ×0.15).
+4. **Writes Module 3 input**: converts shortlist to `trend_shortlist.json` format in `module_3/trend_brief_agent/`.
+
+### Brand profile (Celine)
+Located at `module_2/brand_profile.json`. Edit this to change the brand without touching any code:
+- `active_categories`: what product categories to accept (currently `ready-to-wear`, `leather goods`)
+- `brand_taboos`: keyword rejection list (streetwear, hypebeast, dupes, etc.)
+- `aesthetic`: used by LLM to evaluate brand fit
+
+### Changing the brand
+```bash
+# In .env
+BRAND=Fendi
+
+# Update module_2/brand_profile.json to reflect the new brand
+```
+
+---
+
 ## Supabase Schema — One Table Group Per Module
 
 Each module owns its own tables. They never share tables across modules.
@@ -130,7 +192,14 @@ Each module owns its own tables. They never share tables across modules.
 |---|---|
 | `module1_xhs_posts` | Every scraped/processed XHS post. Raw titles, captions, hashtags unchanged. Anonymized creator IDs. All image URLs. AI image captions. Full comment + reply text (commenter names hashed). |
 | `module1_trend_objects` | Each trend cluster: label, summary, AI reasoning, confidence, evidence posts, engagement metrics, image URLs, and all anonymized comment signals. |
-| `module1_run_logs` | One row per pipeline run. Records, LLM config, keywords, timing. |
+| `module1_run_logs` | One row per pipeline run. Records LLM config, keywords, timing. |
+
+### Module 2 — Trend Relevance Filter
+
+| Table | What it stores |
+|---|---|
+| `module2_trend_shortlist` | Top 5 shortlisted trends per run with all 5 dimension scores, composite score, confidence, reasoning, and evidence references. |
+| `module2_run_logs` | Per-run metadata: how many passed pre-filter, LLM evaluated, shortlisted, noise reduction %. |
 
 ### Module 3 — Trend Brief Agent
 
@@ -167,11 +236,21 @@ SUPABASE_PASSWORD set → data synced after every run
 SUPABASE_PASSWORD not set → module runs fine, no DB writes
 ```
 
-You can check what was written in the Supabase dashboard → Table Editor.
+Check written data: Supabase dashboard → Table Editor.
 
 ---
 
 ## AI Prompts — use these with Cursor / Claude to extend the pipeline
+
+### Change the brand across all modules
+
+```
+Update the pipeline in /Users/mannyhernandez/Documents/GitHub/Agent to target [BRAND_NAME] instead of Celine.
+1. Update .env: BRAND=[BRAND_NAME]
+2. Update module_2/brand_profile.json: brand_name, aesthetic, clientele, brand_taboos, active_categories
+3. Update module_3/trend_brief_agent/agent.py: brand default and system prompt
+Make sure all prompts reference the new brand's codes and clientele accurately.
+```
 
 ### Connect a new module to Supabase
 
@@ -192,6 +271,15 @@ Then at the end of agent.py, add a try/except block that:
 - Prints "[DB WARN] Supabase sync skipped: {error}" on failure
 ```
 
+### Query Module 2 shortlists from Supabase
+
+```
+Using psycopg2 and supabase_client.get_conn(), write a function that:
+1. Queries module2_trend_shortlist for the latest run_id
+2. Returns shortlisted trends sorted by rank
+3. Joins with module1_trend_objects on trend_id to get full evidence
+```
+
 ### Add a new table for a module
 
 ```
@@ -199,16 +287,6 @@ Add a new table to db/migrations/moduleX.sql for storing [describe what you want
 Follow the existing pattern: BIGSERIAL PRIMARY KEY, run_id TEXT NOT NULL,
 relevant JSONB columns, timestamps. Use IF NOT EXISTS. Then update
 module_X/supabase_writer.py to write to it.
-```
-
-### Query trends from Supabase in Python
-
-```
-Using psycopg2 and the connection from supabase_client.get_conn(),
-write a function that:
-1. Queries module1_trend_objects for the latest run_id
-2. Returns all trend objects with confidence = 'high'
-3. Includes their comment_signals JSONB parsed as a Python dict
 ```
 
 ### Run migrations dry-run to preview SQL
@@ -224,14 +302,16 @@ python3 db/setup.py --dry-run
 ### Module 1 — XHS Trend Object Builder
 Scrapes Xiaohongshu live using Chrome automation. Keeps all post content raw and unchanged. Anonymizes creator names (SHA-256 hash). AI-captions images. Clusters posts into Trend Objects with engagement metrics, visual assets, and anonymized comment signals.
 
-### Module 2 — (Placeholder)
-Reserved for a future pipeline step.
+**XHS keywords for Celine:** `Celine` `赛琳` `法式极简` `静奢` `小众皮具` `皮革配件`
 
-### Module 3 — Trend Brief Agent
-Takes trend objects and generates formatted trend briefs (markdown + HTML) for a given brand and city.
+### Module 2 — Trend Relevance & Materiality Filter
+Two-stage filter: deterministic pre-filter (no LLM cost) → LLM brand-fit scoring → top 5 shortlist. Outputs a `trend_shortlist.json` directly into Module 3's folder so the pipeline is fully automated.
+
+### Module 3 — CA Trend Brief Agent
+Takes the Module 2 shortlist and generates formatted trend briefing cards (markdown) for Client Advisors, with city-specific tone (Shanghai vs Beijing), evidence-grounded reasoning, and suggested opening lines.
 
 ### Module 4 — Client Memory Structurer
-Converts sales advisor voice memos into structured client memory objects: life events, budgets, aesthetic preferences, mood, and next-step intent. Uses OpenRouter.
+Converts sales advisor voice memos or text notes into structured client memory objects: life events, budgets, aesthetic preferences, mood signals, and next-step intent. Uses OpenRouter.
 
 ### Module 5 — Outreach Angle Agent
-Reads client memory + trend shortlist and generates personalized outreach angles and WeChat message drafts for client advisors.
+Reads client memory + trend shortlist and generates personalized outreach angles and WeChat message drafts for Client Advisors to use directly in client conversations.

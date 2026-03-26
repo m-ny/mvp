@@ -1,0 +1,1843 @@
+{
+  "run_id": "run_0001",
+  "brand": "ALL",
+  "category": "ready-to-wear",
+  "trend_objects": [
+    {
+      "trend_id": "t01",
+      "label": "Soft Tailoring Revival",
+      "category": "ready-to-wear",
+      "summary": "Structured yet fluid blazers and suits with relaxed silhouettes, often paired with silk blouses. Emphasis on quality fabric drape and refined construction. Strong presence across Dior and Celine lookbooks shared by luxury fashion KOLs.",
+      "ai_reasoning": "Multiple high-engagement posts from fashion KOLs in Beijing and Shanghai showcase soft tailoring as the dominant styling language for spring 2026. Consistent engagement pattern across 9 posts indicates sustained interest rather than a single viral moment.",
+      "confidence": "high",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p001", "p002", "p003", "p004"],
+        "snippets": [
+          "柔软西装外套搭配真丝衬衫，新季最优雅的穿法",
+          "软裁剪西装让整体造型更显高级感，Dior这季做得最好",
+          "新式软肩西装外套，穿出法式优雅不费力",
+          "今春必备的软西装，Celine和Dior都在主打这个廓形"
+        ],
+        "posts": [
+          {
+            "post_id": "p001",
+            "title": "春季最优雅的穿搭——软西装外套",
+            "date": "2026-03-18",
+            "brand": "Dior",
+            "likes": 8200,
+            "comments": 430,
+            "saves": 1800,
+            "creator": "fashion_kol_beijing"
+          },
+          {
+            "post_id": "p002",
+            "title": "法式软裁剪穿搭分享",
+            "date": "2026-03-20",
+            "brand": "Celine",
+            "likes": 7400,
+            "comments": 380,
+            "saves": 1600,
+            "creator": "luxe_style_shanghai"
+          },
+          {
+            "post_id": "p003",
+            "title": "Dior软西装外套的高级穿法",
+            "date": "2026-03-22",
+            "brand": "Dior",
+            "likes": 9100,
+            "comments": 520,
+            "saves": 2100,
+            "creator": "dior_enthusiast_cn"
+          },
+          {
+            "post_id": "p004",
+            "title": "春季通勤穿搭——优雅软西装",
+            "date": "2026-03-24",
+            "brand": "Dior",
+            "likes": 6800,
+            "comments": 290,
+            "saves": 1400,
+            "creator": "parisian_chic_beijing"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 9,
+        "total_engagement": 87500,
+        "avg_engagement": 9722,
+        "total_likes": 70000,
+        "total_comments": 4200,
+        "total_saves": 13300,
+        "top_keywords": ["软西装", "soft tailoring", "优雅", "法式穿搭", "Dior"]
+      },
+      "timestamp": "2026-03-25T07:50:27Z"
+    },
+    {
+      "trend_id": "t02",
+      "label": "Feminine Floral Print Dressing",
+      "category": "ready-to-wear",
+      "summary": "Romantic floral prints on midi and maxi dresses, often in soft chiffon or silk. Strong Dior brand association through garden-party aesthetic. Seen across multiple luxury KOL posts with high save rates indicating aspiration and purchase intent.",
+      "ai_reasoning": "Floral print dressing is experiencing a clear spring surge with consistent posting cadence from March 10 onwards. The imagery references Dior's Granville garden heritage and Miss Dior aesthetic, making this trend highly brand-congruent.",
+      "confidence": "high",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p005", "p006", "p007", "p008"],
+        "snippets": [
+          "花卉印花连衣裙是今春最浪漫的选择，Dior的花园美学完美诠释",
+          "丝绸印花裙穿出女性最柔美的一面，收藏这件Miss Dior同款",
+          "春日花园系穿搭，碎花长裙配草帽，法式浪漫拿捏了",
+          "Dior这季花卉印花太美了，柔软飘逸的裙摆令人着迷"
+        ],
+        "posts": [
+          {
+            "post_id": "p005",
+            "title": "春日最美花卉连衣裙穿搭",
+            "date": "2026-03-15",
+            "brand": "Dior",
+            "likes": 12400,
+            "comments": 680,
+            "saves": 3200,
+            "creator": "belle_mode_shanghai"
+          },
+          {
+            "post_id": "p006",
+            "title": "Miss Dior花卉印花穿搭分享",
+            "date": "2026-03-19",
+            "brand": "Dior",
+            "likes": 11200,
+            "comments": 590,
+            "saves": 2800,
+            "creator": "luxury_wardrobe_bj"
+          },
+          {
+            "post_id": "p007",
+            "title": "法式花园系穿搭——飘逸印花裙",
+            "date": "2026-03-21",
+            "brand": "Loewe",
+            "likes": 9800,
+            "comments": 470,
+            "saves": 2400,
+            "creator": "fashion_kol_beijing"
+          },
+          {
+            "post_id": "p008",
+            "title": "初春最浪漫的花卉穿搭",
+            "date": "2026-03-23",
+            "brand": "Dior",
+            "likes": 10600,
+            "comments": 540,
+            "saves": 2600,
+            "creator": "dior_enthusiast_cn"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 11,
+        "total_engagement": 98500,
+        "avg_engagement": 8955,
+        "total_likes": 79000,
+        "total_comments": 4700,
+        "total_saves": 14800,
+        "top_keywords": ["花卉印花", "连衣裙", "Dior花园", "法式浪漫", "Miss Dior"]
+      },
+      "timestamp": "2026-03-25T07:51:00Z"
+    },
+    {
+      "trend_id": "t03",
+      "label": "Couture Detail Incorporation",
+      "category": "ready-to-wear",
+      "summary": "Demi-couture details entering ready-to-wear: hand-stitched embroidery, bias-cut seaming, and sculptural collars. Content focuses on visible artisanal construction as a differentiator. Resonates strongly with heritage luxury clientele.",
+      "ai_reasoning": "A growing cluster of content explicitly celebrating Dior's atelier craftsmanship in RTW pieces. Snippet language focuses on construction details rather than styling — indicating a more sophisticated, heritage-conscious audience.",
+      "confidence": "high",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p009", "p010", "p011", "p012"],
+        "snippets": [
+          "Dior高定细节融入成衣，手工刺绣领口太精致了，这才是真正的工艺品",
+          "斜裁剪接的设计感，每一处接缝都是艺术，Dior成衣的高定基因",
+          "雕塑感领型让整件衣服立刻升华，Dior的成衣工艺无人能及",
+          "细看才知道有多精致——Dior这件衬衫的刺绣细节，每一针都是匠心"
+        ],
+        "posts": [
+          {
+            "post_id": "p009",
+            "title": "Dior成衣里的高定细节赏析",
+            "date": "2026-03-14",
+            "brand": "Dior",
+            "likes": 14200,
+            "comments": 820,
+            "saves": 3900,
+            "creator": "couture_observer_cn"
+          },
+          {
+            "post_id": "p010",
+            "title": "工艺之美——成衣里的高定语言",
+            "date": "2026-03-17",
+            "brand": "Dior",
+            "likes": 12800,
+            "comments": 710,
+            "saves": 3400,
+            "creator": "luxury_wardrobe_bj"
+          },
+          {
+            "post_id": "p011",
+            "title": "Dior斜裁与刺绣细节近赏",
+            "date": "2026-03-20",
+            "brand": "Dior",
+            "likes": 13500,
+            "comments": 760,
+            "saves": 3700,
+            "creator": "belle_mode_shanghai"
+          },
+          {
+            "post_id": "p012",
+            "title": "高级成衣的工艺语言",
+            "date": "2026-03-23",
+            "brand": "Dior",
+            "likes": 11900,
+            "comments": 640,
+            "saves": 3100,
+            "creator": "dior_enthusiast_cn"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 10,
+        "total_engagement": 112000,
+        "avg_engagement": 11200,
+        "total_likes": 88000,
+        "total_comments": 5400,
+        "total_saves": 18600,
+        "top_keywords": ["高定细节", "刺绣", "斜裁", "工艺", "Dior成衣"]
+      },
+      "timestamp": "2026-03-25T07:51:30Z"
+    },
+    {
+      "trend_id": "t04",
+      "label": "New Bar Jacket Reinterpretation",
+      "category": "ready-to-wear",
+      "summary": "Modern reinterpretations of Dior's iconic Bar jacket silhouette — nipped waist, structured shoulders, fluid skirt. Seen in both archival celebration content and new styling contexts by fashion editors and high-profile KOLs.",
+      "ai_reasoning": "The Bar jacket is experiencing a content renaissance driven by both heritage storytelling and new styling contexts. High save rates and editorial-quality posts from top-tier KOLs suggest strong brand equity reinforcement.",
+      "confidence": "high",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p013", "p014", "p015", "p016"],
+        "snippets": [
+          "Bar夹克是Dior最经典的轮廓，今季的重新演绎让人心动，收腰设计永远优雅",
+          "Dior Bar jacket的现代诠释，保留了原版的收腰廓形，面料升级为轻盈缎面",
+          "经典不过时——Bar夹克配A字裙，这才是正确的Dior穿法",
+          "时装编辑的Bar jacket造型指南：如何穿出2026年的法式优雅"
+        ],
+        "posts": [
+          {
+            "post_id": "p013",
+            "title": "Dior Bar夹克——经典轮廓的当代诠释",
+            "date": "2026-03-12",
+            "brand": "Dior",
+            "likes": 18400,
+            "comments": 1100,
+            "saves": 5200,
+            "creator": "fashion_editor_paris"
+          },
+          {
+            "post_id": "p014",
+            "title": "我的Dior Bar jacket穿搭心得",
+            "date": "2026-03-16",
+            "brand": "Dior",
+            "likes": 15600,
+            "comments": 890,
+            "saves": 4400,
+            "creator": "couture_observer_cn"
+          },
+          {
+            "post_id": "p015",
+            "title": "Bar jacket新穿法——2026春季版",
+            "date": "2026-03-19",
+            "brand": "Dior",
+            "likes": 16800,
+            "comments": 940,
+            "saves": 4800,
+            "creator": "luxe_style_shanghai"
+          },
+          {
+            "post_id": "p016",
+            "title": "Dior经典轮廓的时代演变",
+            "date": "2026-03-22",
+            "brand": "Dior",
+            "likes": 14200,
+            "comments": 780,
+            "saves": 3900,
+            "creator": "dior_enthusiast_cn"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 12,
+        "total_engagement": 138000,
+        "avg_engagement": 11500,
+        "total_likes": 108000,
+        "total_comments": 6800,
+        "total_saves": 23200,
+        "top_keywords": ["Bar夹克", "收腰轮廓", "Dior经典", "法式优雅", "高定廓形"]
+      },
+      "timestamp": "2026-03-25T07:52:00Z"
+    },
+    {
+      "trend_id": "t05",
+      "label": "Silk Layering and Transparency",
+      "category": "ready-to-wear",
+      "summary": "Silk and semi-sheer fabric layering creating depth and luxury sensory experience. Styling focuses on tonal color play — ivory over blush, cream over champagne. Strong alignment with Dior's fabric heritage and the feminine codes of the house.",
+      "ai_reasoning": "Multiple posts focus specifically on silk layering as a styling technique rather than individual garments, indicating trend maturity and sophistication. Creator profiles align strongly with Dior's target audience.",
+      "confidence": "high",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p017", "p018", "p019", "p020"],
+        "snippets": [
+          "真丝叠穿是今春最高级的穿法，透明感面料叠加让整体质感翻倍",
+          "香槟色真丝衬衫叠穿雪纺外套，Dior这种朦胧美太迷人了",
+          "丝质透明感叠穿，米白叠浅粉，温柔到极致",
+          "今春最值得尝试的穿搭技巧——丝质叠穿，Dior的面料最适合"
+        ],
+        "posts": [
+          {
+            "post_id": "p017",
+            "title": "真丝叠穿的艺术——高级透明感穿搭",
+            "date": "2026-03-13",
+            "brand": "Dior",
+            "likes": 10800,
+            "comments": 560,
+            "saves": 2900,
+            "creator": "belle_mode_shanghai"
+          },
+          {
+            "post_id": "p018",
+            "title": "丝绸透叠穿搭指南",
+            "date": "2026-03-17",
+            "brand": "Dior",
+            "likes": 9400,
+            "comments": 490,
+            "saves": 2500,
+            "creator": "luxury_wardrobe_bj"
+          },
+          {
+            "post_id": "p019",
+            "title": "朦胧美学——透明感叠穿合集",
+            "date": "2026-03-20",
+            "brand": "Loewe",
+            "likes": 11200,
+            "comments": 620,
+            "saves": 3100,
+            "creator": "parisian_chic_beijing"
+          },
+          {
+            "post_id": "p020",
+            "title": "Dior真丝叠穿：温柔与高级感并存",
+            "date": "2026-03-23",
+            "brand": "Dior",
+            "likes": 10100,
+            "comments": 530,
+            "saves": 2700,
+            "creator": "fashion_kol_beijing"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 9,
+        "total_engagement": 82000,
+        "avg_engagement": 9111,
+        "total_likes": 65000,
+        "total_comments": 3900,
+        "total_saves": 13100,
+        "top_keywords": ["真丝叠穿", "透明感", "丝绸", "叠穿技巧", "温柔穿搭"]
+      },
+      "timestamp": "2026-03-25T07:52:30Z"
+    },
+    {
+      "trend_id": "t06",
+      "label": "Streetwear Luxury Mashup",
+      "category": "ready-to-wear",
+      "summary": "Mixing high-end pieces with streetwear staples — oversized hoodies, chunky sneakers, cargo pants layered with luxury outerwear. Primarily driven by younger male and gender-neutral creators.",
+      "ai_reasoning": "High engagement from streetwear community but misaligned with luxury heritage brands. Creator profiles skew toward hypebeast culture.",
+      "confidence": "medium",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p021", "p022", "p023"],
+        "snippets": [
+          "街头潮流混搭高端单品，今年最火的穿法就是这个",
+          "卫衣+老爹鞋+奢侈品包包，streetwear和luxury的完美结合",
+          "潮流混搭不设限，hypebeast风格融入高级时装"
+        ],
+        "posts": [
+          {
+            "post_id": "p021",
+            "title": "街头风混搭高端单品大法",
+            "date": "2026-03-18",
+            "brand": "Louis Vuitton",
+            "likes": 22000,
+            "comments": 1800,
+            "saves": 4200,
+            "creator": "streetwear_hype_cn"
+          },
+          {
+            "post_id": "p022",
+            "title": "Hypebeast meets Luxury",
+            "date": "2026-03-21",
+            "brand": "Louis Vuitton",
+            "likes": 19500,
+            "comments": 1600,
+            "saves": 3800,
+            "creator": "urban_style_gz"
+          },
+          {
+            "post_id": "p023",
+            "title": "街头奢华混搭穿搭指南",
+            "date": "2026-03-23",
+            "brand": "Louis Vuitton",
+            "likes": 18000,
+            "comments": 1400,
+            "saves": 3500,
+            "creator": "hype_fashion_sh"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 8,
+        "total_engagement": 78000,
+        "avg_engagement": 9750,
+        "total_likes": 62000,
+        "total_comments": 5800,
+        "total_saves": 10200,
+        "top_keywords": ["streetwear", "混搭", "hypebeast", "街头风", "潮流"]
+      },
+      "timestamp": "2026-03-25T07:53:00Z"
+    },
+    {
+      "trend_id": "t07",
+      "label": "Logomania Maximalism",
+      "category": "ready-to-wear",
+      "summary": "Head-to-toe logo dressing across brands, primarily LV monogram and Gucci double-G. High engagement but associated with mass market brand visibility rather than heritage luxury positioning.",
+      "ai_reasoning": "Strong engagement numbers but driven by logo recognition culture rather than craftsmanship appreciation. Antithetical to Dior's understated heritage positioning.",
+      "confidence": "medium",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p024", "p025", "p026"],
+        "snippets": [
+          "今年最火的就是满印logo单品，从头到脚都是品牌标志",
+          "logomania回潮！LV老花+Gucci双G，越显眼越时髦",
+          "大logo单品永远不过时，这就是奢侈品的魅力"
+        ],
+        "posts": [
+          {
+            "post_id": "p024",
+            "title": "Logomania穿搭合集2026",
+            "date": "2026-03-17",
+            "brand": "Louis Vuitton",
+            "likes": 25000,
+            "comments": 2100,
+            "saves": 4800,
+            "creator": "logo_lover_cn"
+          },
+          {
+            "post_id": "p025",
+            "title": "大logo时代回归",
+            "date": "2026-03-20",
+            "brand": "Louis Vuitton",
+            "likes": 21000,
+            "comments": 1800,
+            "saves": 4200,
+            "creator": "brand_showcase_sh"
+          },
+          {
+            "post_id": "p026",
+            "title": "全身logo的正确打开方式",
+            "date": "2026-03-22",
+            "brand": "Louis Vuitton",
+            "likes": 18500,
+            "comments": 1500,
+            "saves": 3600,
+            "creator": "fashion_maximalist"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 7,
+        "total_engagement": 72000,
+        "avg_engagement": 10286,
+        "total_likes": 58000,
+        "total_comments": 5400,
+        "total_saves": 8600,
+        "top_keywords": ["logomania", "大logo", "满印", "logo单品"]
+      },
+      "timestamp": "2026-03-25T07:53:30Z"
+    },
+    {
+      "trend_id": "t08",
+      "label": "Luxury Athleisure Crossover",
+      "category": "ready-to-wear",
+      "summary": "Elevated sportswear aesthetics entering luxury RTW — yoga pants styled with cashmere, sports bras as tops, running shoes with tailored pieces. Mostly from wellness and fitness-adjacent creators.",
+      "ai_reasoning": "Growing but fundamentally athleisure-driven content. Creator profiles skew toward wellness influencers rather than fashion-focused luxury content creators.",
+      "confidence": "medium",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p027", "p028", "p029"],
+        "snippets": [
+          "运动奢华混搭，瑜伽裤+高定外套，舒适与优雅兼得",
+          "athleisure风格越来越受欢迎，奢侈品牌也开始做运动风了",
+          "健身后的穿搭转换，运动内衣+宽松西裤，潮流新方向"
+        ],
+        "posts": [
+          {
+            "post_id": "p027",
+            "title": "奢华运动风穿搭指南",
+            "date": "2026-03-16",
+            "brand": "Loewe",
+            "likes": 16000,
+            "comments": 1200,
+            "saves": 3000,
+            "creator": "wellness_luxe_sh"
+          },
+          {
+            "post_id": "p028",
+            "title": "Athleisure luxury混搭合集",
+            "date": "2026-03-19",
+            "brand": "Bottega Veneta",
+            "likes": 14000,
+            "comments": 1100,
+            "saves": 2600,
+            "creator": "fit_fashion_bj"
+          },
+          {
+            "post_id": "p029",
+            "title": "运动+高端的时尚碰撞",
+            "date": "2026-03-21",
+            "brand": "Loewe",
+            "likes": 12000,
+            "comments": 900,
+            "saves": 2300,
+            "creator": "sport_chic_cn"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 6,
+        "total_engagement": 48000,
+        "avg_engagement": 8000,
+        "total_likes": 38000,
+        "total_comments": 3200,
+        "total_saves": 6800,
+        "top_keywords": ["athleisure", "运动风", "瑜伽裤", "混搭", "运动奢华"]
+      },
+      "timestamp": "2026-03-25T07:54:00Z"
+    },
+    {
+      "trend_id": "t09",
+      "label": "Vintage Denim Revival",
+      "category": "ready-to-wear",
+      "summary": "90s-inspired denim styling — wide-leg jeans, denim-on-denim, distressed finishes. Primarily young casual creators, occasionally paired with luxury accessories.",
+      "ai_reasoning": "Strong general trend signal but last post dates indicate this peaked in late January. No recent content in the past 3 weeks from Dior-relevant creators.",
+      "confidence": "medium",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p030", "p031", "p032"],
+        "snippets": [
+          "复古牛仔裤回潮，阔腿款是今年最值得入手的单品",
+          "牛仔叠穿的正确姿势，90年代复古风完全复活",
+          "做旧牛仔裤搭配名牌包，街头高级感"
+        ],
+        "posts": [
+          {
+            "post_id": "p030",
+            "title": "复古牛仔穿搭大赏",
+            "date": "2026-02-15",
+            "brand": "Louis Vuitton",
+            "likes": 18000,
+            "comments": 1400,
+            "saves": 3500,
+            "creator": "retro_fashion_cn"
+          },
+          {
+            "post_id": "p031",
+            "title": "90s牛仔风格回归",
+            "date": "2026-02-20",
+            "brand": "Louis Vuitton",
+            "likes": 15000,
+            "comments": 1100,
+            "saves": 2900,
+            "creator": "vintage_style_sh"
+          },
+          {
+            "post_id": "p032",
+            "title": "牛仔叠穿指南2026",
+            "date": "2026-02-28",
+            "brand": "Louis Vuitton",
+            "likes": 13000,
+            "comments": 900,
+            "saves": 2400,
+            "creator": "denim_lover_bj"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 8,
+        "total_engagement": 58000,
+        "avg_engagement": 7250,
+        "total_likes": 46000,
+        "total_comments": 3400,
+        "total_saves": 8600,
+        "top_keywords": ["复古牛仔", "阔腿裤", "90s", "牛仔叠穿"]
+      },
+      "timestamp": "2026-03-25T07:54:30Z"
+    },
+    {
+      "trend_id": "t10",
+      "label": "Maximalist Color Blocking",
+      "category": "ready-to-wear",
+      "summary": "Bold contrasting color combinations — electric blue with orange, fuchsia with yellow. High-energy styling mostly seen in younger, trendy creator circles. Last active content from early February.",
+      "ai_reasoning": "Color blocking peaked in late January/early February. Momentum appears to have subsided. Not aligned with Dior's more restrained color palette approach.",
+      "confidence": "low",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p033", "p034", "p035"],
+        "snippets": [
+          "大胆撞色才是今年的正确打开方式，荧光粉+明黄绝了",
+          "高饱和度撞色穿搭，视觉冲击力拉满",
+          "color blocking风潮席卷时尚圈，越大胆越时髦"
+        ],
+        "posts": [
+          {
+            "post_id": "p033",
+            "title": "撞色穿搭大胆尝试",
+            "date": "2026-02-01",
+            "brand": "Jacquemus",
+            "likes": 20000,
+            "comments": 1600,
+            "saves": 3800,
+            "creator": "color_bold_fashion"
+          },
+          {
+            "post_id": "p034",
+            "title": "Color blocking合集",
+            "date": "2026-02-10",
+            "brand": "Jacquemus",
+            "likes": 17000,
+            "comments": 1300,
+            "saves": 3200,
+            "creator": "trendy_looks_sh"
+          },
+          {
+            "post_id": "p035",
+            "title": "极度撞色的视觉冲击",
+            "date": "2026-02-18",
+            "brand": "Jacquemus",
+            "likes": 15000,
+            "comments": 1100,
+            "saves": 2800,
+            "creator": "fashion_forward_cn"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 7,
+        "total_engagement": 62000,
+        "avg_engagement": 8857,
+        "total_likes": 50000,
+        "total_comments": 4000,
+        "total_saves": 8000,
+        "top_keywords": ["撞色", "color blocking", "高饱和度", "大胆穿搭"]
+      },
+      "timestamp": "2026-03-25T07:55:00Z"
+    },
+    {
+      "trend_id": "t11",
+      "label": "Quiet Minimalist Dressing",
+      "category": "ready-to-wear",
+      "summary": "Neutral, unbranded minimalism — cream, oat, stone tones in simple silhouettes. Subdued styling with focus on fabric quality. Last active content from mid-February — appears to have plateaued.",
+      "ai_reasoning": "Minimalist content from February has not carried momentum into March. Post dates are all pre-March, suggesting this trend has peaked. Engagement remains medium.",
+      "confidence": "low",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p036", "p037", "p038"],
+        "snippets": [
+          "安静的极简主义，中性色系穿搭低调又高级",
+          "奶白色+燕麦色，极简风格的最优选择",
+          "不需要logo，只需要好的剪裁和面料，这就是安静奢华"
+        ],
+        "posts": [
+          {
+            "post_id": "p036",
+            "title": "极简中性色穿搭",
+            "date": "2026-02-08",
+            "brand": "Celine",
+            "likes": 11000,
+            "comments": 650,
+            "saves": 2800,
+            "creator": "minimal_luxe_cn"
+          },
+          {
+            "post_id": "p037",
+            "title": "安静奢华的穿搭哲学",
+            "date": "2026-02-14",
+            "brand": "Celine",
+            "likes": 9800,
+            "comments": 560,
+            "saves": 2400,
+            "creator": "quiet_fashion_bj"
+          },
+          {
+            "post_id": "p038",
+            "title": "中性色系极简穿搭大赏",
+            "date": "2026-02-22",
+            "brand": "Celine",
+            "likes": 8500,
+            "comments": 480,
+            "saves": 2100,
+            "creator": "neutral_tones_sh"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 7,
+        "total_engagement": 48000,
+        "avg_engagement": 6857,
+        "total_likes": 38000,
+        "total_comments": 2800,
+        "total_saves": 7200,
+        "top_keywords": ["极简主义", "中性色", "安静奢华", "简约穿搭"]
+      },
+      "timestamp": "2026-03-25T07:55:30Z"
+    },
+    {
+      "trend_id": "t12",
+      "label": "Sheer Micro Dress Styling",
+      "category": "ready-to-wear",
+      "summary": "Very short sheer mini dresses styled with opaque base layers. Content is bold and body-conscious, driven by younger influencers with high follower counts but non-luxury audience profiles.",
+      "ai_reasoning": "Strong engagement overall but creator profile does not match Dior's heritage luxury audience. Content skews toward a younger, more trend-experimental demographic, not Dior's core 28-55 clientele.",
+      "confidence": "medium",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p039", "p040"],
+        "snippets": [
+          "透明感超短裙是今春最大胆的选择，年轻活力满满",
+          "微型透视裙搭配大牌包包，时髦感拉满"
+        ],
+        "posts": [
+          {
+            "post_id": "p039",
+            "title": "透视超短裙穿搭挑战",
+            "date": "2026-03-19",
+            "brand": "Jacquemus",
+            "likes": 28000,
+            "comments": 2400,
+            "saves": 5200,
+            "creator": "bold_fashion_y2k"
+          },
+          {
+            "post_id": "p040",
+            "title": "微裙穿搭大法",
+            "date": "2026-03-22",
+            "brand": "Jacquemus",
+            "likes": 24000,
+            "comments": 2000,
+            "saves": 4600,
+            "creator": "trendy_girl_sh"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 4,
+        "total_engagement": 2800,
+        "avg_engagement": 700,
+        "total_likes": 2200,
+        "total_comments": 300,
+        "total_saves": 300,
+        "top_keywords": ["透视裙", "超短裙", "大胆穿搭", "Y2K"]
+      },
+      "timestamp": "2026-03-25T07:56:00Z"
+    },
+    {
+      "trend_id": "t13",
+      "label": "Relaxed Blazer Styling",
+      "category": "ready-to-wear",
+      "summary": "Oversized, draped blazers worn open over simple knitwear or shirts. Very similar to Soft Tailoring Revival (t01) in its core visual language and creator base — the distinction is mainly tone of voice in posts.",
+      "ai_reasoning": "This trend cluster largely overlaps with t01 Soft Tailoring Revival in post content, creator types, and styling codes. Most posts in this cluster also appear in the Soft Tailoring set.",
+      "confidence": "medium",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p041", "p042", "p043"],
+        "snippets": [
+          "宽松西装外套随意披着就很好看，今春最easy的穿法",
+          "超大廓形西装解构穿法，飘逸又随性，和软西装异曲同工",
+          "oversize blazer穿出慵懒高级感，春季最值得入手"
+        ],
+        "posts": [
+          {
+            "post_id": "p041",
+            "title": "宽松西装的慵懒穿法",
+            "date": "2026-03-16",
+            "brand": "Celine",
+            "likes": 9200,
+            "comments": 480,
+            "saves": 2000,
+            "creator": "fashion_kol_beijing"
+          },
+          {
+            "post_id": "p042",
+            "title": "Oversize blazer春季穿搭",
+            "date": "2026-03-20",
+            "brand": "Celine",
+            "likes": 8400,
+            "comments": 430,
+            "saves": 1800,
+            "creator": "luxe_style_shanghai"
+          },
+          {
+            "post_id": "p043",
+            "title": "解构西装随性穿法",
+            "date": "2026-03-23",
+            "brand": "Dior",
+            "likes": 7800,
+            "comments": 390,
+            "saves": 1600,
+            "creator": "parisian_chic_beijing"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 7,
+        "total_engagement": 43000,
+        "avg_engagement": 6143,
+        "total_likes": 34000,
+        "total_comments": 2200,
+        "total_saves": 6800,
+        "top_keywords": ["宽松西装", "oversize blazer", "慵懒穿法", "解构西装"]
+      },
+      "timestamp": "2026-03-25T07:56:30Z"
+    },
+    {
+      "trend_id": "t14",
+      "label": "Romantic Puff Sleeve Blouses",
+      "category": "ready-to-wear",
+      "summary": "Exaggerated puff and balloon sleeves on blouses and dresses. Very low post count and engagement suggesting nascent or fading signal. Only 3 posts identified in the extraction window.",
+      "ai_reasoning": "Insufficient post volume to declare trend status. 3 posts with very low engagement do not meet materiality threshold for luxury brand briefing.",
+      "confidence": "low",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p044", "p045"],
+        "snippets": [
+          "泡泡袖衬衫浪漫感十足，今春的甜美选择",
+          "夸张袖型设计让简单的衬衫变得充满少女感"
+        ],
+        "posts": [
+          {
+            "post_id": "p044",
+            "title": "泡泡袖衬衫穿搭分享",
+            "date": "2026-03-18",
+            "brand": "Dior",
+            "likes": 820,
+            "comments": 64,
+            "saves": 180,
+            "creator": "sweet_fashion_bj"
+          },
+          {
+            "post_id": "p045",
+            "title": "浪漫袖型设计分享",
+            "date": "2026-03-21",
+            "brand": "Jacquemus",
+            "likes": 640,
+            "comments": 48,
+            "saves": 140,
+            "creator": "romantic_style_sh"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 3,
+        "total_engagement": 1960,
+        "avg_engagement": 653,
+        "total_likes": 1560,
+        "total_comments": 112,
+        "total_saves": 288,
+        "top_keywords": ["泡泡袖", "袖型设计", "浪漫衬衫"]
+      },
+      "timestamp": "2026-03-25T07:57:00Z"
+    },
+    {
+      "trend_id": "t15",
+      "label": "Feminine Layered Knitwear",
+      "category": "ready-to-wear",
+      "summary": "Delicate knit cardigans and tops layered in feminine styling — buttoned over silk camisoles, worn with flowing skirts. Very similar engagement profile and creator base to Silk Layering (t05), with significant content overlap.",
+      "ai_reasoning": "This trend signal overlaps substantially with t05 Silk Layering in post content and styling language. Several posts appear in both cluster extractions. The distinction is primarily fiber (knit vs silk) but visual and cultural coding is near-identical.",
+      "confidence": "medium",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p046", "p047", "p048"],
+        "snippets": [
+          "精致针织衫叠穿是今春最温柔的穿搭方式，和真丝叠穿有异曲同工之妙",
+          "针织开衫套真丝吊带裙，层次感与女性美的完美结合",
+          "轻薄针织叠穿，春日最适合的穿法，与丝绸叠穿同样高级"
+        ],
+        "posts": [
+          {
+            "post_id": "p046",
+            "title": "春日针织叠穿穿搭",
+            "date": "2026-03-15",
+            "brand": "Dior",
+            "likes": 9600,
+            "comments": 500,
+            "saves": 2500,
+            "creator": "belle_mode_shanghai"
+          },
+          {
+            "post_id": "p047",
+            "title": "精致针织叠穿指南",
+            "date": "2026-03-19",
+            "brand": "Dior",
+            "likes": 8700,
+            "comments": 450,
+            "saves": 2200,
+            "creator": "luxury_wardrobe_bj"
+          },
+          {
+            "post_id": "p048",
+            "title": "针织与丝绸叠穿艺术",
+            "date": "2026-03-22",
+            "brand": "Dior",
+            "likes": 8100,
+            "comments": 420,
+            "saves": 2000,
+            "creator": "parisian_chic_beijing"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 8,
+        "total_engagement": 61000,
+        "avg_engagement": 7625,
+        "total_likes": 49000,
+        "total_comments": 3100,
+        "total_saves": 8900,
+        "top_keywords": ["针织叠穿", "针织开衫", "叠穿技巧", "女性美"]
+      },
+      "timestamp": "2026-03-25T07:57:30Z"
+    },
+    {
+      "trend_id": "t16",
+      "label": "Saddle Bag Styling Revival",
+      "category": "leather goods",
+      "summary": "Dior Saddle Bag experiencing a strong resurgence across XHS content — worn crossbody, in new colorways including cannage-embossed versions. Multiple KOLs featuring heritage and new-season iterations alongside outfit context.",
+      "ai_reasoning": "The Saddle Bag revival represents both a Dior brand-equity signal and a commercial opportunity. High save rates indicate purchase intent. Creator profiles are highly aligned with Dior's target clientele.",
+      "confidence": "high",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p049", "p050", "p051", "p052"],
+        "snippets": [
+          "Dior马鞍包真的永不过时，2026年依然是最值得入手的包款之一",
+          "新季马鞍包Cannage压花版太美了，这才是Dior最经典的符号",
+          "马鞍包斜挎造型分享，搭配Bar夹克真的太搭了",
+          "马鞍包的复兴不是偶然——Dior的基因与当下审美完美契合"
+        ],
+        "posts": [
+          {
+            "post_id": "p049",
+            "title": "Dior马鞍包——永恒经典的当代回归",
+            "date": "2026-03-14",
+            "brand": "Dior",
+            "likes": 16400,
+            "comments": 980,
+            "saves": 5100,
+            "creator": "dior_bag_collector"
+          },
+          {
+            "post_id": "p050",
+            "title": "新季马鞍包开箱与穿搭",
+            "date": "2026-03-18",
+            "brand": "Dior",
+            "likes": 18200,
+            "comments": 1100,
+            "saves": 5800,
+            "creator": "luxury_wardrobe_bj"
+          },
+          {
+            "post_id": "p051",
+            "title": "马鞍包Cannage压花版近赏",
+            "date": "2026-03-21",
+            "brand": "Dior",
+            "likes": 14800,
+            "comments": 860,
+            "saves": 4600,
+            "creator": "couture_observer_cn"
+          },
+          {
+            "post_id": "p052",
+            "title": "马鞍包的多种背法分享",
+            "date": "2026-03-24",
+            "brand": "Dior",
+            "likes": 15600,
+            "comments": 920,
+            "saves": 4900,
+            "creator": "fashion_kol_beijing"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 11,
+        "total_engagement": 128000,
+        "avg_engagement": 11636,
+        "total_likes": 101000,
+        "total_comments": 6400,
+        "total_saves": 20600,
+        "top_keywords": ["马鞍包", "Saddle Bag", "Dior经典", "Cannage", "斜挎包"]
+      },
+      "timestamp": "2026-03-25T07:58:00Z"
+    },
+    {
+      "trend_id": "t17",
+      "label": "Structured Tote Resurgence",
+      "category": "leather goods",
+      "summary": "Architectural tote bags with clean lines and structured bases gaining strong traction. Dior Book Tote and Celine Vertical Cabas referenced extensively. High save rates suggesting aspirational purchase interest from working professional clientele.",
+      "ai_reasoning": "Structured tote content is distributed across multiple creators and dates, suggesting organic trend growth rather than brand-pushed content. Post pattern shows sustained weekly cadence across March.",
+      "confidence": "high",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p053", "p054", "p055", "p056"],
+        "snippets": [
+          "有型的托特包才是职场女性的最佳伴侣，Dior Book Tote无可替代",
+          "结构感托特包2026年大爆发，硬挺廓形彰显专业气质",
+          "Dior Book Tote的通勤搭配，既实用又优雅，这才是聪明的选择",
+          "从会议室到晚餐，结构感大托特包全天候完美适配"
+        ],
+        "posts": [
+          {
+            "post_id": "p053",
+            "title": "结构感托特包——职场女性必备",
+            "date": "2026-03-11",
+            "brand": "Dior",
+            "likes": 13200,
+            "comments": 760,
+            "saves": 4200,
+            "creator": "professional_luxe_sh"
+          },
+          {
+            "post_id": "p054",
+            "title": "Dior Book Tote通勤穿搭",
+            "date": "2026-03-15",
+            "brand": "Dior",
+            "likes": 14800,
+            "comments": 840,
+            "saves": 4700,
+            "creator": "luxury_wardrobe_bj"
+          },
+          {
+            "post_id": "p055",
+            "title": "大容量托特包的优雅选择",
+            "date": "2026-03-19",
+            "brand": "Celine",
+            "likes": 12400,
+            "comments": 700,
+            "saves": 3900,
+            "creator": "fashion_kol_beijing"
+          },
+          {
+            "post_id": "p056",
+            "title": "结构托特包——从职场到生活",
+            "date": "2026-03-23",
+            "brand": "Dior",
+            "likes": 13800,
+            "comments": 780,
+            "saves": 4400,
+            "creator": "belle_mode_shanghai"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 10,
+        "total_engagement": 107000,
+        "avg_engagement": 10700,
+        "total_likes": 84000,
+        "total_comments": 5200,
+        "total_saves": 17800,
+        "top_keywords": ["托特包", "Book Tote", "结构感", "职场包", "大容量"]
+      },
+      "timestamp": "2026-03-25T07:58:30Z"
+    },
+    {
+      "trend_id": "t18",
+      "label": "Top Handle Bag Elegance",
+      "category": "leather goods",
+      "summary": "Revival of structured top-handle bags as a mark of refined femininity. Lady Dior, Gucci Diana, and similar silhouettes dominating luxury bag content. Strong association with formal occasions, dinners, and cultural events.",
+      "ai_reasoning": "Top handle content is notably driven by mature, high-net-worth creator profiles — KOLs who focus on cultural events, opera, and art openings. This aligns precisely with Dior's core clientele.",
+      "confidence": "high",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p057", "p058", "p059", "p060"],
+        "snippets": [
+          "手提包的复兴是女性精致感的回归，Lady Dior是其中最完美的代表",
+          "正式场合的最佳拍档——结构感手提包，比斜挎包更有女人味",
+          "顶部提手包就是优雅的具象化，Lady Dior永远是第一选择",
+          "文化活动、晚宴、开幕式——手提包才是真正的场合之选"
+        ],
+        "posts": [
+          {
+            "post_id": "p057",
+            "title": "手提包——优雅女性的终极选择",
+            "date": "2026-03-13",
+            "brand": "Dior",
+            "likes": 17200,
+            "comments": 1020,
+            "saves": 5400,
+            "creator": "cultural_luxe_bj"
+          },
+          {
+            "post_id": "p058",
+            "title": "Lady Dior的多种背法赏析",
+            "date": "2026-03-17",
+            "brand": "Dior",
+            "likes": 19400,
+            "comments": 1160,
+            "saves": 6100,
+            "creator": "dior_bag_collector"
+          },
+          {
+            "post_id": "p059",
+            "title": "顶部提手包的场合搭配指南",
+            "date": "2026-03-20",
+            "brand": "Dior",
+            "likes": 16800,
+            "comments": 980,
+            "saves": 5200,
+            "creator": "couture_observer_cn"
+          },
+          {
+            "post_id": "p060",
+            "title": "2026年最优雅的包款——手提包复兴",
+            "date": "2026-03-23",
+            "brand": "Dior",
+            "likes": 15400,
+            "comments": 900,
+            "saves": 4800,
+            "creator": "luxury_wardrobe_bj"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 11,
+        "total_engagement": 142000,
+        "avg_engagement": 12909,
+        "total_likes": 112000,
+        "total_comments": 7000,
+        "total_saves": 23000,
+        "top_keywords": ["手提包", "Lady Dior", "顶部提手", "优雅", "正式场合"]
+      },
+      "timestamp": "2026-03-25T07:59:00Z"
+    },
+    {
+      "trend_id": "t19",
+      "label": "Cannage Quilting Detail Focus",
+      "category": "leather goods",
+      "summary": "Dedicated content celebrating Dior's signature Cannage quilting pattern across bag lines — from Lady Dior to small leather goods. Posts focus on craftsmanship and the visual language of the House.",
+      "ai_reasoning": "This is a heritage-driven trend signal unique to Dior's brand equity. Content positions Cannage as a design language rather than just a product feature, making it ideal for clienteling narratives around craftsmanship.",
+      "confidence": "high",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p061", "p062", "p063", "p064"],
+        "snippets": [
+          "Dior菱格纹Cannage是一种设计语言，每一条线都有来自高定的灵感",
+          "从Lady Dior到小皮具，菱格纹贯穿了整个Dior的工艺基因",
+          "Cannage图案的灵感来源——Dior先生椅子上的藤编，太有文化底蕴了",
+          "Dior菱格纹近赏：手工缝制的工艺美学，每一针都是匠心的体现"
+        ],
+        "posts": [
+          {
+            "post_id": "p061",
+            "title": "Dior Cannage菱格纹工艺赏析",
+            "date": "2026-03-12",
+            "brand": "Dior",
+            "likes": 14600,
+            "comments": 880,
+            "saves": 4800,
+            "creator": "couture_observer_cn"
+          },
+          {
+            "post_id": "p062",
+            "title": "菱格纹——Dior最经典的视觉符号",
+            "date": "2026-03-16",
+            "brand": "Dior",
+            "likes": 13200,
+            "comments": 780,
+            "saves": 4200,
+            "creator": "dior_bag_collector"
+          },
+          {
+            "post_id": "p063",
+            "title": "Cannage设计语言的演变史",
+            "date": "2026-03-20",
+            "brand": "Dior",
+            "likes": 15800,
+            "comments": 940,
+            "saves": 5200,
+            "creator": "luxury_wardrobe_bj"
+          },
+          {
+            "post_id": "p064",
+            "title": "Dior菱格纹小皮具合集",
+            "date": "2026-03-23",
+            "brand": "Dior",
+            "likes": 12600,
+            "comments": 740,
+            "saves": 4000,
+            "creator": "cultural_luxe_bj"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 10,
+        "total_engagement": 118000,
+        "avg_engagement": 11800,
+        "total_likes": 93000,
+        "total_comments": 5800,
+        "total_saves": 19200,
+        "top_keywords": ["Cannage", "菱格纹", "Dior工艺", "高定灵感", "皮具"]
+      },
+      "timestamp": "2026-03-25T07:59:30Z"
+    },
+    {
+      "trend_id": "t20",
+      "label": "Lady Dior Styling and Heritage",
+      "category": "leather goods",
+      "summary": "Content cycle celebrating Lady Dior's history, new colorways, and styling versatility. Posts span from archival retrospectives to new-season colorway reveals, creating sustained engagement across multiple weeks.",
+      "ai_reasoning": "Lady Dior content shows unusually long tail — posts from early March through late March with consistent engagement, suggesting this is a durable brand moment rather than a single spike.",
+      "confidence": "high",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p065", "p066", "p067", "p068"],
+        "snippets": [
+          "Lady Dior三十年——从戴安娜王妃到现在，这只包的历史就是一部女性力量史",
+          "新季Lady Dior藤蓝配色太惊艳，每年都有新故事",
+          "Lady Dior的穿搭百科：从休闲日常到正式晚宴都能驾驭",
+          "一只Lady Dior足以诠释整个Dior的精神内核，这就是传奇的力量"
+        ],
+        "posts": [
+          {
+            "post_id": "p065",
+            "title": "Lady Dior三十年的时尚传奇",
+            "date": "2026-03-10",
+            "brand": "Dior",
+            "likes": 22400,
+            "comments": 1380,
+            "saves": 7200,
+            "creator": "fashion_editor_paris"
+          },
+          {
+            "post_id": "p066",
+            "title": "新季Lady Dior配色开箱",
+            "date": "2026-03-15",
+            "brand": "Dior",
+            "likes": 24800,
+            "comments": 1560,
+            "saves": 8100,
+            "creator": "dior_bag_collector"
+          },
+          {
+            "post_id": "p067",
+            "title": "Lady Dior全方位穿搭指南",
+            "date": "2026-03-19",
+            "brand": "Dior",
+            "likes": 20200,
+            "comments": 1200,
+            "saves": 6600,
+            "creator": "luxury_wardrobe_bj"
+          },
+          {
+            "post_id": "p068",
+            "title": "Lady Dior——女性优雅的最终答案",
+            "date": "2026-03-23",
+            "brand": "Dior",
+            "likes": 18600,
+            "comments": 1100,
+            "saves": 6000,
+            "creator": "couture_observer_cn"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 13,
+        "total_engagement": 158000,
+        "avg_engagement": 12154,
+        "total_likes": 124000,
+        "total_comments": 7800,
+        "total_saves": 26200,
+        "top_keywords": ["Lady Dior", "Dior经典", "包袋传奇", "戴安娜", "配色"]
+      },
+      "timestamp": "2026-03-25T08:00:00Z"
+    },
+    {
+      "trend_id": "t21",
+      "label": "Mass Market Bag Dupes Culture",
+      "category": "leather goods",
+      "summary": "Content comparing luxury bags with affordable 'dupe' alternatives from Chinese domestic brands. High engagement from value-conscious consumers but represents anti-luxury positioning.",
+      "ai_reasoning": "Dupe culture is antithetical to Dior's brand values and clientele. This content segment actively undermines luxury brand equity. Clearly misaligned.",
+      "confidence": "high",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p069", "p070", "p071"],
+        "snippets": [
+          "国产平替包，百元价位搞定同款设计，性价比之王",
+          "大牌平替推荐——不用花大价钱也能拥有同款造型",
+          "奢侈品平替实测：这些包真的能以假乱真"
+        ],
+        "posts": [
+          {
+            "post_id": "p069",
+            "title": "大牌包包平替合集2026",
+            "date": "2026-03-17",
+            "brand": "Louis Vuitton",
+            "likes": 35000,
+            "comments": 4200,
+            "saves": 8900,
+            "creator": "dupe_finder_cn"
+          },
+          {
+            "post_id": "p070",
+            "title": "奢侈品平替真实测评",
+            "date": "2026-03-20",
+            "brand": "Louis Vuitton",
+            "likes": 29000,
+            "comments": 3600,
+            "saves": 7400,
+            "creator": "value_fashion_sh"
+          },
+          {
+            "post_id": "p071",
+            "title": "百元平替 VS 正品对比",
+            "date": "2026-03-22",
+            "brand": "Louis Vuitton",
+            "likes": 26000,
+            "comments": 3100,
+            "saves": 6500,
+            "creator": "budget_luxe_bj"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 8,
+        "total_engagement": 122000,
+        "avg_engagement": 15250,
+        "total_likes": 96000,
+        "total_comments": 10900,
+        "total_saves": 15100,
+        "top_keywords": ["平替", "dupes", "国产平替", "性价比", "大牌平替"]
+      },
+      "timestamp": "2026-03-25T08:00:30Z"
+    },
+    {
+      "trend_id": "t22",
+      "label": "Streetwear Crossbody Sling",
+      "category": "leather goods",
+      "summary": "Utilitarian crossbody sling bags worn with streetwear and urban casual outfits. High youth engagement but no connection to luxury heritage aesthetics or Dior's product language.",
+      "ai_reasoning": "Crossbody sling bags are fundamentally a streetwear and youth culture product category. Does not intersect with Dior's leather goods positioning.",
+      "confidence": "medium",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p072", "p073", "p074"],
+        "snippets": [
+          "斜挎胸包是街头穿搭的标配，潮流感满分",
+          "腰包斜背才是最酷的打开方式，街头必备",
+          "单肩斜挎包解放双手，街头感十足"
+        ],
+        "posts": [
+          {
+            "post_id": "p072",
+            "title": "街头必备斜挎胸包合集",
+            "date": "2026-03-16",
+            "brand": "Louis Vuitton",
+            "likes": 18000,
+            "comments": 1600,
+            "saves": 3800,
+            "creator": "streetwear_hype_cn"
+          },
+          {
+            "post_id": "p073",
+            "title": "潮流腰包斜挎穿搭",
+            "date": "2026-03-19",
+            "brand": "Louis Vuitton",
+            "likes": 15500,
+            "comments": 1300,
+            "saves": 3200,
+            "creator": "urban_style_gz"
+          },
+          {
+            "post_id": "p074",
+            "title": "斜挎包的街头时髦打法",
+            "date": "2026-03-21",
+            "brand": "Louis Vuitton",
+            "likes": 14000,
+            "comments": 1100,
+            "saves": 2800,
+            "creator": "hype_fashion_sh"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 7,
+        "total_engagement": 58000,
+        "avg_engagement": 8286,
+        "total_likes": 46000,
+        "total_comments": 4000,
+        "total_saves": 8000,
+        "top_keywords": ["斜挎包", "胸包", "腰包", "街头风", "潮流"]
+      },
+      "timestamp": "2026-03-25T08:01:00Z"
+    },
+    {
+      "trend_id": "t23",
+      "label": "Loud Logomania Bags",
+      "category": "leather goods",
+      "summary": "Maximum-visibility logo bags from LV, Gucci, and Balenciaga. Primarily driven by younger consumers seeking brand visibility as social signal. Content is high-engagement but non-aspirational for heritage luxury positioning.",
+      "ai_reasoning": "Similar to RTW logomania — content driven by brand recognition rather than craftsmanship. Creator profiles include mass-market fashion accounts and brand-showing behavior inconsistent with Dior's heritage codes.",
+      "confidence": "medium",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p075", "p076", "p077"],
+        "snippets": [
+          "大logo包就是最直接的身份标签，今年越大越好",
+          "满印老花大包，logo越显眼越有面子",
+          "LV老花包晒单，品牌感十足的日常搭配"
+        ],
+        "posts": [
+          {
+            "post_id": "p075",
+            "title": "2026年最火的logo包推荐",
+            "date": "2026-03-18",
+            "brand": "Louis Vuitton",
+            "likes": 22000,
+            "comments": 1900,
+            "saves": 4600,
+            "creator": "logo_lover_cn"
+          },
+          {
+            "post_id": "p076",
+            "title": "满印老花包的时髦穿法",
+            "date": "2026-03-21",
+            "brand": "Louis Vuitton",
+            "likes": 19500,
+            "comments": 1700,
+            "saves": 4100,
+            "creator": "brand_showcase_sh"
+          },
+          {
+            "post_id": "p077",
+            "title": "大logo包合集——品牌感满分",
+            "date": "2026-03-23",
+            "brand": "Louis Vuitton",
+            "likes": 17000,
+            "comments": 1400,
+            "saves": 3500,
+            "creator": "fashion_maximalist"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 7,
+        "total_engagement": 72000,
+        "avg_engagement": 10286,
+        "total_likes": 57000,
+        "total_comments": 5000,
+        "total_saves": 10000,
+        "top_keywords": ["大logo包", "老花", "满印", "品牌感", "logomania"]
+      },
+      "timestamp": "2026-03-25T08:01:30Z"
+    },
+    {
+      "trend_id": "t24",
+      "label": "Vintage Archive Bag Hunting",
+      "category": "leather goods",
+      "summary": "Content about sourcing vintage and pre-owned luxury bags — particularly from the 1990s-2000s. Trend peaked in February with archive events and resale platform content. Last posts from late February.",
+      "ai_reasoning": "Vintage bag hunting trend peaked around Paris fashion week coverage in February. No recent posts in the March window. The content cluster has lost momentum and appears to have transitioned to general resale content.",
+      "confidence": "low",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p078", "p079", "p080"],
+        "snippets": [
+          "复古包包的魅力在于它承载了历史，90年代的Lady Dior当然是首选",
+          "二手包市场的淘货心得，年份款比新款更有故事",
+          "古着包的收藏逻辑——为什么老款Lady Dior更值得珍藏"
+        ],
+        "posts": [
+          {
+            "post_id": "p078",
+            "title": "复古包包淘货心得",
+            "date": "2026-02-12",
+            "brand": "Dior",
+            "likes": 14000,
+            "comments": 900,
+            "saves": 4200,
+            "creator": "vintage_luxe_sh"
+          },
+          {
+            "post_id": "p079",
+            "title": "二手奢侈品包收藏指南",
+            "date": "2026-02-19",
+            "brand": "Dior",
+            "likes": 11500,
+            "comments": 720,
+            "saves": 3400,
+            "creator": "archive_fashion_bj"
+          },
+          {
+            "post_id": "p080",
+            "title": "90年代经典包款的市场价值",
+            "date": "2026-02-26",
+            "brand": "Dior",
+            "likes": 10000,
+            "comments": 620,
+            "saves": 2900,
+            "creator": "resale_luxe_cn"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 7,
+        "total_engagement": 48000,
+        "avg_engagement": 6857,
+        "total_likes": 38000,
+        "total_comments": 2900,
+        "total_saves": 7100,
+        "top_keywords": ["复古包", "二手包", "年份款", "古着", "收藏"]
+      },
+      "timestamp": "2026-03-25T08:02:00Z"
+    },
+    {
+      "trend_id": "t25",
+      "label": "Investment Bag Discourse",
+      "category": "leather goods",
+      "summary": "Content framing luxury bags as financial investments — ROI analysis, price appreciation data, resale value comparisons. Mostly financial/investment creators with luxury adjacent content. Last posting activity in early February.",
+      "ai_reasoning": "This trend cluster peaked in January-February and is declining. The financial framing is inconsistent with Dior's heritage and craftsmanship narrative. Content creators are investment-focused rather than fashion-focused.",
+      "confidence": "low",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p081", "p082", "p083"],
+        "snippets": [
+          "奢侈品包包投资价值分析：哪些款式升值最快",
+          "Lady Dior的投资回报率分析，买包等于理财？",
+          "包包理财的逻辑——高端皮具的资产属性"
+        ],
+        "posts": [
+          {
+            "post_id": "p081",
+            "title": "奢侈品包包投资价值深度分析",
+            "date": "2026-01-25",
+            "brand": "Dior",
+            "likes": 18000,
+            "comments": 1600,
+            "saves": 5500,
+            "creator": "investment_finance_cn"
+          },
+          {
+            "post_id": "p082",
+            "title": "买包就是理财？奢侈品投资逻辑",
+            "date": "2026-02-08",
+            "brand": "Dior",
+            "likes": 15000,
+            "comments": 1300,
+            "saves": 4500,
+            "creator": "finance_lifestyle_sh"
+          },
+          {
+            "post_id": "p083",
+            "title": "高端皮具的资产配置思路",
+            "date": "2026-02-15",
+            "brand": "Dior",
+            "likes": 12000,
+            "comments": 1000,
+            "saves": 3500,
+            "creator": "wealth_mgmt_bj"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 7,
+        "total_engagement": 62000,
+        "avg_engagement": 8857,
+        "total_likes": 49000,
+        "total_comments": 3900,
+        "total_saves": 9100,
+        "top_keywords": ["投资包包", "理财", "升值", "资产", "投资回报"]
+      },
+      "timestamp": "2026-03-25T08:02:30Z"
+    },
+    {
+      "trend_id": "t26",
+      "label": "Micro Bag Novelty Trend",
+      "category": "leather goods",
+      "summary": "Extremely small, novelty-sized bags gaining attention as fashion statement pieces. Only 4 posts with very low engagement. Signal appears very nascent or possibly a niche cluster rather than a material trend.",
+      "ai_reasoning": "Insufficient signal volume and engagement to justify briefing CA teams. 4 posts with below-threshold engagement do not constitute a material trend for luxury clienteling.",
+      "confidence": "low",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p084", "p085"],
+        "snippets": [
+          "超小包包是今春的趣味配件，装饰性大于实用性",
+          "迷你包热潮：越小越可爱，时髦指数满分"
+        ],
+        "posts": [
+          {
+            "post_id": "p084",
+            "title": "超小包包的趣味穿搭",
+            "date": "2026-03-20",
+            "brand": "Jacquemus",
+            "likes": 680,
+            "comments": 54,
+            "saves": 160,
+            "creator": "novelty_fashion_sh"
+          },
+          {
+            "post_id": "p085",
+            "title": "迷你包热潮2026",
+            "date": "2026-03-22",
+            "brand": "Jacquemus",
+            "likes": 540,
+            "comments": 42,
+            "saves": 120,
+            "creator": "tiny_bag_love"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 3,
+        "total_engagement": 1840,
+        "avg_engagement": 613,
+        "total_likes": 1460,
+        "total_comments": 96,
+        "total_saves": 284,
+        "top_keywords": ["迷你包", "超小包", "趣味配件", "装饰包"]
+      },
+      "timestamp": "2026-03-25T08:03:00Z"
+    },
+    {
+      "trend_id": "t27",
+      "label": "Lady Dior New Colorways",
+      "category": "leather goods",
+      "summary": "Content specifically focused on new 2026 seasonal colorways of the Lady Dior — previewing upcoming drops and styling new tones. Substantial overlap with t20 (Lady Dior Styling and Heritage) — both track Lady Dior content in the same post period.",
+      "ai_reasoning": "This trend cluster and t20 are tracking the same Lady Dior content with only slightly different framing (colorway newness vs heritage). Multiple posts appear in both clusters. These represent the same underlying trend signal.",
+      "confidence": "medium",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p086", "p087", "p088"],
+        "snippets": [
+          "2026年春季Lady Dior新配色预告，薰衣草紫太美了",
+          "新季Lady Dior颜色发布，每一个配色都是惊喜",
+          "Lady Dior新色入手，玫瑰金五金配蜜桃粉，绝美的春日组合"
+        ],
+        "posts": [
+          {
+            "post_id": "p086",
+            "title": "2026春季Lady Dior新配色预告",
+            "date": "2026-03-11",
+            "brand": "Dior",
+            "likes": 21400,
+            "comments": 1280,
+            "saves": 6900,
+            "creator": "dior_bag_collector"
+          },
+          {
+            "post_id": "p087",
+            "title": "Lady Dior新色开箱——蜜桃粉",
+            "date": "2026-03-16",
+            "brand": "Dior",
+            "likes": 19800,
+            "comments": 1180,
+            "saves": 6400,
+            "creator": "luxury_wardrobe_bj"
+          },
+          {
+            "post_id": "p088",
+            "title": "2026春日色彩——Lady Dior配色全览",
+            "date": "2026-03-21",
+            "brand": "Dior",
+            "likes": 18200,
+            "comments": 1080,
+            "saves": 5800,
+            "creator": "couture_observer_cn"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 9,
+        "total_engagement": 112000,
+        "avg_engagement": 12444,
+        "total_likes": 88000,
+        "total_comments": 5600,
+        "total_saves": 18400,
+        "top_keywords": ["Lady Dior配色", "新色发布", "春季新款", "限定色"]
+      },
+      "timestamp": "2026-03-25T08:03:30Z"
+    },
+    {
+      "trend_id": "t28",
+      "label": "Woven Leather and Bottega Effect",
+      "category": "leather goods",
+      "summary": "Woven leather handbags and small goods inspired by Bottega Veneta's intrecciato technique. Some Dior adjacent content but mostly about Bottega Veneta directly. Interest from luxury connoisseur audience.",
+      "ai_reasoning": "Woven leather content is primarily Bottega Veneta-centric, not Dior. While the audience profile is relevant, the brand attribution makes this a competitor trend rather than a Dior clienteling opportunity.",
+      "confidence": "medium",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p089", "p090", "p091"],
+        "snippets": [
+          "编织皮革包的工艺之美，Bottega Veneta的intrecciato无人能及",
+          "编织皮具的温润感和高级感，今年手袋市场的新宠",
+          "编织皮革让包包有了雕塑感，BV的工艺真的令人叹服"
+        ],
+        "posts": [
+          {
+            "post_id": "p089",
+            "title": "编织皮革包的工艺美学",
+            "date": "2026-03-13",
+            "brand": "Bottega Veneta",
+            "likes": 16200,
+            "comments": 960,
+            "saves": 4900,
+            "creator": "craft_luxe_bj"
+          },
+          {
+            "post_id": "p090",
+            "title": "BV编织皮革——手袋中的艺术品",
+            "date": "2026-03-18",
+            "brand": "Bottega Veneta",
+            "likes": 14600,
+            "comments": 840,
+            "saves": 4300,
+            "creator": "couture_observer_cn"
+          },
+          {
+            "post_id": "p091",
+            "title": "编织皮具的时代美学",
+            "date": "2026-03-21",
+            "brand": "Bottega Veneta",
+            "likes": 13400,
+            "comments": 760,
+            "saves": 3900,
+            "creator": "luxury_wardrobe_bj"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 8,
+        "total_engagement": 74000,
+        "avg_engagement": 9250,
+        "total_likes": 58000,
+        "total_comments": 4400,
+        "total_saves": 11600,
+        "top_keywords": ["编织皮革", "intrecciato", "Bottega Veneta", "工艺包", "BV"]
+      },
+      "timestamp": "2026-03-25T08:04:00Z"
+    },
+    {
+      "trend_id": "t29",
+      "label": "Straw and Raffia Summer Bags",
+      "category": "leather goods",
+      "summary": "Natural material bags — straw, raffia, and wicker — positioned as luxury summer accessories. Content volume is low and trend feels premature for spring. Only 4 posts from early March.",
+      "ai_reasoning": "While natural material bags are a real summer luxury trend, the signal is too early and too thin for March briefing. Only 4 posts with borderline engagement. Category timing does not align with current retail context.",
+      "confidence": "low",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p092", "p093"],
+        "snippets": [
+          "草编包是今年夏天的必备，自然材质的奢华感别有风情",
+          "拉菲草包的度假感无可替代，夏日出行必备"
+        ],
+        "posts": [
+          {
+            "post_id": "p092",
+            "title": "草编包的夏日美学",
+            "date": "2026-03-08",
+            "brand": "Jacquemus",
+            "likes": 8400,
+            "comments": 480,
+            "saves": 2100,
+            "creator": "resort_fashion_sh"
+          },
+          {
+            "post_id": "p093",
+            "title": "拉菲包的度假穿搭",
+            "date": "2026-03-12",
+            "brand": "Jacquemus",
+            "likes": 7200,
+            "comments": 400,
+            "saves": 1800,
+            "creator": "summer_luxe_bj"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 4,
+        "total_engagement": 2640,
+        "avg_engagement": 660,
+        "total_likes": 2100,
+        "total_comments": 168,
+        "total_saves": 372,
+        "top_keywords": ["草编包", "拉菲草", "夏日包款", "自然材质"]
+      },
+      "timestamp": "2026-03-25T08:04:30Z"
+    },
+    {
+      "trend_id": "t30",
+      "label": "Dior Saddle Bag Mini Variations",
+      "category": "leather goods",
+      "summary": "Mini and micro variations of the Dior Saddle Bag gaining traction — seen primarily as evening accessories and statement pieces. Content overlaps substantially with t16 Saddle Bag Styling Revival — both track Saddle Bag content with significant post overlap.",
+      "ai_reasoning": "This cluster tracks the same Saddle Bag revival as t16 but focuses on size variations. Multiple posts appear in both t16 and t30 clusters. These represent the same signal with cosmetic segmentation differences.",
+      "confidence": "medium",
+      "labeling_source": "heuristic",
+      "evidence": {
+        "post_ids": ["p094", "p095", "p096"],
+        "snippets": [
+          "迷你马鞍包作为晚宴包太完美了，小巧精致又有Dior的DNA",
+          "马鞍包Mini版的百变穿搭，日间或晚间都能完美驾驭",
+          "Dior Mini马鞍包——细节与正常尺寸一模一样，工艺同样出色"
+        ],
+        "posts": [
+          {
+            "post_id": "p094",
+            "title": "Dior迷你马鞍包晚宴穿搭",
+            "date": "2026-03-15",
+            "brand": "Dior",
+            "likes": 14800,
+            "comments": 860,
+            "saves": 4600,
+            "creator": "dior_bag_collector"
+          },
+          {
+            "post_id": "p095",
+            "title": "Mini马鞍包的日夜穿搭指南",
+            "date": "2026-03-19",
+            "brand": "Dior",
+            "likes": 13200,
+            "comments": 760,
+            "saves": 4100,
+            "creator": "couture_observer_cn"
+          },
+          {
+            "post_id": "p096",
+            "title": "Dior马鞍包尺码比较与选择",
+            "date": "2026-03-22",
+            "brand": "Dior",
+            "likes": 12400,
+            "comments": 700,
+            "saves": 3800,
+            "creator": "fashion_kol_beijing"
+          }
+        ]
+      },
+      "metrics": {
+        "post_count": 9,
+        "total_engagement": 94000,
+        "avg_engagement": 10444,
+        "total_likes": 74000,
+        "total_comments": 4600,
+        "total_saves": 15400,
+        "top_keywords": ["迷你马鞍包", "Mini Saddle", "晚宴包", "马鞍包尺寸"]
+      },
+      "timestamp": "2026-03-25T08:05:00Z"
+    }
+  ]
+}
