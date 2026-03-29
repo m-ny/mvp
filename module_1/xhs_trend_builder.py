@@ -335,7 +335,7 @@ def build_clusters(posts: List[Post], token_map: Dict[str, List[str]]) -> List[L
                 other_tokens = token_map[other.post_id]
                 score = jaccard(current_tokens, other_tokens)
                 overlap = len(set(current_tokens) & set(other_tokens))
-                if score >= 0.16 or overlap >= 2:
+                if score >= 0.35 and overlap >= 4:
                     visited.add(other.post_id)
                     queue.append(other)
 
@@ -511,16 +511,22 @@ def maybe_label_with_llm(
             llm_errors.append(f"openai import failed: {e}")
         return fallback_label, fallback_summary, fallback_confidence, "heuristic", fallback_reasoning
 
-    titles = [p.title for p in posts[:8]]
+    titles = [p.title for p in posts[:12]]
     prompt = (
-        "You are a trend-object decision engine.\n\n"
+        "You are an XHS (Xiaohongshu) trend analyst.\n\n"
         "PRIMARY ASSIGNMENT PROMPT (must follow):\n"
         f"{base_prompt}\n\n"
         "CLUSTER LABELING TASK:\n"
-        "Given these XHS post titles from one cluster, return strict JSON with keys: "
-        "label, summary, confidence, ai_reasoning.\n"
-        "Rules: label short/distinct; summary one sentence; confidence one of low/medium/high; "
-        "do not invent evidence beyond these titles; ai_reasoning should explain why these posts belong together.\n\n"
+        "Given these XHS post titles from one cluster, identify the XHS CONTENT TREND — "
+        "what are users creating content about? What discourse pattern is this?\n\n"
+        "Return strict JSON with keys: label, summary, confidence, ai_reasoning.\n"
+        "Rules:\n"
+        "- Label must describe the XHS USER CONTENT PATTERN (e.g. 'Old Celine vs New Celine Nostalgia Debate', "
+        "'Box Bag Still Worth It Discourse', 'Celebrity Outfit Analysis Content', "
+        "'Cross-Border Luxury Deal Sharing', 'Soft 16 Daily Commute Reviews').\n"
+        "- Do NOT use generic labels like 'Brand Loyalty', 'Fashion Highlights', 'Handbag Collection'.\n"
+        "- Summary: what are XHS users posting/discussing/debating in this cluster?\n"
+        "- Confidence: low/medium/high.\n\n"
         f"Titles:\n{json.dumps(titles, ensure_ascii=False, indent=2)}"
     )
     try:
@@ -583,24 +589,33 @@ def to_trend_object(
         token_counter.update(token_map[p.post_id])
     top_tokens = [t for t, _ in token_counter.most_common(8)]
 
-    heuristic_label = label_from_tokens(top_tokens)
-    heuristic_confidence = confidence_for_cluster(posts, token_map)
-    heuristic_summary = summarize_cluster(heuristic_label, posts)
-    heuristic_reasoning = (
-        f"Grouped because posts share recurring keywords/themes {top_tokens[:5]} and show consistent "
-        f"engagement patterns in the same category."
-    )
-    label, summary, confidence, labeling_source, ai_reasoning = maybe_label_with_llm(
-        posts=posts,
-        base_prompt=base_prompt,
-        fallback_label=heuristic_label,
-        fallback_summary=heuristic_summary,
-        fallback_confidence=heuristic_confidence,
-        fallback_reasoning=heuristic_reasoning,
-        llm_enabled=llm_enabled,
-        llm_model=llm_model,
-        llm_errors=llm_errors,
-    )
+    # Check if LLM already assigned labels during clustering
+    llm_label = getattr(posts[0], '_llm_trend_label', '') if posts else ''
+    if llm_label:
+        label = llm_label
+        summary = getattr(posts[0], '_llm_trend_summary', '')
+        confidence = getattr(posts[0], '_llm_trend_confidence', 'medium')
+        ai_reasoning = getattr(posts[0], '_llm_trend_reasoning', '')
+        labeling_source = "llm"
+    else:
+        heuristic_label = label_from_tokens(top_tokens)
+        heuristic_confidence = confidence_for_cluster(posts, token_map)
+        heuristic_summary = summarize_cluster(heuristic_label, posts)
+        heuristic_reasoning = (
+            f"Grouped because posts share recurring keywords/themes {top_tokens[:5]} and show consistent "
+            f"engagement patterns in the same category."
+        )
+        label, summary, confidence, labeling_source, ai_reasoning = maybe_label_with_llm(
+            posts=posts,
+            base_prompt=base_prompt,
+            fallback_label=heuristic_label,
+            fallback_summary=heuristic_summary,
+            fallback_confidence=heuristic_confidence,
+            fallback_reasoning=heuristic_reasoning,
+            llm_enabled=llm_enabled,
+            llm_model=llm_model,
+            llm_errors=llm_errors,
+        )
     total_likes = sum(p.likes for p in posts)
     total_comments = sum(p.comments for p in posts)
     total_saves = sum(p.saves for p in posts)
@@ -766,6 +781,71 @@ def run(
 
     def _cluster() -> Tuple[Dict[str, List[str]], List[List[Post]]]:
         token_map_local = {p.post_id: tokenize(p) for p in filtered_posts}
+
+        # Try LLM-first clustering: send all titles to LLM, let it identify trends
+        api_key = (os.getenv("OPENROUTER_API_KEY", "") or os.getenv("OPENAI_API_KEY", "")).strip()
+        llm_model_c = str(config.get("llm", {}).get("model", "gpt-4.1-mini"))
+        llm_enabled_c = config.get("llm", {}).get("enabled", False) and bool(api_key)
+
+        if llm_enabled_c:
+            try:
+                from openai import OpenAI
+                client = OpenAI(api_key=api_key, base_url="https://openrouter.ai/api/v1")
+
+                # Build post index for LLM
+                post_index = []
+                for p in filtered_posts:
+                    post_index.append({"id": p.post_id, "title": p.title, "likes": p.likes})
+
+                base_prompt_c = str(config.get("prompt", "")).strip()
+                llm_cluster_prompt = (
+                    f"{base_prompt_c}\n\n"
+                    "TASK: Read ALL the XHS post titles below and identify 5-8 distinct XHS CONTENT TRENDS.\n"
+                    "For each trend, list which post IDs belong to it.\n\n"
+                    "Return ONLY valid JSON array, no markdown:\n"
+                    "[{\"trend_label\": \"...\", \"summary\": \"what XHS users are posting/discussing\", "
+                    "\"post_ids\": [\"live_0001\", ...], \"confidence\": \"high/medium/low\", "
+                    "\"ai_reasoning\": \"why these posts form a trend\"}]\n\n"
+                    f"Posts ({len(post_index)} total):\n"
+                    f"{json.dumps(post_index, ensure_ascii=False)}"
+                )
+
+                response = client.responses.create(model=llm_model_c, input=llm_cluster_prompt)
+                output_text = getattr(response, "output_text", "") or ""
+
+                # Parse JSON array from response
+                cleaned = output_text.strip()
+                if cleaned.startswith("```"):
+                    lines = cleaned.split("\n")
+                    lines = [l for l in lines if not l.strip().startswith("```")]
+                    cleaned = "\n".join(lines).strip()
+
+                parsed_trends = json.loads(cleaned)
+                if isinstance(parsed_trends, list) and len(parsed_trends) >= 1:
+                    # Build clusters from LLM output
+                    post_map = {p.post_id: p for p in filtered_posts}
+                    llm_clusters = []
+                    for trend_info in parsed_trends:
+                        cluster_posts = []
+                        for pid in trend_info.get("post_ids", []):
+                            if pid in post_map:
+                                cluster_posts.append(post_map[pid])
+                        if len(cluster_posts) >= 2:
+                            # Store LLM label/summary on the first post as metadata
+                            cluster_posts[0]._llm_trend_label = trend_info.get("trend_label", "")
+                            cluster_posts[0]._llm_trend_summary = trend_info.get("summary", "")
+                            cluster_posts[0]._llm_trend_confidence = trend_info.get("confidence", "medium")
+                            cluster_posts[0]._llm_trend_reasoning = trend_info.get("ai_reasoning", "")
+                            llm_clusters.append(cluster_posts)
+
+                    if llm_clusters:
+                        cli.ok("Decide", f"LLM identified {len(llm_clusters)} XHS content trends")
+                        return token_map_local, llm_clusters
+
+            except Exception as e:
+                cli.warn("Decide", f"LLM clustering failed ({e.__class__.__name__}), falling back to heuristic")
+
+        # Fallback: heuristic clustering
         clusters_local = build_clusters(filtered_posts, token_map_local)
         return token_map_local, clusters_local
 

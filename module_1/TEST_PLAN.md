@@ -51,31 +51,36 @@ likes: 18765 | comments: 1023 | saves: 5432
 hashtags: #静奢风, #QuietLuxury, #Celine, #低调奢华, #老钱风
 ```
 
-Tell the reviewer: "This is one of ~50 posts the system ingested. The module clusters posts like this into named trend objects."
+Tell the reviewer: "This is one of 197 posts the system ingested. The module clusters posts like this into named trend objects."
 
 ### Step 2 -- Run the module (30-60 seconds)
 
 Run `xhs_trend_builder.py` on the full batch in front of the reviewer (or show a pre-recorded terminal run if live execution is impractical):
 
 ```bash
-.venv/bin/python3 xhs_trend_builder.py --live
+.venv/bin/python3 xhs_trend_builder.py && .venv/bin/python3 eval_harness.py
 ```
 
-The `--live` flag keeps spinner stages visible briefly so the reviewer can follow each pipeline step: load, retrieve, cluster, label, write.
+The terminal shows each pipeline step: load 197 posts, cluster via LLM-first logic, label, write 8 trend objects to outputs/runs/, then run the eval harness.
 
 Point out the terminal summary lines that print each trend:
 
 ```
-- t01 | Celine's Quiet Luxury Trend | conf=high | source=llm | posts=5 | eng=73,459
-- t02 | ...                          | conf=high | source=llm | posts=3 | eng=...
-- t03 | ...                          | conf=high | source=llm | posts=2 | eng=...
+- t01 | Old Celine vs New Celine Nostalgia Debate            | conf=high | source=llm
+- t02 | Celine Box Bag Relevance and Popularity Debate        | conf=high | source=llm
+- t03 | Soft 16 Bag Functional Reviews and Styling            | conf=high | source=llm
+- t04 | Celine 26 Spring/Summer Fashion Show Content          | conf=high | source=llm
+- t05 | Celebrity Outfit Decoding and Influence               | conf=high | source=llm
+- t06 | Celine Bag Unboxing and Purchase Experience           | conf=high | source=llm
+- t07 | Celine Men's Fashion and Male Accessory Focus         | conf=high | source=llm
+- t08 | French Old Money and Elegant Aesthetic Styling        | conf=high | source=llm
 ```
 
 ### Step 3 -- Show output and evidence (2 minutes)
 
-Open the generated file `outputs/runs/run_XXXX_trend_objects.json`. For each trend object, walk the reviewer through:
+Open the generated file `outputs/runs/run_0022_trend_objects.json`. For each trend object, walk the reviewer through:
 
-1. **Label** -- the short name the system assigned (e.g., "Celine's Quiet Luxury Trend").
+1. **Label** -- the short name the system assigned (e.g., "Old Celine vs New Celine Nostalgia Debate").
 2. **Summary** -- one-sentence description of what the trend represents.
 3. **Evidence block**:
    - `post_ids` -- which specific posts support this trend.
@@ -115,12 +120,12 @@ Hand the reviewer the rating form (paper or digital). Collect:
 | **Trust** | 1-5 scale (1 = would not act on this, 5 = would brief a client based on this) |
 | **What is missing, wrong, or risky?** | Free text -- anything the reviewer noticed that was absent, incorrect, duplicated, or could cause a bad decision |
 
-Record responses in `outputs/runs/run_XXXX_feedback.json` using the existing schema:
+Record responses in `outputs/runs/run_0022_feedback.json` using the existing schema:
 
 ```json
 {
   "reviewer": "Name / Role",
-  "run_id": "run_XXXX",
+  "run_id": "run_0022",
   "usefulness_quality": 4,
   "trust": 3,
   "missing_wrong_risky": "Trend t01 and t03 feel overlapping. Would like to see date range per trend."
@@ -133,13 +138,13 @@ Record responses in `outputs/runs/run_XXXX_feedback.json` using the existing sch
 
 Use the table below to track booked review sessions. Fill in as sessions are confirmed.
 
-| # | Name / Role | Date / Time | Format |
-|---|-------------|-------------|--------|
-| 1 | TBD / CA | Week 11 -- TBD | In-person / Video |
-| 2 | TBD / CA Manager | Week 11 -- TBD | In-person / Video |
-| 3 | TBD / Trend Analyst | Week 12 -- TBD | Video |
-| 4 | TBD / Proxy (fashion marketing student) | Week 12 -- TBD | Video |
-| 5 | TBD / Proxy (XHS power user) | Week 12 -- TBD | Video |
+| # | Name / Role | Location | Date / Time | Format |
+|---|-------------|----------|-------------|--------|
+| 1 | CA / Valentino | Qiantan Taikoo Li, Shanghai | Week 10 (this week) | In-person |
+| 2 | CA / Armani | Xujiahui Grand Gateway, Shanghai | Week 11 | In-person |
+| 3 | CA / Stuart Weitzman | Xujiahui Grand Gateway, Shanghai | Week 11 | In-person |
+| 4 | TBD / Proxy (fashion marketing student) | -- | Week 12 -- TBD | Video |
+| 5 | TBD / Proxy (XHS power user) | -- | Week 12 -- TBD | Video |
 
 **Booking checklist:**
 
@@ -152,23 +157,34 @@ Use the table below to track booked review sessions. Fill in as sessions are con
 
 ## E -- 7-Line Demo Script
 
-Below is a 7-line narrated demo script. Each line is one action or statement the presenter delivers. The script covers a batch run, Supabase read/write, the evaluation report, and one failure case with a planned fix.
+Below is a 7-line narrated demo script. Each line is one action or statement the presenter delivers. The script covers a batch run of real XHS posts, LLM-first clustering, Supabase sync, the eval harness results, and one failure case with a planned fix.
+
+Real trend labels from run_0022:
+
+1. Old Celine vs New Celine Nostalgia Debate
+2. Celine Box Bag Relevance and Popularity Debate
+3. Soft 16 Bag Functional Reviews and Styling
+4. Celine 26 Spring/Summer Fashion Show Content
+5. Celebrity Outfit Decoding and Influence
+6. Celine Bag Unboxing and Purchase Experience
+7. Celine Men's Fashion and Male Accessory Focus
+8. French Old Money and Elegant Aesthetic Styling
 
 ```
-LINE 1:  "Module 1 takes 50 raw Xiaohongshu posts for Celine -- scraped live from XHS -- and clusters them into evidence-backed trend objects in a single batch run."
+LINE 1:  "Module 1 takes 197 raw Xiaohongshu posts -- scraped live from XHS -- and clusters them into evidence-backed trend objects using LLM-first clustering in a single batch run."
 
-LINE 2:  [Run the command]  .venv/bin/python3 xhs_trend_builder.py --live
-         Show the terminal as it loads 50 posts, retrieves 38 in the time window, clusters them, calls the LLM for labels, and writes 3 trend objects to outputs/runs/.
+LINE 2:  [Run the command]  .venv/bin/python3 xhs_trend_builder.py && .venv/bin/python3 eval_harness.py
+         Show the terminal as it loads 197 posts, clusters them via LLM-first logic, and writes 8 XHS content trends to outputs/runs/. Then the eval harness runs automatically and prints its report.
 
-LINE 3:  "Every run automatically syncs to Supabase: posts go to module1_xhs_posts, trend objects go to module1_trend_objects, and the run log goes to module1_run_logs -- so downstream modules can read trends directly from the database without touching local files."
+LINE 3:  "Every run automatically syncs to Supabase: 60 posts go to module1_xhs_posts, 8 trend objects go to module1_trend_objects, and the run log goes to module1_run_logs -- so downstream modules can read trends directly from the database without touching local files."
 
-LINE 4:  [Open outputs/runs/run_XXXX_trend_objects.json]
-         Walk through one trend object: show the label, the 5 supporting post_ids, the title snippets, total_engagement of 73,459, confidence=high, and the ai_reasoning paragraph that explains why these posts belong together.
+LINE 4:  [Open outputs/runs/run_0022_trend_objects.json]
+         Walk through the 8 trend labels produced by LLM-first clustering. Show one trend object in detail: the label, the supporting post_ids, the title snippets, engagement metrics, confidence, and the ai_reasoning paragraph that explains why these posts belong together.
 
-LINE 5:  [Open outputs/runs/run_XXXX_feedback.json]
-         "Three reviewers scored this run. Average usefulness was 4.3 out of 5. One reviewer flagged that trend t01 and t03 may overlap -- that is the kind of signal we use to improve the clustering prompt."
+LINE 5:  [Show eval harness output]
+         "The eval harness checks three things automatically. Evidence sufficiency: passed -- every trend has enough supporting posts. Duplication rate: the harness found 5 shared post_ids across clusters, meaning some posts appear in more than one trend. Label clarity: 1 label exceeded 8 words, which flags it for possible shortening."
 
-LINE 6:  "One known failure: when post volume is low -- fewer than 10 posts in the time window -- the system still forces clusters and produces trends with only 2 posts each, which reviewers rated as low-trust. The planned fix is a minimum-evidence gate: if a cluster has fewer than 3 posts or total engagement below 5,000, the system will flag it as 'weak signal' rather than presenting it as a confirmed trend."
+LINE 6:  "One known failure from eval: 5 post_ids are shared across clusters, which means some evidence overlaps between trends. The planned fix is to add a deduplication pass that removes shared post_ids before writing trend objects, so each post supports exactly one trend."
 
 LINE 7:  "Next step: approved trend objects feed into Module 2 for materiality ranking, where they get scored against the brand profile and prioritized for the client brief."
 ```

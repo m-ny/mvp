@@ -1,5 +1,5 @@
 {
-  "run_id": "run_0023",
+  "run_id": "run_0020",
   "retrieved_sources": [
     "data/xhs_posts.json",
     "data/run_config.json"
@@ -203,69 +203,40 @@
     "live_0163",
     "live_0168"
   ],
-  "decision_output_file": "outputs/runs/run_0023_trend_objects.json",
+  "decision_output_file": "outputs/runs/run_0020_trend_objects.json",
   "decision_mode": "rules-first with optional LLM",
   "prompt_in_use_for_decision": true,
   "llm_enabled": true,
-  "llm_model": "openai/gpt-4o-mini",
-  "llm_label_calls_succeeded": 8,
-  "llm_label_calls_total": 8,
+  "llm_model": "gpt-4.1-mini",
+  "llm_label_calls_succeeded": 5,
+  "llm_label_calls_total": 5,
   "llm_errors": [],
   "evidence_used": {
     "t01": [
-      "live_0033",
-      "live_0159",
-      "live_0090",
-      "live_0120",
-      "live_0091"
+      "live_0002",
+      "live_0028",
+      "live_0185"
     ],
     "t02": [
-      "live_0010",
-      "live_0041",
-      "live_0183",
-      "live_0111",
-      "live_0150"
-    ],
-    "t03": [
       "live_0001",
       "live_0048",
-      "live_0109",
-      "live_0122",
-      "live_0125"
+      "live_0061"
+    ],
+    "t03": [
+      "live_0047",
+      "live_0069",
+      "live_0128"
     ],
     "t04": [
-      "live_0090",
-      "live_0069",
-      "live_0052",
-      "live_0059",
-      "live_0057"
+      "live_0018",
+      "live_0023",
+      "live_0179"
     ],
     "t05": [
-      "live_0169",
-      "live_0020",
-      "live_0196",
-      "live_0019",
-      "live_0057"
-    ],
-    "t06": [
-      "live_0024",
-      "live_0158",
-      "live_0011",
-      "live_0147",
-      "live_0146"
-    ],
-    "t07": [
-      "live_0008",
-      "live_0070",
-      "live_0180",
-      "live_0060"
-    ],
-    "t08": [
-      "live_0057",
-      "live_0130",
-      "live_0053",
-      "live_0157",
-      "live_0174"
+      "live_0148",
+      "live_0154",
+      "live_0012",
+      "live_0160"
     ]
   },
   "labeling_sources": {
@@ -273,21 +244,15 @@
     "t02": "llm",
     "t03": "llm",
     "t04": "llm",
-    "t05": "llm",
-    "t06": "llm",
-    "t07": "llm",
-    "t08": "llm"
+    "t05": "llm"
   },
   "confidence": {
     "t01": "high",
     "t02": "high",
-    "t03": "high",
+    "t03": "medium",
     "t04": "high",
-    "t05": "medium",
-    "t06": "medium",
-    "t07": "low",
-    "t08": "medium"
+    "t05": "high"
   },
   "next_step_suggestion": "Send approved trend objects into Module 2 for materiality ranking.",
-  "timestamp_utc": "2026-03-29T17:05:57.784243+00:00"
+  "timestamp_utc": "2026-03-29T16:52:08.660513+00:00"
 }
