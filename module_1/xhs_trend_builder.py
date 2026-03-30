@@ -20,7 +20,7 @@ import threading
 import time
 from collections import Counter
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
@@ -197,6 +197,11 @@ class Post:
         return self.likes + self.comments + self.saves
 
     @property
+    def weighted_engagement(self) -> float:
+        """Weighted engagement: likes*1.5 + comments*3 + saves*1."""
+        return (self.likes * 1.5) + (self.comments * 3) + (self.saves * 1)
+
+    @property
     def first_image_url(self) -> str:
         """Return the best available image URL for this post."""
         if self.all_image_urls:
@@ -269,6 +274,54 @@ def parse_iso_date(date_text: str) -> Optional[datetime]:
         return datetime.strptime(date_text, "%Y-%m-%d")
     except ValueError:
         return None
+
+
+# Reference date for recency calculations (2026-03-30 as specified)
+REFERENCE_DATE = datetime(2026, 3, 30)
+
+
+def normalize_xhs_date(date_text: str, reference_date: Optional[datetime] = None) -> Optional[datetime]:
+    """Normalize various XHS date formats to a datetime object.
+
+    Handles:
+      - "03-21" or "03-21 陕西"  -> assume current year from reference_date
+      - "2025-10-05"             -> parse as ISO
+      - "昨天" / "昨天 12:30"   -> reference_date - 1 day
+      - "3天前"                  -> reference_date - 3 days
+      - Empty or unparseable     -> None
+    """
+    if reference_date is None:
+        reference_date = REFERENCE_DATE
+    if not date_text or not date_text.strip():
+        return None
+    text = date_text.strip()
+
+    # Full ISO date: "2025-10-05"
+    iso_match = re.match(r"^(\d{4})-(\d{1,2})-(\d{1,2})", text)
+    if iso_match:
+        try:
+            return datetime(int(iso_match.group(1)), int(iso_match.group(2)), int(iso_match.group(3)))
+        except ValueError:
+            return None
+
+    # Short date: "03-21" or "03-21 陕西" (no year -- assume reference year)
+    short_match = re.match(r"^(\d{1,2})-(\d{1,2})", text)
+    if short_match:
+        try:
+            return datetime(reference_date.year, int(short_match.group(1)), int(short_match.group(2)))
+        except ValueError:
+            return None
+
+    # Relative: "昨天" (yesterday), possibly followed by time
+    if "昨天" in text:
+        return reference_date - timedelta(days=1)
+
+    # Relative: "N天前" (N days ago)
+    days_ago_match = re.search(r"(\d+)\s*天前", text)
+    if days_ago_match:
+        return reference_date - timedelta(days=int(days_ago_match.group(1)))
+
+    return None
 
 
 def post_matches_filters(post: Post, config: Dict[str, Any]) -> bool:
@@ -441,6 +494,8 @@ def trend_output_schema() -> Dict[str, Any]:
             "ai_reasoning",
             "confidence",
             "labeling_source",
+            "trend_classification",
+            "velocity",
             "evidence",
             "metrics",
             "visual_assets",
@@ -457,6 +512,7 @@ def trend_output_schema() -> Dict[str, Any]:
         "metrics_fields": [
             "post_count",
             "total_engagement",
+            "weighted_engagement",
             "avg_engagement",
             "total_likes",
             "total_comments",
@@ -464,6 +520,22 @@ def trend_output_schema() -> Dict[str, Any]:
             "top_keywords",
             "video_post_count",
             "image_count",
+            "post_frequency_per_week",
+            "avg_days_between_posts",
+            "recency_score",
+            "frequency_acceleration",
+            "engagement_recency",
+            "avg_comments_per_post",
+            "avg_likes_per_post",
+            "comment_density",
+            "engagement_per_day",
+            "high_comment_post_ratio",
+        ],
+        "velocity_fields": [
+            "posts_last_7d",
+            "posts_8_to_14d",
+            "posts_15_to_30d",
+            "acceleration",
         ],
         "visual_assets_fields": [
             "all_image_urls",     # all image URLs across every post in the trend
@@ -493,23 +565,24 @@ def maybe_label_with_llm(
     llm_enabled: bool,
     llm_model: str,
     llm_errors: Optional[List[str]] = None,
-) -> Tuple[str, str, str, str, str]:
+) -> Tuple[str, str, str, str, str, List[str], str]:
+    """Returns (label, summary, confidence, labeling_source, ai_reasoning, brands_mentioned, primary_brand)."""
     if not llm_enabled:
-        return fallback_label, fallback_summary, fallback_confidence, "heuristic", fallback_reasoning
+        return fallback_label, fallback_summary, fallback_confidence, "heuristic", fallback_reasoning, [], ""
 
     api_key = os.getenv("OPENROUTER_API_KEY", "") or os.getenv("OPENAI_API_KEY", "")
     api_key = api_key.strip()
     if not api_key:
         if llm_errors is not None:
             llm_errors.append("OPENROUTER_API_KEY missing")
-        return fallback_label, fallback_summary, fallback_confidence, "heuristic", fallback_reasoning
+        return fallback_label, fallback_summary, fallback_confidence, "heuristic", fallback_reasoning, [], ""
 
     try:
         from openai import OpenAI  # imported lazily to keep base path simple
     except Exception as e:
         if llm_errors is not None:
             llm_errors.append(f"openai import failed: {e}")
-        return fallback_label, fallback_summary, fallback_confidence, "heuristic", fallback_reasoning
+        return fallback_label, fallback_summary, fallback_confidence, "heuristic", fallback_reasoning, [], ""
 
     titles = [p.title for p in posts[:12]]
     prompt = (
@@ -519,12 +592,18 @@ def maybe_label_with_llm(
         "CLUSTER LABELING TASK:\n"
         "Given these XHS post titles from one cluster, identify the XHS CONTENT TREND — "
         "what are users creating content about? What discourse pattern is this?\n\n"
-        "Return strict JSON with keys: label, summary, confidence, ai_reasoning.\n"
+        "CRITICAL: Trend labels must NOT contain brand names (no 'Celine', 'Dior', 'LV', etc.). "
+        "Describe the trend behavior or aesthetic. Example: use 'Heritage vs Modern Creative Director Debate' "
+        "not 'Old Celine vs New Celine Debate'. Store brand names in the brands_mentioned array.\n\n"
+        "Return strict JSON with keys: label, summary, confidence, ai_reasoning, brands_mentioned, primary_brand.\n"
         "Rules:\n"
-        "- Label must describe the XHS USER CONTENT PATTERN (e.g. 'Old Celine vs New Celine Nostalgia Debate', "
-        "'Box Bag Still Worth It Discourse', 'Celebrity Outfit Analysis Content', "
-        "'Cross-Border Luxury Deal Sharing', 'Soft 16 Daily Commute Reviews').\n"
+        "- Label must describe the XHS USER CONTENT PATTERN without any brand names "
+        "(e.g. 'Heritage vs Modern Creative Director Debate', "
+        "'Iconic Box Bag Still Worth It Discourse', 'Celebrity Outfit Analysis Content', "
+        "'Cross-Border Luxury Deal Sharing', 'Daily Commute Bag Reviews').\n"
         "- Do NOT use generic labels like 'Brand Loyalty', 'Fashion Highlights', 'Handbag Collection'.\n"
+        "- brands_mentioned: array of brand names found in the post titles for this cluster.\n"
+        "- primary_brand: the most frequently mentioned brand in this cluster.\n"
         "- Summary: what are XHS users posting/discussing/debating in this cluster?\n"
         "- Confidence: low/medium/high.\n\n"
         f"Titles:\n{json.dumps(titles, ensure_ascii=False, indent=2)}"
@@ -537,18 +616,20 @@ def maybe_label_with_llm(
         if not parsed:
             if llm_errors is not None:
                 llm_errors.append("LLM response JSON parse failed")
-            return fallback_label, fallback_summary, fallback_confidence, "heuristic", fallback_reasoning
+            return fallback_label, fallback_summary, fallback_confidence, "heuristic", fallback_reasoning, [], ""
         label = str(parsed.get("label") or fallback_label).strip()
         summary = str(parsed.get("summary") or fallback_summary).strip()
         ai_reasoning = str(parsed.get("ai_reasoning") or fallback_reasoning).strip()
         confidence = str(parsed.get("confidence") or fallback_confidence).strip().lower()
+        brands_mentioned = list(parsed.get("brands_mentioned", []) or [])
+        primary_brand = str(parsed.get("primary_brand", "") or "").strip()
         if confidence not in {"low", "medium", "high"}:
             confidence = fallback_confidence
-        return label, summary, confidence, "llm", ai_reasoning
+        return label, summary, confidence, "llm", ai_reasoning, brands_mentioned, primary_brand
     except Exception as e:
         if llm_errors is not None:
             llm_errors.append(f"openai call failed: {e}")
-        return fallback_label, fallback_summary, fallback_confidence, "heuristic", fallback_reasoning
+        return fallback_label, fallback_summary, fallback_confidence, "heuristic", fallback_reasoning, [], ""
 
 
 def confidence_for_cluster(posts: List[Post], token_map: Dict[str, List[str]]) -> str:
@@ -596,6 +677,8 @@ def to_trend_object(
         summary = getattr(posts[0], '_llm_trend_summary', '')
         confidence = getattr(posts[0], '_llm_trend_confidence', 'medium')
         ai_reasoning = getattr(posts[0], '_llm_trend_reasoning', '')
+        brands_mentioned = getattr(posts[0], '_llm_brands_mentioned', [])
+        primary_brand = getattr(posts[0], '_llm_primary_brand', '')
         labeling_source = "llm"
     else:
         heuristic_label = label_from_tokens(top_tokens)
@@ -605,7 +688,7 @@ def to_trend_object(
             f"Grouped because posts share recurring keywords/themes {top_tokens[:5]} and show consistent "
             f"engagement patterns in the same category."
         )
-        label, summary, confidence, labeling_source, ai_reasoning = maybe_label_with_llm(
+        label, summary, confidence, labeling_source, ai_reasoning, brands_mentioned, primary_brand = maybe_label_with_llm(
             posts=posts,
             base_prompt=base_prompt,
             fallback_label=heuristic_label,
@@ -620,6 +703,7 @@ def to_trend_object(
     total_comments = sum(p.comments for p in posts)
     total_saves = sum(p.saves for p in posts)
     total_engagement = total_likes + total_comments + total_saves
+    total_weighted_engagement = sum(p.weighted_engagement for p in posts)
     post_count = len(posts)
 
     evidence_posts = sorted(posts, key=lambda p: p.engagement, reverse=True)[:5]
@@ -679,6 +763,7 @@ def to_trend_object(
     metrics = {
         "post_count":       post_count,
         "total_engagement": total_engagement,
+        "weighted_engagement": round(total_weighted_engagement, 2),
         "avg_engagement":   round(total_engagement / post_count, 2) if post_count else 0,
         "total_likes":      total_likes,
         "total_comments":   total_comments,
@@ -688,17 +773,153 @@ def to_trend_object(
         "image_count":      len(all_cluster_images),
     }
 
-    return {
-        "trend_id":        f"t{trend_idx:02d}",
-        "label":           label,
-        "category":        category,
-        "summary":         summary,
-        "ai_reasoning":    ai_reasoning,
-        "confidence":      confidence,
-        "labeling_source": labeling_source,
-        "evidence":        evidence,
-        "metrics":         metrics,
-        "timestamp":       datetime.now(UTC).isoformat(),
+    # ── Date-based metrics (using normalized XHS dates) ───────────────
+    reference_date = REFERENCE_DATE
+    parsed_dates: List[datetime] = []
+    for p in posts:
+        nd = normalize_xhs_date(p.date, reference_date)
+        if nd is not None:
+            parsed_dates.append(nd)
+
+    parsed_dates_sorted = sorted(parsed_dates)
+
+    # Default values for date-based metrics
+    post_frequency_per_week = 0.0
+    avg_days_between_posts = 0.0
+    recency_score = 0.0
+    frequency_acceleration = 1.0
+    engagement_recency = 1.0
+    engagement_per_day = 0.0
+
+    # Velocity buckets
+    posts_last_7d = 0
+    posts_8_to_14d = 0
+    posts_15_to_30d = 0
+
+    if parsed_dates_sorted:
+        min_date = parsed_dates_sorted[0]
+        max_date = parsed_dates_sorted[-1]
+        days_spanned = max((max_date - min_date).days, 1)
+
+        # post_frequency_per_week
+        post_frequency_per_week = round(len(parsed_dates_sorted) / (days_spanned / 7.0), 2)
+
+        # avg_days_between_posts
+        if len(parsed_dates_sorted) >= 2:
+            gaps = [
+                (parsed_dates_sorted[i + 1] - parsed_dates_sorted[i]).days
+                for i in range(len(parsed_dates_sorted) - 1)
+            ]
+            avg_days_between_posts = round(sum(gaps) / len(gaps), 2)
+
+        # recency_score: 1.0 - (days_since_latest_post / 30), clamped [0, 1]
+        days_since_latest = (reference_date - max_date).days
+        recency_score = round(max(0.0, min(1.0, 1.0 - (days_since_latest / 30.0))), 2)
+
+        # Bucket posts by recency for velocity and acceleration
+        for d in parsed_dates_sorted:
+            days_ago = (reference_date - d).days
+            if days_ago <= 7:
+                posts_last_7d += 1
+            elif days_ago <= 14:
+                posts_8_to_14d += 1
+            elif days_ago <= 30:
+                posts_15_to_30d += 1
+
+        # frequency_acceleration: (posts_last_7d / 7) / (posts_8_to_30d / 23)
+        posts_8_to_30d = posts_8_to_14d + posts_15_to_30d
+        if posts_8_to_30d > 0:
+            frequency_acceleration = round((posts_last_7d / 7.0) / (posts_8_to_30d / 23.0), 2)
+        else:
+            frequency_acceleration = 1.0
+
+        # engagement_recency: avg_weighted_engagement_last_7d / avg_weighted_engagement_8_to_30d
+        eng_last_7d: List[float] = []
+        eng_8_to_30d: List[float] = []
+        for p in posts:
+            nd = normalize_xhs_date(p.date, reference_date)
+            if nd is None:
+                continue
+            days_ago = (reference_date - nd).days
+            if days_ago <= 7:
+                eng_last_7d.append(p.weighted_engagement)
+            elif days_ago <= 30:
+                eng_8_to_30d.append(p.weighted_engagement)
+
+        avg_eng_last_7d = sum(eng_last_7d) / len(eng_last_7d) if eng_last_7d else 0.0
+        avg_eng_8_to_30d = sum(eng_8_to_30d) / len(eng_8_to_30d) if eng_8_to_30d else 0.0
+        if avg_eng_8_to_30d > 0:
+            engagement_recency = round(avg_eng_last_7d / avg_eng_8_to_30d, 2)
+        else:
+            engagement_recency = 1.0
+
+        # engagement_per_day
+        engagement_per_day = round(total_weighted_engagement / days_spanned, 2)
+
+    # Comment and like frequency metrics
+    avg_comments_per_post = round(total_comments / post_count, 2) if post_count else 0.0
+    avg_likes_per_post = round(total_likes / post_count, 2) if post_count else 0.0
+    comment_density = round(total_comments / post_count, 2) if post_count else 0.0
+    high_comment_posts = sum(1 for p in posts if p.comments > 50)
+    high_comment_post_ratio = round(high_comment_posts / post_count, 2) if post_count else 0.0
+
+    # Add all new metrics to the metrics dict
+    metrics["post_frequency_per_week"] = post_frequency_per_week
+    metrics["avg_days_between_posts"] = avg_days_between_posts
+    metrics["recency_score"] = recency_score
+    metrics["frequency_acceleration"] = frequency_acceleration
+    metrics["engagement_recency"] = engagement_recency
+    metrics["avg_comments_per_post"] = avg_comments_per_post
+    metrics["avg_likes_per_post"] = avg_likes_per_post
+    metrics["comment_density"] = comment_density
+    metrics["engagement_per_day"] = engagement_per_day
+    metrics["high_comment_post_ratio"] = high_comment_post_ratio
+
+    # ── Trend classification ──────────────────────────────────────────
+    if frequency_acceleration > 1.5 and recency_score > 0.7:
+        trend_classification = "emerging"
+    elif frequency_acceleration < 0.5 or recency_score < 0.3:
+        trend_classification = "fading"
+    else:
+        trend_classification = "established"
+
+    # ── Velocity block ────────────────────────────────────────────────
+    if frequency_acceleration > 1.5:
+        acceleration_label = "increasing"
+    elif frequency_acceleration < 0.5:
+        acceleration_label = "decreasing"
+    else:
+        acceleration_label = "stable"
+
+    velocity = {
+        "posts_last_7d":    posts_last_7d,
+        "posts_8_to_14d":   posts_8_to_14d,
+        "posts_15_to_30d":  posts_15_to_30d,
+        "acceleration":     acceleration_label,
+    }
+
+    # ── keyword_type_breakdown: count posts by keyword_type if available ──
+    keyword_type_breakdown: Dict[str, int] = {}
+    for p in posts:
+        kt = getattr(p, "keyword_type", "")
+        if kt:
+            keyword_type_breakdown[kt] = keyword_type_breakdown.get(kt, 0) + 1
+
+    trend_obj: Dict[str, Any] = {
+        "trend_id":            f"t{trend_idx:02d}",
+        "label":               label,
+        "category":            category,
+        "summary":             summary,
+        "ai_reasoning":        ai_reasoning,
+        "confidence":          confidence,
+        "labeling_source":     labeling_source,
+        "brands_mentioned":    brands_mentioned,
+        "primary_brand":       primary_brand,
+        "trend_classification": trend_classification,
+        "velocity":            velocity,
+        "evidence":            evidence,
+        "metrics":             metrics,
+        "timestamp":           datetime.now(UTC).isoformat(),
         # ── visual assets ──────────────────────────────────────────
         "visual_assets": {
             "all_image_urls":   all_cluster_images[:20],
@@ -707,13 +928,18 @@ def to_trend_object(
         },
         # ── comment signals ────────────────────────────────────────
         # All comment text is raw/unchanged. Commenter names are NEVER stored
-        # — only anonymized SHA-256 IDs. Replies are nested under each comment.
+        # -- only anonymized SHA-256 IDs. Replies are nested under each comment.
         "comment_signals": {
             "total_comments_scraped": total_comments_scraped,
             "total_replies_scraped":  total_replies_scraped,
             "all_comments": all_cluster_comments,   # [{post_id, commenter_id, text, likes, replies:[...]}, ...]
         },
     }
+
+    if keyword_type_breakdown:
+        trend_obj["keyword_type_breakdown"] = keyword_type_breakdown
+
+    return trend_obj
 
 
 def build_feedback_template(run_id: str) -> List[Dict[str, Any]]:
@@ -802,8 +1028,14 @@ def run(
                     f"{base_prompt_c}\n\n"
                     "TASK: Read ALL the XHS post titles below and identify 5-8 distinct XHS CONTENT TRENDS.\n"
                     "For each trend, list which post IDs belong to it.\n\n"
+                    "CRITICAL: Trend labels must NOT contain brand names (no 'Celine', 'Dior', 'LV', etc.). "
+                    "Describe the trend behavior or aesthetic. Example: use 'Heritage vs Modern Creative Director Debate' "
+                    "not 'Old Celine vs New Celine Debate'. Store brand names in the brands_mentioned array.\n\n"
                     "Return ONLY valid JSON array, no markdown:\n"
-                    "[{\"trend_label\": \"...\", \"summary\": \"what XHS users are posting/discussing\", "
+                    "[{\"trend_label\": \"...(must NOT contain any brand name, describe the trend/behavior/aesthetic only)\", "
+                    "\"summary\": \"what XHS users are posting/discussing\", "
+                    "\"brands_mentioned\": [\"Brand1\", \"Brand2\"], "
+                    "\"primary_brand\": \"most frequently mentioned brand\", "
                     "\"post_ids\": [\"live_0001\", ...], \"confidence\": \"high/medium/low\", "
                     "\"ai_reasoning\": \"why these posts form a trend\"}]\n\n"
                     f"Posts ({len(post_index)} total):\n"
@@ -836,6 +1068,8 @@ def run(
                             cluster_posts[0]._llm_trend_summary = trend_info.get("summary", "")
                             cluster_posts[0]._llm_trend_confidence = trend_info.get("confidence", "medium")
                             cluster_posts[0]._llm_trend_reasoning = trend_info.get("ai_reasoning", "")
+                            cluster_posts[0]._llm_brands_mentioned = trend_info.get("brands_mentioned", [])
+                            cluster_posts[0]._llm_primary_brand = trend_info.get("primary_brand", "")
                             llm_clusters.append(cluster_posts)
 
                     if llm_clusters:
