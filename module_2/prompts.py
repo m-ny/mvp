@@ -151,9 +151,10 @@ Does this trend match {brand_name}'s aesthetic DNA? Does it fit the clientele pr
 
 2. CA_CONVERSATIONAL_UTILITY (0–10)
 Can a {brand_name} CA use this trend in a real client conversation within the next 7 days?
-Score 8–10: CA can immediately link this trend to a specific named hero product (e.g. Triomphe canvas shoulder bag, biker jacket, Classique 16 bag). Name the exact product.
-Score 5–7: trend is relevant but requires translation to a specific product.
-Score 1–4: purely abstract, no direct product anchor within current {brand_name} offering.
+Score 8–10: trend directly names or strongly implies a specific {brand_name} hero product (e.g. Triomphe chain bag, Cabas tote, 70s wide-leg trousers, biker jacket). Name the exact product in hero_product_link.
+Score 6–7: trend is clearly and obviously linkable to a {brand_name} product category even without naming a specific piece — e.g. a trend about quiet luxury tailoring maps obviously to ready-to-wear; a trend about investment bag aesthetics maps obviously to leather goods. The CA does not need to stretch to make this connection.
+Score 4–5: trend is brand-relevant and the CA could connect it to a product category with some effort and context-setting — the link is real but not immediate.
+Score 1–3: trend is purely aesthetic or abstract with no plausible product category connection at all — the CA would have to completely reframe the conversation to make it work.
 
 3. LANGUAGE_SPECIFICITY (0–10)
 Are the XHS evidence snippets using specific, vivid, quotable Chinese language a CA could naturally echo to a client?

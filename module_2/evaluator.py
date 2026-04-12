@@ -125,6 +125,33 @@ def _call_llm(
         return None
 
 
+def _extract_partial_json_objects(text: str) -> list:
+    """
+    Given a truncated JSON string (e.g. a cut-off array), extract every complete
+    top-level JSON object {...} that can be parsed independently.
+    Used as fallback when the full response fails to parse.
+    """
+    objects = []
+    depth = 0
+    start = None
+    for i, ch in enumerate(text):
+        if ch == "{":
+            if depth == 0:
+                start = i
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0 and start is not None:
+                candidate = text[start: i + 1]
+                try:
+                    obj = json.loads(candidate)
+                    objects.append(obj)
+                except json.JSONDecodeError:
+                    pass
+                start = None
+    return objects
+
+
 def _parse_llm_response(raw: str, expected_trend_ids: list) -> list:
     """Parse LLM JSON response into list of evaluation dicts."""
     if not raw:
@@ -139,9 +166,14 @@ def _parse_llm_response(raw: str, expected_trend_ids: list) -> list:
     try:
         parsed = json.loads(cleaned)
     except json.JSONDecodeError as e:
-        print(f"  [ERROR] JSON parse failed: {e}")
-        print(f"  [DEBUG] Raw response (first 500 chars): {raw[:500]}")
-        return []
+        print(f"  [WARN] JSON parse failed ({e}) — attempting partial recovery...")
+        parsed = _extract_partial_json_objects(cleaned)
+        if parsed:
+            print(f"  [WARN] Recovered {len(parsed)} complete object(s) from truncated response")
+        else:
+            print(f"  [ERROR] No recoverable objects in response")
+            print(f"  [DEBUG] Raw response (first 500 chars): {raw[:500]}")
+            return []
 
     if isinstance(parsed, dict):
         parsed = [parsed]
@@ -180,11 +212,12 @@ def evaluate_batch(
     model = _get_model()
     system_prompt = build_system_prompt(brand_profile)
 
-    # Build lookup for trend metadata (engagement_recency_pct, run_count)
+    # Build lookup for trend metadata (engagement_recency_pct, run_count, no_date_signal)
     trend_meta = {
         t.get("trend_id"): {
             "engagement_recency_pct": t.get("engagement_recency_pct", 0.0),
             "run_count": t.get("run_count", 1),
+            "no_date_signal": bool(t.get("no_date_signal", False)),
         }
         for t in trends
     }
@@ -226,8 +259,16 @@ def evaluate_batch(
 
                 recency_pct = meta.get("engagement_recency_pct", 0.0)
                 run_count = meta.get("run_count", 1)
+                no_date_signal = meta.get("no_date_signal", False)
 
-                trend_velocity = _compute_trend_velocity(recency_pct)
+                # If no post dates exist, recency_pct is meaningless (defaults to 0).
+                # Use a neutral 5.0 so trend_velocity doesn't disqualify good trends
+                # that simply lacked date metadata. Only compute from real data when
+                # we actually have dates.
+                if no_date_signal:
+                    trend_velocity = 5.0
+                else:
+                    trend_velocity = _compute_trend_velocity(recency_pct)
                 cross_run_persistence = _compute_cross_run_persistence(run_count)
 
                 scores = ev.get("scores", {})
@@ -241,6 +282,7 @@ def evaluate_batch(
                 # Store computed metadata for reporting
                 ev["engagement_recency_pct"] = recency_pct
                 ev["run_count"] = run_count
+                ev["no_date_signal"] = no_date_signal
 
             print(
                 f"  Successfully parsed {len(evaluations)} evaluation(s) from batch {batch_num}"
@@ -281,11 +323,24 @@ def select_shortlist(evaluations: list, max_shortlist: int = 5) -> list:
             continue
 
         scores = ev.get("scores", {})
+        no_date = ev.get("no_date_signal", False)
+
         # cross_run_persistence minimum is 3 (real trends naturally appear in 1 run)
+        # ca_conversational_utility minimum is 4 (category-linkable trends score 6-7; only
+        #   purely abstract trends score 1-3 and should be disqualified)
+        # trend_velocity is skipped when no_date_signal is True — it was set to neutral 5.0
+        #   and using it as a disqualifier would punish trends for missing metadata, not quality
         # all other dimensions minimum is 4
-        DIM_MINIMUMS = {"cross_run_persistence": 3}
+        DIM_MINIMUMS = {
+            "cross_run_persistence": 3,
+            "ca_conversational_utility": 4,
+        }
+        SKIP_DIM_MINIMUMS = {"trend_velocity"} if no_date else set()
+
         failed_dim = None
         for dim, score in scores.items():
+            if dim in SKIP_DIM_MINIMUMS:
+                continue
             if isinstance(score, (int, float)):
                 min_score = DIM_MINIMUMS.get(dim, 4)
                 if score < min_score:
