@@ -307,7 +307,17 @@ def pre_filter(trend: dict, brand_profile: dict) -> "tuple[bool, Optional[str]]"
     if matched_taboo:
         return False, f"Brand taboo keyword '{matched_taboo}' detected in label/summary"
 
-    # Rule 7: Brand signal strength check — real XHS trends only (synthetic pass automatically)
+    # Rule 7: Menswear content — reject if brand does not list menswear as an active category.
+    # Applied before the LLM call since menswear trends score near-zero on client_persona_match
+    # for womenswear-only brand profiles (e.g. all 3 Celine archetypes are female-coded).
+    menswear_active = any("menswear" in c.lower() for c in active_categories)
+    if not menswear_active:
+        combined_lower = combined_text.lower()
+        for kw in ("men's", "menswear", "男装", "男士", "homme"):
+            if kw in combined_lower:
+                return False, "menswear content — not in active categories for this brand"
+
+    # Rule 8: Brand signal strength check — real XHS trends only (synthetic pass automatically)
     # Requires at least MIN_BRAND_SIGNAL_SNIPPETS snippets containing Celine-specific language:
     # brand name, hero product name, or aesthetic pillar keyword.
     if data_type == "real":
@@ -326,7 +336,7 @@ def pre_filter(trend: dict, brand_profile: dict) -> "tuple[bool, Optional[str]]"
         if signal_count < MIN_BRAND_SIGNAL_SNIPPETS:
             return False, (
                 f"Insufficient brand signal in snippets — only {signal_count} of "
-                f"{len(snippets)} snippet(s) mention Celine brand name, "
+                f"{len(snippets)} snippet(s) mention the brand name, "
                 f"a hero product, or an aesthetic pillar keyword "
                 f"(minimum required: {MIN_BRAND_SIGNAL_SNIPPETS})"
             )
@@ -343,7 +353,7 @@ def run_prefilter_batch(trends: list, brand_profile: dict) -> "tuple[list, list]
     Processing order:
       Step A — Cross-run deduplication (batch-level, merges near-duplicates)
       Step B — Engagement recency calculation (per trend, stores engagement_recency_pct)
-      Step C — Per-trend pre-filter rules 1–2, 4–7 (Rule 3 engagement threshold removed)
+      Step C — Per-trend pre-filter rules 1–2, 4–8 (Rule 3 engagement threshold removed)
 
     Returns:
         (passed_trends: list, rejected_log: list)

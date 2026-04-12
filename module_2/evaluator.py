@@ -196,6 +196,46 @@ def _parse_llm_response(raw: str, expected_trend_ids: list) -> list:
     return valid
 
 
+_PROMPT_MAX_SNIPPETS = 3    # max evidence snippets sent to LLM per trend
+_PROMPT_MAX_SNIPPET_CHARS = 200  # max characters per snippet
+
+
+def _slim_for_prompt(trend: dict) -> dict:
+    """
+    Return a lightweight copy of a trend object safe to include in an LLM prompt.
+    Keeps: trend_id, label, category, summary, metrics, extracted_product,
+           engagement_recency_pct, run_count, no_date_signal, low_signal_warning,
+           evidence.snippets (≤3, ≤200 chars each).
+    Drops: evidence.posts[] entirely — post bodies are large and not needed by the LLM;
+           the scorer already digested them into snippets and metrics.
+    """
+    evidence = trend.get("evidence", {})
+    raw_snippets = evidence.get("snippets", [])
+
+    # Truncate snippets: max 3, max 200 chars each
+    trimmed_snippets = [
+        s[:_PROMPT_MAX_SNIPPET_CHARS] if len(s) > _PROMPT_MAX_SNIPPET_CHARS else s
+        for s in raw_snippets[:_PROMPT_MAX_SNIPPETS]
+    ]
+
+    slimmed = {
+        "trend_id": trend.get("trend_id"),
+        "label": trend.get("label"),
+        "category": trend.get("category"),
+        "summary": trend.get("summary"),
+        "metrics": trend.get("metrics"),
+        "evidence": {"snippets": trimmed_snippets},
+        "engagement_recency_pct": trend.get("engagement_recency_pct"),
+        "run_count": trend.get("run_count", 1),
+    }
+    # Include flags and extraction result if present
+    for optional in ("extracted_product", "no_date_signal", "low_signal_warning"):
+        if trend.get(optional):
+            slimmed[optional] = trend[optional]
+
+    return slimmed
+
+
 def evaluate_batch(
     trends: list,
     brand_profile: dict,
@@ -204,6 +244,8 @@ def evaluate_batch(
     """
     Evaluate a list of trend objects using the LLM.
     Processes in batches of BATCH_SIZE.
+    Trend objects are slimmed before prompt construction to avoid 128k token limits —
+    posts[] is dropped entirely; snippets capped at 3 × 200 chars.
     After LLM evaluation, adds algorithmically computed dimensions
     (trend_velocity, cross_run_persistence) and recomputes composite_score.
     """
@@ -235,7 +277,8 @@ def evaluate_batch(
             f"(batch {batch_num}/{len(batches)}) via {model}..."
         )
 
-        prompt = build_batch_evaluation_prompt(brand_profile, batch, today=TODAY)
+        slim_batch = [_slim_for_prompt(t) for t in batch]
+        prompt = build_batch_evaluation_prompt(brand_profile, slim_batch, today=TODAY)
         raw_response = _call_llm(client, model, prompt, system_prompt)
 
         if raw_response is None:
