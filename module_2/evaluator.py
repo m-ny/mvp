@@ -3,6 +3,15 @@ evaluator.py — LLM evaluation engine for Module 2 Trend Relevance & Materialit
 
 Uses OpenRouter (OpenAI-compatible) so it shares the same API key and model config
 as the rest of the pipeline (OPENROUTER_API_KEY / DEFAULT_MODEL from .env).
+
+Composite score formula (Week 11):
+  brand_fit × 0.20 + ca_conversational_utility × 0.20 + trend_velocity × 0.15
+  + language_specificity × 0.15 + client_persona_match × 0.10 + novelty × 0.10
+  + category_fit × 0.05 + cross_run_persistence × 0.05
+
+trend_velocity and cross_run_persistence are computed algorithmically from
+engagement_recency_pct and run_count stored on each trend object by scorer.py.
+All other dimensions are LLM-scored.
 """
 
 import json
@@ -20,6 +29,18 @@ from prompts import build_system_prompt, build_batch_evaluation_prompt
 
 BATCH_SIZE = 5
 TODAY = "2026-03-25"
+
+# New composite score weights (Week 11)
+SCORE_WEIGHTS = {
+    "brand_fit": 0.20,
+    "ca_conversational_utility": 0.20,
+    "trend_velocity": 0.15,
+    "language_specificity": 0.15,
+    "client_persona_match": 0.10,
+    "novelty": 0.10,
+    "category_fit": 0.05,
+    "cross_run_persistence": 0.05,
+}
 
 
 def _get_client():
@@ -45,7 +66,45 @@ def _get_model() -> str:
     return os.environ.get("DEFAULT_MODEL", "anthropic/claude-3-5-sonnet")
 
 
-def _call_llm(client, model: str, prompt: str, system_prompt: str = "", attempt: int = 1) -> Optional[str]:
+def _compute_trend_velocity(engagement_recency_pct: float) -> float:
+    """
+    Convert engagement_recency_pct (% of engagement from last 7 days) to 0-10 score.
+    >70% recent → 8-10 | 40-70% → 5-7 | <40% → 1-4
+    """
+    if engagement_recency_pct >= 70:
+        return round(8.0 + (engagement_recency_pct - 70) / 30 * 2, 1)
+    elif engagement_recency_pct >= 40:
+        return round(5.0 + (engagement_recency_pct - 40) / 30 * 2, 1)
+    else:
+        return round(max(1.0, 1.0 + engagement_recency_pct / 40 * 3), 1)
+
+
+def _compute_cross_run_persistence(run_count: int) -> float:
+    """
+    Convert number of runs a trend appeared in to 0-10 score.
+    Real XHS trends typically appear in 1 run — 1 run scores 5 (not disqualifying).
+    ≥3 runs → 10 | 2 runs → 7 | 1 run → 5
+    """
+    if run_count >= 3:
+        return 10.0
+    return {2: 7.0}.get(run_count, 5.0)
+
+
+def _compute_composite(scores: dict) -> float:
+    """Compute composite score using Week 11 weights."""
+    return round(
+        sum(scores.get(dim, 0) * weight for dim, weight in SCORE_WEIGHTS.items()),
+        2,
+    )
+
+
+def _call_llm(
+    client,
+    model: str,
+    prompt: str,
+    system_prompt: str = "",
+    attempt: int = 1,
+) -> Optional[str]:
     """Call OpenRouter and return raw text. Retries once on failure."""
     try:
         response = client.chat.completions.create(
@@ -66,6 +125,33 @@ def _call_llm(client, model: str, prompt: str, system_prompt: str = "", attempt:
         return None
 
 
+def _extract_partial_json_objects(text: str) -> list:
+    """
+    Given a truncated JSON string (e.g. a cut-off array), extract every complete
+    top-level JSON object {...} that can be parsed independently.
+    Used as fallback when the full response fails to parse.
+    """
+    objects = []
+    depth = 0
+    start = None
+    for i, ch in enumerate(text):
+        if ch == "{":
+            if depth == 0:
+                start = i
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0 and start is not None:
+                candidate = text[start: i + 1]
+                try:
+                    obj = json.loads(candidate)
+                    objects.append(obj)
+                except json.JSONDecodeError:
+                    pass
+                start = None
+    return objects
+
+
 def _parse_llm_response(raw: str, expected_trend_ids: list) -> list:
     """Parse LLM JSON response into list of evaluation dicts."""
     if not raw:
@@ -80,9 +166,14 @@ def _parse_llm_response(raw: str, expected_trend_ids: list) -> list:
     try:
         parsed = json.loads(cleaned)
     except json.JSONDecodeError as e:
-        print(f"  [ERROR] JSON parse failed: {e}")
-        print(f"  [DEBUG] Raw response (first 500 chars): {raw[:500]}")
-        return []
+        print(f"  [WARN] JSON parse failed ({e}) — attempting partial recovery...")
+        parsed = _extract_partial_json_objects(cleaned)
+        if parsed:
+            print(f"  [WARN] Recovered {len(parsed)} complete object(s) from truncated response")
+        else:
+            print(f"  [ERROR] No recoverable objects in response")
+            print(f"  [DEBUG] Raw response (first 500 chars): {raw[:500]}")
+            return []
 
     if isinstance(parsed, dict):
         parsed = [parsed]
@@ -98,20 +189,51 @@ def _parse_llm_response(raw: str, expected_trend_ids: list) -> list:
         if not trend_id:
             print(f"  [WARN] Evaluation missing trend_id, skipping: {str(item)[:200]}")
             continue
-        if "composite_score" not in item:
-            scores = item.get("scores", {})
-            if scores:
-                cs = (
-                    scores.get("freshness", 0) * 0.20
-                    + scores.get("brand_fit", 0) * 0.30
-                    + scores.get("category_fit", 0) * 0.20
-                    + scores.get("materiality", 0) * 0.15
-                    + scores.get("actionability", 0) * 0.15
-                )
-                item["composite_score"] = round(cs, 2)
+        # composite_score will be recomputed after adding algorithmic dimensions
+        # but store LLM-provided one as a reference if present
         valid.append(item)
 
     return valid
+
+
+_PROMPT_MAX_SNIPPETS = 3    # max evidence snippets sent to LLM per trend
+_PROMPT_MAX_SNIPPET_CHARS = 200  # max characters per snippet
+
+
+def _slim_for_prompt(trend: dict) -> dict:
+    """
+    Return a lightweight copy of a trend object safe to include in an LLM prompt.
+    Keeps: trend_id, label, category, summary, metrics, extracted_product,
+           engagement_recency_pct, run_count, no_date_signal, low_signal_warning,
+           evidence.snippets (≤3, ≤200 chars each).
+    Drops: evidence.posts[] entirely — post bodies are large and not needed by the LLM;
+           the scorer already digested them into snippets and metrics.
+    """
+    evidence = trend.get("evidence", {})
+    raw_snippets = evidence.get("snippets", [])
+
+    # Truncate snippets: max 3, max 200 chars each
+    trimmed_snippets = [
+        s[:_PROMPT_MAX_SNIPPET_CHARS] if len(s) > _PROMPT_MAX_SNIPPET_CHARS else s
+        for s in raw_snippets[:_PROMPT_MAX_SNIPPETS]
+    ]
+
+    slimmed = {
+        "trend_id": trend.get("trend_id"),
+        "label": trend.get("label"),
+        "category": trend.get("category"),
+        "summary": trend.get("summary"),
+        "metrics": trend.get("metrics"),
+        "evidence": {"snippets": trimmed_snippets},
+        "engagement_recency_pct": trend.get("engagement_recency_pct"),
+        "run_count": trend.get("run_count", 1),
+    }
+    # Include flags and extraction result if present
+    for optional in ("extracted_product", "no_date_signal", "low_signal_warning"):
+        if trend.get(optional):
+            slimmed[optional] = trend[optional]
+
+    return slimmed
 
 
 def evaluate_batch(
@@ -122,15 +244,29 @@ def evaluate_batch(
     """
     Evaluate a list of trend objects using the LLM.
     Processes in batches of BATCH_SIZE.
+    Trend objects are slimmed before prompt construction to avoid 128k token limits —
+    posts[] is dropped entirely; snippets capped at 3 × 200 chars.
+    After LLM evaluation, adds algorithmically computed dimensions
+    (trend_velocity, cross_run_persistence) and recomputes composite_score.
     """
     if client is None:
         client = _get_client()
     model = _get_model()
     system_prompt = build_system_prompt(brand_profile)
 
+    # Build lookup for trend metadata (engagement_recency_pct, run_count, no_date_signal)
+    trend_meta = {
+        t.get("trend_id"): {
+            "engagement_recency_pct": t.get("engagement_recency_pct", 0.0),
+            "run_count": t.get("run_count", 1),
+            "no_date_signal": bool(t.get("no_date_signal", False)),
+        }
+        for t in trends
+    }
+
     all_evaluations = []
     total = len(trends)
-    batches = [trends[i : i + BATCH_SIZE] for i in range(0, total, BATCH_SIZE)]
+    batches = [trends[i: i + BATCH_SIZE] for i in range(0, total, BATCH_SIZE)]
 
     evaluated_count = 0
     for batch_num, batch in enumerate(batches, start=1):
@@ -141,7 +277,8 @@ def evaluate_batch(
             f"(batch {batch_num}/{len(batches)}) via {model}..."
         )
 
-        prompt = build_batch_evaluation_prompt(brand_profile, batch, today=TODAY)
+        slim_batch = [_slim_for_prompt(t) for t in batch]
+        prompt = build_batch_evaluation_prompt(brand_profile, slim_batch, today=TODAY)
         raw_response = _call_llm(client, model, prompt, system_prompt)
 
         if raw_response is None:
@@ -158,6 +295,38 @@ def evaluate_batch(
         if not evaluations:
             print(f"  [ERROR] Could not parse any evaluations from batch {batch_num}")
         else:
+            # Attach algorithmic dimensions and recompute composite_score
+            for ev in evaluations:
+                tid = ev.get("trend_id")
+                meta = trend_meta.get(tid, {})
+
+                recency_pct = meta.get("engagement_recency_pct", 0.0)
+                run_count = meta.get("run_count", 1)
+                no_date_signal = meta.get("no_date_signal", False)
+
+                # If no post dates exist, recency_pct is meaningless (defaults to 0).
+                # Use a neutral 5.0 so trend_velocity doesn't disqualify good trends
+                # that simply lacked date metadata. Only compute from real data when
+                # we actually have dates.
+                if no_date_signal:
+                    trend_velocity = 5.0
+                else:
+                    trend_velocity = _compute_trend_velocity(recency_pct)
+                cross_run_persistence = _compute_cross_run_persistence(run_count)
+
+                scores = ev.get("scores", {})
+                scores["trend_velocity"] = trend_velocity
+                scores["cross_run_persistence"] = cross_run_persistence
+                ev["scores"] = scores
+
+                # Recompute composite with new formula
+                ev["composite_score"] = _compute_composite(scores)
+
+                # Store computed metadata for reporting
+                ev["engagement_recency_pct"] = recency_pct
+                ev["run_count"] = run_count
+                ev["no_date_signal"] = no_date_signal
+
             print(
                 f"  Successfully parsed {len(evaluations)} evaluation(s) from batch {batch_num}"
             )
@@ -197,11 +366,29 @@ def select_shortlist(evaluations: list, max_shortlist: int = 5) -> list:
             continue
 
         scores = ev.get("scores", {})
+        no_date = ev.get("no_date_signal", False)
+
+        # cross_run_persistence minimum is 3 (real trends naturally appear in 1 run)
+        # ca_conversational_utility minimum is 4 (category-linkable trends score 6-7; only
+        #   purely abstract trends score 1-3 and should be disqualified)
+        # trend_velocity is skipped when no_date_signal is True — it was set to neutral 5.0
+        #   and using it as a disqualifier would punish trends for missing metadata, not quality
+        # all other dimensions minimum is 4
+        DIM_MINIMUMS = {
+            "cross_run_persistence": 3,
+            "ca_conversational_utility": 4,
+        }
+        SKIP_DIM_MINIMUMS = {"trend_velocity"} if no_date else set()
+
         failed_dim = None
         for dim, score in scores.items():
-            if score < 4:
-                failed_dim = dim
-                break
+            if dim in SKIP_DIM_MINIMUMS:
+                continue
+            if isinstance(score, (int, float)):
+                min_score = DIM_MINIMUMS.get(dim, 4)
+                if score < min_score:
+                    failed_dim = dim
+                    break
         if failed_dim:
             ev["shortlist"] = False
             ev["disqualifying_reason"] = (

@@ -1,0 +1,182 @@
+{
+  "generated_at": "2026-04-12T13:13:30.566910+00:00",
+  "brand": "Celine",
+  "aggregate": {
+    "total_run_files_processed": 32,
+    "total_trend_objects_processed": 355,
+    "total_llm_evaluated": 46,
+    "total_shortlisted": 9,
+    "avg_shortlist_rate_pct": 5.5,
+    "avg_noise_reduction_rate_pct": 94.5,
+    "noise_reduction_range_pct": {
+      "min": 80.0,
+      "max": 98.9
+    },
+    "overall_off_brand_rate_pct": 0.6,
+    "pct_shortlisted_with_extracted_product": 11.1,
+    "rejection_reason_breakdown_pct": {
+      "staleness": 90.3,
+      "menswear": 6.8,
+      "low_snippets": 2.9
+    },
+    "rejection_reason_counts": {
+      "staleness": 93,
+      "menswear": 7,
+      "low_snippets": 3
+    },
+    "total_prefilter_rejected": 103,
+    "archetype_distribution_pct": {
+      "智识派 Zhishì Pài": 55.6,
+      "独立新贵 Dúlì Xīnguì": 33.3,
+      "摇滚缪斯 Yáogǔn Miùsī": 11.1
+    },
+    "subcategory_distribution_pct": {
+      "leather_goods": 33.3,
+      "ready_to_wear": 33.3,
+      "general_aesthetic": 22.2,
+      "accessories": 11.1
+    }
+  },
+  "batches": [
+    {
+      "batch_id": 2,
+      "label": "Week A: runs 0009–0013",
+      "run_id": "m2_b02_20260412_131125",
+      "run_range": [
+        9,
+        13
+      ],
+      "run_files": [
+        "run_0009",
+        "run_0010",
+        "run_0011",
+        "run_0012",
+        "run_0013"
+      ],
+      "total_input": 15,
+      "beauty_skipped": 0,
+      "prefilter_rejected": 0,
+      "llm_evaluated": 12,
+      "shortlisted": 3,
+      "noise_reduction_rate": 80.0,
+      "off_brand_rate": 0.0
+    },
+    {
+      "batch_id": 3,
+      "label": "Week B: runs 0014–0018",
+      "run_id": "m2_b03_20260412_131157",
+      "run_range": [
+        14,
+        18
+      ],
+      "run_files": [
+        "run_0014",
+        "run_0015",
+        "run_0016",
+        "run_0017",
+        "run_0018"
+      ],
+      "total_input": 20,
+      "beauty_skipped": 0,
+      "prefilter_rejected": 12,
+      "llm_evaluated": 8,
+      "shortlisted": 1,
+      "noise_reduction_rate": 95.0,
+      "off_brand_rate": 0.0
+    },
+    {
+      "batch_id": 4,
+      "label": "Week C: runs 0019–0023",
+      "run_id": "m2_b04_20260412_131219",
+      "run_range": [
+        19,
+        23
+      ],
+      "run_files": [
+        "run_0019",
+        "run_0020",
+        "run_0021",
+        "run_0022",
+        "run_0023"
+      ],
+      "total_input": 34,
+      "beauty_skipped": 0,
+      "prefilter_rejected": 23,
+      "llm_evaluated": 11,
+      "shortlisted": 1,
+      "noise_reduction_rate": 97.1,
+      "off_brand_rate": 5.9
+    },
+    {
+      "batch_id": 5,
+      "label": "Week D: runs 0024–0028",
+      "run_id": "m2_b05_20260412_131246",
+      "run_range": [
+        24,
+        28
+      ],
+      "run_files": [
+        "run_0024",
+        "run_0025",
+        "run_0026",
+        "run_0027",
+        "run_0028"
+      ],
+      "total_input": 39,
+      "beauty_skipped": 0,
+      "prefilter_rejected": 37,
+      "llm_evaluated": 2,
+      "shortlisted": 1,
+      "noise_reduction_rate": 97.4,
+      "off_brand_rate": 0.0
+    },
+    {
+      "batch_id": 6,
+      "label": "Week E: runs 0029–0033",
+      "run_id": "m2_b06_20260412_131253",
+      "run_range": [
+        29,
+        33
+      ],
+      "run_files": [
+        "run_0029",
+        "run_0030",
+        "run_0031",
+        "run_0032",
+        "run_0033"
+      ],
+      "total_input": 60,
+      "beauty_skipped": 0,
+      "prefilter_rejected": 15,
+      "llm_evaluated": 2,
+      "shortlisted": 1,
+      "noise_reduction_rate": 98.3,
+      "off_brand_rate": 0.0
+    },
+    {
+      "batch_id": 7,
+      "label": "Week F: runs 0034–0040",
+      "run_id": "m2_b07_20260412_131300",
+      "run_range": [
+        34,
+        40
+      ],
+      "run_files": [
+        "run_0034",
+        "run_0035",
+        "run_0036",
+        "run_0037",
+        "run_0038",
+        "run_0039",
+        "run_0040"
+      ],
+      "total_input": 187,
+      "beauty_skipped": 0,
+      "prefilter_rejected": 16,
+      "llm_evaluated": 11,
+      "shortlisted": 2,
+      "noise_reduction_rate": 98.9,
+      "off_brand_rate": 0.0
+    }
+  ]
+}
