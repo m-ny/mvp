@@ -2,8 +2,8 @@
 agent.py — Module 2: Trend Relevance & Materiality Filter Agent
 
 Data flow:
-  IN  → module_1/outputs/runs/run_*_trend_objects.json  (luxury_fashion only; beauty skipped)
-      → module_2/data/synthetic_trends.json              (25 synthetic brand trends)
+  IN  → module_1/outputs/runs/run_*_trend_objects.json  (luxury_jewelry/luxury_fashion; beauty skipped)
+      → Brand profile from Atypica API or static brand_profile_{brand}.json
   OUT → module_2/outputs/output_shortlist.json          (local backup)
       → module_2/outputs/run_log.json
       → module_3/trend_brief_agent/trend_shortlist.json  (Module 3 compatible)
@@ -49,30 +49,36 @@ EVAL_REPORT_FILE = BASE_DIR / "EVAL_REPORT.md"
 
 # ── Config ─────────────────────────────────────────────────────────────────────
 AGENT_NAME = "Trend Relevance & Materiality Filter"
-BRAND = os.environ.get("BRAND", "Louis Vuitton")
+BRAND = os.environ.get("BRAND", "Tiffany")
 DEFAULT_CITY = os.environ.get("DEFAULT_CITY", "Shanghai")
 MAX_SHORTLIST = 15
-SKIP_CATEGORIES = {"beauty"}  # excluded from real runs; not relevant for luxury fashion brand runs
+SKIP_CATEGORIES = {"beauty"}  # beauty category excluded; not relevant for jewelry brand runs
 
 
-# ── Known Celine products to scan for in real XHS evidence ─────────────────────
-# Ordered longest-first so multi-word names (e.g. "Classique 16") match before
-# shorter substrings (e.g. "Classique") when both appear in the same text.
-CELINE_KNOWN_PRODUCTS = [
-    "Celine Arc de Triomphe",
-    "Classique 16",
-    "Teen Triomphe",
-    "tuxedo blazer",
-    "wide-leg trousers",
-    "biker jacket",
-    "Soft 16",
-    "Box bag",
-    "Triomphe",
-    "Cabas",
-    "Besace",
-    "loafers",
-    "boots",
+# ── Known Tiffany products to scan for in real XHS evidence ────────────────────
+# Ordered longest-first so multi-word names match before shorter substrings.
+# Extend this list when new hero products are launched.
+KNOWN_PRODUCTS = [
+    "Return to Tiffany",
+    "Tiffany Setting",
+    "Tiffany True",
+    "HardWear",
+    "Lock bracelet",
+    "Tiffany Keys",
+    "T smile",
+    "T wire",
+    "T1",
+    "Atlas",
+    "Soleste",
+    "Victoria",
+    "Blue Book",
+    "蒂芙尼",
+    "T系列",
+    "锁扣",
 ]
+
+# Keep backward-compat alias so batch_runner.py imports don't break
+CELINE_KNOWN_PRODUCTS = KNOWN_PRODUCTS
 
 
 def extract_product_from_trend(trend: dict) -> Optional[str]:
@@ -94,7 +100,7 @@ def extract_product_from_trend(trend: dict) -> Optional[str]:
     combined = " ".join(str(t) for t in texts if t).lower()
 
     counts: dict = {}
-    for product in CELINE_KNOWN_PRODUCTS:
+    for product in KNOWN_PRODUCTS:
         n = combined.count(product.lower())
         if n:
             counts[product] = n
@@ -266,6 +272,9 @@ def build_shortlist_output(
             "hero_product": hero_product,
             "hero_product_source": hero_product_source,
             "hero_product_link": llm_product,   # LLM suggestion kept for reference
+            "recommended_product_entry":   ev.get("recommended_product_entry"),
+            "recommended_product_core":    ev.get("recommended_product_core"),
+            "recommended_product_stretch": ev.get("recommended_product_stretch"),
             "confidence": ev.get("confidence"),
             "why_selected": ev.get("reasoning", ev.get("why_selected", "")),
             "evidence_references": ev.get("evidence_references", []),
@@ -539,6 +548,9 @@ def convert_to_module3_format(
             "extracted_product": original.get("extracted_product"),
             "hero_product": ev.get("hero_product"),
             "hero_product_source": ev.get("hero_product_source"),
+            "recommended_product_entry":   ev.get("recommended_product_entry"),
+            "recommended_product_core":    ev.get("recommended_product_core"),
+            "recommended_product_stretch": ev.get("recommended_product_stretch"),
         })
 
     week = datetime.now(timezone.utc).strftime("%Y-W%W")
@@ -580,10 +592,24 @@ def main():
     total_input = len(all_trends)
     print(f"\nReal (XHS): {len(real_trends)} / Synthetic: {len(synthetic_trends)} / Total: {total_input}")
 
-    print(f"\nLoading brand profile...")
-    slug = BRAND.lower().strip().replace(" ", "_").replace("-", "_")
-    brand_profile = load_json(resolve_brand_profile(slug))
-    print(f"Brand profile: {brand_profile['brand_name']}")
+    # ── Load brand profile (Atypica API with static fallback) ─────────────────
+    print(f"\nLoading brand profile for {BRAND}...")
+    try:
+        from atypica_client import get_or_refresh_brand_data
+        brand_profile = get_or_refresh_brand_data(BRAND)
+        profile_source = brand_profile.pop("_source", "cached")
+        source_label = "Atypica API" if profile_source == "atypica_api" else "cached profile"
+    except Exception as e:
+        print(f"[Atypica] Not available ({e}) — falling back to static JSON")
+        slug = BRAND.lower().strip().replace(" ", "_").replace("-", "_").split("&")[0].strip().rstrip("_")
+        brand_profile = load_json(resolve_brand_profile(slug))
+        source_label = "static JSON"
+
+    archetype_count = len(brand_profile.get("client_archetypes", []))
+    print(f"  Brand:      {brand_profile['brand_name']}")
+    print(f"  Category:   luxury_jewelry / luxury_fashion")
+    print(f"  Profile:    {source_label}")
+    print(f"  Archetypes: {archetype_count} segments loaded")
 
     all_trends_lookup = {t["trend_id"]: t for t in all_trends}
 

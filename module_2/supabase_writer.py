@@ -16,22 +16,23 @@ from supabase_client import get_conn, is_configured, insert_row
 # ── Subcategory inference ──────────────────────────────────────────────────────
 
 _SUBCATEGORY_SIGNALS = {
-    "leather_goods": [
-        "bag", "handbag", "tote", "clutch", "purse", "triomphe", "classique",
-        "folco", "leather good", "包", "手袋", "皮具",
+    "engagement_rings": [
+        "engagement", "solitaire", "propose", "proposal", "diamond ring", "求婚戒",
+        "求婚", "订婚", "tiffany setting", "soleste", "tiffany true",
     ],
-    "ready_to_wear": [
-        "blazer", "jacket", "trouser", "trousers", "coat", "dress", "top",
-        "shirt", "skirt", "sweater", "turtleneck", "tailoring", "suit",
-        "外套", "西装", "大衣", "裙", "裤",
+    "rings": [
+        "ring", "band", "戒指", "指环", "t1", "atlas", "硬汉", "lock ring",
     ],
-    "accessories": [
-        "sunglasses", "belt", "scarf", "jewel", "chain", "bracelet", "ring",
-        "眼镜", "腰带", "配饰",
+    "bracelets": [
+        "bracelet", "bangle", "cuff", "手链", "手镯", "hardwear", "lock bracelet",
+        "t wire", "硬件系列",
     ],
-    "footwear": [
-        "boots", "shoes", "sneaker", "heel", "loafer", "ankle boot",
-        "靴", "鞋",
+    "necklaces": [
+        "necklace", "pendant", "chain", "项链", "吊坠", "return to tiffany",
+        "heart tag", "keys", "smile", "victoria", "蒂芙尼项链",
+    ],
+    "earrings": [
+        "earring", "stud", "hoop", "drop earring", "耳环", "耳坠", "耳钉",
     ],
 }
 
@@ -42,7 +43,7 @@ def _infer_subcategory(label: str, hero_product: str, why_selected: str) -> str:
     for subcategory, signals in _SUBCATEGORY_SIGNALS.items():
         if any(sig in combined for sig in signals):
             return subcategory
-    return "general_aesthetic"
+    return "general_jewelry"
 
 
 # ── Upsert helper ──────────────────────────────────────────────────────────────
@@ -152,6 +153,11 @@ def write_shortlist(run_id: str, shortlist_output: dict) -> None:
                 "low_signal_warning":    bool(item.get("low_signal_warning")),
                 "no_date_signal":        bool(item.get("no_date_signal")),
                 "disqualifying_reason":  item.get("disqualifying_reason"),
+
+                # ── Budget-matched product recommendations ────────────────
+                "recommended_product_entry":   item.get("recommended_product_entry"),
+                "recommended_product_core":    item.get("recommended_product_core"),
+                "recommended_product_stretch": item.get("recommended_product_stretch"),
             }
 
             # Remove None values to avoid overwriting existing data with nulls

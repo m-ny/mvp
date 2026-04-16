@@ -1,0 +1,250 @@
+{
+  "brand_name": "Tiffany & Co.",
+  "brand_name_cn": "蒂芙尼",
+  "current_creative_director": "Nathalie Verdeille",
+  "aesthetic_dna": "American luxury with romantic optimism — Tiffany Blue as emotional shorthand for love and celebration in China. Democratic luxury bridging accessible silver entry and investment-grade high jewelry, repositioning under LVMH since 2021 from traditional bridal to aspirational contemporary luxury for Chinese millennials and Gen Z.",
+  "current_direction": "HardWear as edge and modernity for self-purchase; Lock as the new iconic statement piece; T collection as everyday accessible luxury. Repositioning from bridal-only to a full-life luxury brand across gifting, self-reward, and investment categories for younger Chinese consumers.",
+  "brand_voice": "Optimistic, romantic, celebratory, warm — American warmth not European aloofness. Never intimidating, always inviting. Celebrates love in all its forms. Emotionally generous rather than exclusive. The Blue Box is the message.",
+  "active_categories": ["luxury_jewelry", "luxury_fashion"],
+  "client_archetypes": [
+    {
+      "name": "初入奢品 Chū Rù Shēpǐn",
+      "age_range": "22-28",
+      "lifestyle": "University graduate or early-career professional in a Tier 1 Chinese city. First major luxury purchase is a milestone of self-achievement.",
+      "aspiration": "Owning something real and recognizable — the Blue Box is proof of arrival. Wants a piece she can wear every day that signals taste without over-signaling wealth.",
+      "occupation": "Junior professional, graduate student, entry-level finance or tech",
+      "typical_budget_rmb": 5000,
+      "entry_budget_rmb": 3000,
+      "stretch_budget_rmb": 8000,
+      "trend_language_that_resonates": "入门奢品 / 人生第一件 / 每天都能戴 / 显白 / 少女感 / 送自己",
+      "what_they_would_never_buy": "Anything ostentatious or that tries too hard — gaudy stones, heavy gold, anything that screams wealth rather than taste",
+      "purchase_motivations": ["First luxury milestone", "Self-reward after exam or promotion", "Birthday self-gift", "XHS-driven aspiration"],
+      "occasion_triggers": ["Graduation", "First salary", "Self-birthday", "Singles Day self-purchase"],
+      "preferred_collections": ["Return to Tiffany", "T wire bracelet", "Tiffany Keys", "T smile pendant"],
+      "competitor_brands_considered": ["Pandora", "TOUS", "Georg Jensen", "周大福 gold"],
+      "what_makes_them_choose_tiffany": "The Blue Box moment — the unboxing is the experience. Internationally recognized, a brand her peers will know."
+    },
+    {
+      "name": "都市精英 Dūshì Jīngyīng",
+      "age_range": "28-38",
+      "lifestyle": "Senior professional or entrepreneur with established career. Upgrades from silver entry to gold and diamond. Jewelry marks professional and personal milestones.",
+      "aspiration": "Jewelry that grows with her career — from the T wire she bought at 24 to the T1 gold ring she wears to board meetings. Tasteful, international, investment-quality.",
+      "occupation": "Senior manager, lawyer, financial analyst, startup founder, consultant",
+      "typical_budget_rmb": 18000,
+      "entry_budget_rmb": 8000,
+      "stretch_budget_rmb": 50000,
+      "trend_language_that_resonates": "低调奢华 / 投资价值 / 百搭 / 职场精英 / 精致生活",
+      "what_they_would_never_buy": "Trendy fast-fashion jewelry, overly bridal styling outside a wedding context",
+      "purchase_motivations": ["Career milestone self-reward", "Upgrade from entry piece", "Investment with aesthetic value", "International travel purchase"],
+      "occasion_triggers": ["Promotion", "Business deal close", "Major birthday (30, 35)", "Anniversary"],
+      "preferred_collections": ["T1 18k gold ring", "HardWear link bracelet", "Atlas ring", "Lock bracelet"],
+      "competitor_brands_considered": ["Cartier", "Bulgari", "Pomellato", "Piaget"],
+      "what_makes_them_choose_tiffany": "The brand's global recognition and the clean American aesthetic — understated power. The T collection reads as both modern and timeless."
+    },
+    {
+      "name": "爱的见证 Ài De Jiànzhèng",
+      "age_range": "26-35",
+      "lifestyle": "In a relationship milestone — engagement, wedding anniversary, or celebrating love. Views Tiffany as the definitive love jewelry brand.",
+      "aspiration": "The Tiffany Setting solitaire is the dream. Wants a ring that every Chinese woman will recognize as a serious commitment.",
+      "occupation": "Various — the occasion defines this persona, not the career",
+      "typical_budget_rmb": 40000,
+      "entry_budget_rmb": 15000,
+      "stretch_budget_rmb": 100000,
+      "trend_language_that_resonates": "求婚必备 / 爱的承诺 / 一生一次 / 永恒 / 蒂芙尼蓝",
+      "what_they_would_never_buy": "Lab-grown diamonds, generic diamond rings without brand heritage, bridal jewelry from non-luxury brands",
+      "purchase_motivations": ["Marriage proposal", "Wedding anniversary", "Valentine's Day significant gift", "Promise ring"],
+      "occasion_triggers": ["Engagement", "1st/5th/10th anniversary", "Valentine's Day", "七夕 Chinese Valentine's Day"],
+      "preferred_collections": ["Tiffany Setting solitaire", "Tiffany True ring", "Soleste halo ring", "Victoria pendant"],
+      "competitor_brands_considered": ["Cartier Love ring", "Van Cleef & Arpels", "Harry Winston"],
+      "what_makes_them_choose_tiffany": "The Tiffany Setting is the most famous engagement ring in the world. The Blue Box proposal scene is embedded in Chinese romantic culture via film and social media."
+    },
+    {
+      "name": "礼物策划 Lǐwù Cèhuà",
+      "age_range": "30-45",
+      "lifestyle": "Corporate gifter, relationship manager, or senior male buyer choosing jewelry as a relationship investment. Budget is secondary to the impression made.",
+      "aspiration": "The gift that cannot be misinterpreted — Tiffany communicates seriousness, taste, and care.",
+      "occupation": "Business owner, senior executive, sales director, relationship manager",
+      "typical_budget_rmb": 12000,
+      "entry_budget_rmb": 5000,
+      "stretch_budget_rmb": 30000,
+      "trend_language_that_resonates": "体面礼物 / 送得出手 / 有面子 / 不踩雷 / 七夕礼物",
+      "what_they_would_never_buy": "Jewelry with no brand recognition, anything that requires explanation, fashion jewelry",
+      "purchase_motivations": ["七夕 gifts", "Wife's birthday", "Mother's Day", "Client relationship maintenance"],
+      "occasion_triggers": ["七夕 / 情人节", "Major birthdays", "Wife/girlfriend milestone occasions"],
+      "preferred_collections": ["Return to Tiffany", "T1 gold", "HardWear", "Lock bracelet"],
+      "competitor_brands_considered": ["Cartier", "Bulgari", "high-end watches"],
+      "what_makes_them_choose_tiffany": "The Blue Box removes all ambiguity. The recipient will know what this means before opening it."
+    },
+    {
+      "name": "自我犒赏 Zìwǒ Kǎoshǎng",
+      "age_range": "25-35",
+      "lifestyle": "Self-purchase driven by personal achievement, emotional milestone, or simply because she wants it. Rejects the idea that jewelry must be given.",
+      "aspiration": "Jewelry on her own terms, on her own timeline. HardWear — edgy, modern, no-romance-required — is her natural home.",
+      "occupation": "Creative industry, media, marketing, tech, design",
+      "typical_budget_rmb": 15000,
+      "entry_budget_rmb": 5000,
+      "stretch_budget_rmb": 30000,
+      "trend_language_that_resonates": "送自己 / 凭什么等别人送 / 独立女性 / 自我奖励 / 戴上就是态度",
+      "what_they_would_never_buy": "Anything that reads as 'waiting to be gifted' — overly bridal, overly delicate, or passive in aesthetic",
+      "purchase_motivations": ["Personal achievement celebration", "Emotional reset", "Completing a collection", "XHS trend discovery"],
+      "occasion_triggers": ["Project completion", "Solo travel", "Birthday self-directed", "Promotion", "Breakup recovery"],
+      "preferred_collections": ["HardWear link bracelet", "Lock bracelet", "T1 stacking rings", "Atlas collection"],
+      "competitor_brands_considered": ["Cartier Juste un Clou", "Messika", "APM Monaco"],
+      "what_makes_them_choose_tiffany": "The brand's self-purchase narrative is increasingly explicit. HardWear speaks directly to her — confident, modern, intentional."
+    },
+    {
+      "name": "Z世代潮流收藏 Z Shìdài Cháoliú Shōucáng",
+      "age_range": "18-26",
+      "lifestyle": "Gen Z collector who treats luxury accessories as cultural artifacts and identity signals. Deeply XHS-native, trend-aware, and brand-literate beyond her price range.",
+      "aspiration": "The Return to Tiffany heart tag is her cultural reference, not just a necklace. Wants the piece she's seen on the celebrities she follows.",
+      "occupation": "Student, part-time creator, junior creative, supported by parents",
+      "typical_budget_rmb": 4000,
+      "entry_budget_rmb": 3000,
+      "stretch_budget_rmb": 8000,
+      "trend_language_that_resonates": "经典复刻 / 小众but有范 / 博主同款 / 蒂芙尼蓝 / 显白神器",
+      "what_they_would_never_buy": "Anything corporate, adult, or 'mom-coded'; obvious fakes or dupes in social settings",
+      "purchase_motivations": ["XHS/Douyin trend following", "Celebrity or KOL endorsement", "Collection building", "Social proof posting"],
+      "occasion_triggers": ["Birthday from parents", "New Year red envelope surplus", "KOL promotion moment"],
+      "preferred_collections": ["Return to Tiffany heart tag", "T smile pendant", "Tiffany Keys", "T wire bracelet"],
+      "competitor_brands_considered": ["APM Monaco", "Swarovski", "Vivienne Westwood", "Pandora Moments"],
+      "what_makes_them_choose_tiffany": "The Return to Tiffany moment — the heart tag is a cultural icon she grew up seeing. The Blue Box photo is made for XHS."
+    },
+    {
+      "name": "男性购买者 Nánxìng Gòumǎizhě",
+      "age_range": "28-45",
+      "lifestyle": "Male buyer purchasing for a female partner, fiancée, wife, or mother. Jewelry is unfamiliar territory — he needs guidance and confidence.",
+      "aspiration": "Get the gift right the first time. The Blue Box is proof of effort and taste even when he has no jewelry vocabulary.",
+      "occupation": "Finance, tech, business owner, corporate manager",
+      "typical_budget_rmb": 15000,
+      "entry_budget_rmb": 5000,
+      "stretch_budget_rmb": 50000,
+      "trend_language_that_resonates": "送女友必看 / 七夕礼物推荐 / 求婚选什么 / 她一定喜欢",
+      "what_they_would_never_buy": "Anything that requires him to defend the choice — must be universally recognized as quality",
+      "purchase_motivations": ["Girlfriend / wife gift", "Proposal ring", "Anniversary", "Valentine's / Qixi"],
+      "occasion_triggers": ["七夕", "Western Valentine's Day", "Marriage proposal", "Anniversary"],
+      "preferred_collections": ["Return to Tiffany", "Tiffany Setting", "Lock bracelet", "T1"],
+      "competitor_brands_considered": ["Cartier", "Bulgari", "watches as jewelry substitute"],
+      "what_makes_them_choose_tiffany": "The Blue Box eliminates decision anxiety. 'I bought her Tiffany' requires no further explanation in any Chinese social context."
+    },
+    {
+      "name": "跨境收藏 Kuàjìng Shōucáng",
+      "age_range": "25-40",
+      "lifestyle": "Frequent international traveler or overseas Chinese who compares prices across markets. Price-conscious but quality-committed.",
+      "aspiration": "Get the authentic piece at the best global price while maintaining the full Tiffany experience.",
+      "occupation": "Business traveler, overseas student returnee, finance/consulting",
+      "typical_budget_rmb": 20000,
+      "entry_budget_rmb": 8000,
+      "stretch_budget_rmb": 60000,
+      "trend_language_that_resonates": "海外价格 / 免税购买 / 价格对比 / 正品保证",
+      "what_they_would_never_buy": "Daigou with uncertain authenticity, any piece without full brand documentation",
+      "purchase_motivations": ["Price arbitrage on international purchases", "Collection upgrade abroad", "Blue Book exclusive pieces"],
+      "occasion_triggers": ["International travel", "Return trip from New York/Paris/Tokyo", "Duty-free opportunity"],
+      "preferred_collections": ["High-end pieces with significant price difference", "Blue Book Collection", "Investment diamond pieces"],
+      "competitor_brands_considered": ["Cartier", "Van Cleef", "Boucheron"],
+      "what_makes_them_choose_tiffany": "Heritage since 1837, global price consistency relative to other LVMH brands, strong resale recognition."
+    },
+    {
+      "name": "投资意识 Tóuzī Yìshí",
+      "age_range": "28-40",
+      "lifestyle": "Investment-aware luxury consumer who tracks resale values, collectibility, and brand trajectory. Treats jewelry as wearable asset allocation.",
+      "aspiration": "Pieces that hold value or appreciate — especially Blue Book and limited pieces. The Tiffany Setting is the most liquid engagement ring on the secondary market.",
+      "occupation": "Finance, investment, wealth management, business owner",
+      "typical_budget_rmb": 60000,
+      "entry_budget_rmb": 30000,
+      "stretch_budget_rmb": 200000,
+      "trend_language_that_resonates": "保值 / 升值潜力 / 拍卖行 / 蓝皮书 / 限量款",
+      "what_they_would_never_buy": "Fashion jewelry, silver (insufficient investment grade), anything without strong secondary market",
+      "purchase_motivations": ["Asset diversification", "Collectible limited pieces", "High-value gifting with investment rationale"],
+      "occasion_triggers": ["Market volatility", "Blue Book Collection launch", "Auction preview"],
+      "preferred_collections": ["Blue Book Collection", "Tiffany Setting high-grade diamond", "Investment diamond pieces"],
+      "competitor_brands_considered": ["Van Cleef & Arpels", "Graff", "Harry Winston"],
+      "what_makes_them_choose_tiffany": "Brand liquidity on the secondary market — Tiffany Setting is the most recognized engagement ring globally and trades accordingly."
+    }
+  ],
+  "hero_products": {
+    "entry_silver": [
+      "Return to Tiffany heart tag necklace (¥3,800)",
+      "T wire bracelet (¥4,200)",
+      "T smile pendant (¥5,500)",
+      "Tiffany Keys sterling silver pendant (¥6,500)"
+    ],
+    "core_gold": [
+      "T1 narrow ring in 18k gold (¥9,500)",
+      "HardWear link bracelet in 18k gold (¥18,000)",
+      "Lock bracelet in 18k rose gold (¥22,000)",
+      "Atlas ring in 18k gold (¥12,000)"
+    ],
+    "investment_diamond": [
+      "Tiffany Setting round solitaire 0.5ct (¥45,000)",
+      "Soleste halo ring (¥38,000)",
+      "Victoria pendant with diamonds (¥32,000)",
+      "Tiffany True ring in platinum with diamonds (¥55,000)"
+    ],
+    "high_jewelry": [
+      "Blue Book Collection statement necklace (¥150,000+)",
+      "Bespoke engagement solitaire (¥100,000+)",
+      "Exceptional diamond Yellow Diamond pieces (¥200,000+)"
+    ]
+  },
+  "budget_tiers": {
+    "entry": {
+      "range_rmb": "¥3,000-8,000",
+      "products": ["Return to Tiffany heart tag", "T wire bracelet", "T smile pendant", "Tiffany Keys pendant"],
+      "ca_angle": "The Blue Box experience at an accessible entry. 'This is her first Tiffany — let's make it memorable.'"
+    },
+    "core": {
+      "range_rmb": "¥8,000-30,000",
+      "products": ["T1 18k gold ring", "Atlas ring", "HardWear link bracelet", "Lock bracelet"],
+      "ca_angle": "Gold-tier commitment. 'She's ready to move from silver to gold — this piece she'll wear to every important meeting.'"
+    },
+    "aspirational": {
+      "range_rmb": "¥30,000-100,000",
+      "products": ["Tiffany Setting solitaire", "Soleste halo ring", "Victoria pendant", "Tiffany True ring"],
+      "ca_angle": "Diamond category — occasion-defining. 'This piece marks a moment she'll remember for life.'"
+    },
+    "investment": {
+      "range_rmb": "¥100,000+",
+      "products": ["Blue Book Collection", "Bespoke engagement pieces", "Exceptional diamond pieces"],
+      "ca_angle": "Blue Book and bespoke — for clients who want the exceptional. By appointment, with full gemological certification."
+    }
+  },
+  "aesthetic_pillars": [
+    {
+      "name": "Blue Box Romance",
+      "description": "The Tiffany Blue box is the world's most recognized luxury packaging — in China it has become emotional shorthand for love, celebration, and arrival."
+    },
+    {
+      "name": "American Optimism",
+      "description": "Warm, democratic luxury that invites rather than excludes — accessible at entry yet aspirational at high jewelry, without European aloofness or intimidation."
+    },
+    {
+      "name": "Iconic Forever",
+      "description": "Return to Tiffany, T, HardWear, and Lock are modern icons designed to outlast trends — pieces worn across decades and occasions, not just for one moment."
+    },
+    {
+      "name": "Love Language",
+      "description": "Tiffany speaks the universal language of connection — from first love to lifelong commitment to self-love — with HardWear as the statement for those who write their own story."
+    }
+  ],
+  "competitive_differentiation": {
+    "Cartier": "Tiffany leads on emotional resonance with milestone moments and Chinese romantic culture; Cartier signals European status while Tiffany signals American warmth. Tiffany wins on gifting occasions; Cartier wins on status display.",
+    "Van Cleef & Arpels": "Tiffany offers more accessible entry without sacrificing aspiration; VCA is perceived as more exclusive and associated with older established wealth. Tiffany wins with younger buyers.",
+    "Bvlgari": "Tiffany is more romantic and feminine versus Bvlgari's bold Italian statement aesthetic. Both appeal to self-purchase but Tiffany wins decisively on engagement and gifting occasions."
+  },
+  "brand_taboos": {
+    "quality_taboos": ["fake", "imitation", "replica", "dupe", "山寨", "仿制", "假货"],
+    "diamond_taboos": ["lab grown", "man made diamond", "CVD", "培育钻石", "人造钻石", "合成钻石"],
+    "price_taboos": ["overpriced", "markup", "daigou cheaper", "代购", "同款平替", "贵得不值"],
+    "aesthetic_taboos": ["tacky", "ostentatious", "flashy", "vulgar", "过于张扬", "俗气", "大妈款"]
+  },
+  "preferred_sources": ["Xiaohongshu luxury jewelry", "Douyin jewelry unboxing", "Chinese luxury KOL content"],
+  "avoided_sources": ["Fast fashion jewelry accounts", "Wholesale jewelry content", "Non-luxury comparison content"],
+  "clienteling_tone": "warm, optimistic, celebratory, personal — speak to the occasion and the emotion, not just the product",
+  "category_cadence": {
+    "rings": "evergreen — engagement driven by relationship milestones, fashion rings by self-purchase",
+    "bracelets": "seasonal peaks at Valentine's, Qixi, CNY gifting windows",
+    "necklaces": "entry-level purchase driven by daily wear trend, XHS everyday luxury content",
+    "earrings": "underrepresented in current XHS discourse — opportunity to develop",
+    "engagement_rings": "spike at marriage proposal season (spring/fall) and Valentine's periods"
+  }
+}

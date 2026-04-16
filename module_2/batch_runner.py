@@ -48,7 +48,7 @@ from agent import (
     BRAND,
     SKIP_CATEGORIES,
     MAX_SHORTLIST,
-    CELINE_KNOWN_PRODUCTS,
+    KNOWN_PRODUCTS,
     extract_product_from_trend,
     build_shortlist_output,
     calculate_quality_metrics,
@@ -506,10 +506,16 @@ def main():
     print(f"Batches: {len(BATCHES)} defined ({sum(1 for b in BATCHES if not b['skip'])} active)")
     print("=" * 60)
 
-    # Load brand profile
-    slug = BRAND.lower().strip().replace(" ", "_").replace("-", "_")
-    brand_profile = load_json(resolve_brand_profile(slug))
-    print(f"\nBrand profile: {brand_profile['brand_name']}")
+    # Load brand profile (Atypica with static fallback)
+    try:
+        from atypica_client import get_or_refresh_brand_data
+        brand_profile = get_or_refresh_brand_data(BRAND)
+        brand_profile.pop("_source", None)
+    except Exception as e:
+        print(f"[Atypica] Not available ({e}) — using static JSON")
+        slug = BRAND.lower().strip().replace(" ", "_").replace("-", "_").split("&")[0].strip().rstrip("_")
+        brand_profile = load_json(resolve_brand_profile(slug))
+    print(f"\nBrand: {brand_profile['brand_name']} ({len(brand_profile.get('client_archetypes', []))} archetypes)")
 
     batch_results = []
 
