@@ -74,7 +74,9 @@ footer{text-align:center;padding:30px;color:#444;font-size:11px;letter-spacing:1
 <footer>MODULE 5 — OUTREACH ANGLE AGENT · RUN LOG VIEWER</footer>
 
 <script>
-const DATA = [
+/* Demo / fallback when run_log.json is missing or opened via file:// */
+let DATA = [];
+const HARDCODED = [
   {
     "run_id": "20260322_212706",
     "timestamp": "2026-03-22T21:27:06.357020",
@@ -885,6 +887,22 @@ const DATA = [
   }
 ];
 
+async function initData() {
+  try {
+    const res = await fetch("run_log.json", { cache: "no-store" });
+    if (res.ok) {
+      const j = await res.json();
+      if (Array.isArray(j) && j.length) {
+        DATA = j;
+        return;
+      }
+    }
+  } catch (_) {
+    /* file:// or no server: cannot load JSON next to this file */
+  }
+  DATA = HARDCODED;
+}
+
 let lang='zh', flt='all';
 const pm={
 '陈雅琳':{en:'Chen Yalin',tz:'艺术圈女藏家',te:'Art World Collector'},
@@ -925,7 +943,14 @@ function render(){
 function tg(id){const el=document.getElementById('c-'+id);if(el)el.classList.toggle('ex')}
 function sf(f){flt=f;render()}
 function toggleLang(){lang=lang==='zh'?'en':'zh';document.getElementById('ll').textContent=lang==='zh'?'English':'中文';document.getElementById('fl').textContent=lang==='zh'?'🇬🇧':'🇨🇳';render()}
-render();
+initData().then(() => {
+  if (!DATA || !DATA.length) {
+    document.getElementById("cc").innerHTML =
+      '<div style="text-align:center;padding:80px;color:#888">No run data. Put <code style="color:#c9a96e">run_log.json</code> next to this HTML and open via a local server (see README in this folder).</div>';
+    return;
+  }
+  render();
+});
 </script>
 </body>
 </html>
