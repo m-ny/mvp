@@ -1,0 +1,6 @@
+Session,Reviewer Role,Usefulness (1-5),Trust (1-5),One verbatim quote,One concrete change request,Time-to-evaluate
+1,Zegna CA,5,4,"""If I say he has meetings, it should deduce that he needs formal wear. It doesn't seem to summarize this.""",Add a 'purchase frequency' field and force AI to deduce style needs from events.,~5 minutes
+2,Lancôme CA,5,5,"""I'm not completely sure if I delivered the right luxury fashion jargons, but the extraction speed is helpful.""",Ensure the system can handle general descriptive words even if jargons are missing.,~5 minutes
+3,Senior Management,3,4,"""You are capturing what they like, but you are entirely missing the business funnel and why they didn't buy.""",Introduce a funnel structure to track purchase decisions and positive/negative signals.,~10 minutes
+4,TENERA Founder,5,4,"""Reporting the customer's decision process is a crucial part of the business, not just their profile.""",Add a mandatory purchase_decision_status field to track the outcome.,~5 minutes
+4,TENERA CA,4,3,"""The AI missed the core reason: she needs a large bag because she goes to work.""",Force the AI to extract causal functional constraints (Scenario + Reason) in visit_purpose.,~2 minutes

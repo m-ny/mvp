@@ -24,7 +24,8 @@ def _load_env():
     for env_path in [Path(__file__).parent / ".env",
                      Path(__file__).parent.parent / ".env"]:
         if env_path.exists():
-            for line in env_path.read_text().splitlines():
+            # Windows 下默认编码可能是 gbk，显式按 utf-8-sig 读取以兼容 BOM
+            for line in env_path.read_text(encoding="utf-8-sig", errors="ignore").splitlines():
                 line = line.strip()
                 if "=" in line and not line.startswith("#"):
                     k, v = line.split("=", 1)

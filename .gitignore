@@ -1,6 +1,8 @@
 .env
 .env.*
 .env.local
+.streamlit/secrets.toml
+.claude/
 __pycache__/
 *.pyc
 .venv/
@@ -23,6 +25,8 @@ module_1/data/xhs_raw_posts.json
 module_1/outputs/
 module_2/outputs/
 module_4/run_log.json
+module_4/database_mock/*.json
+module_4/archives/*.zip
 module_5/run_log.json
 module_5/deploy/run_log.json
 
