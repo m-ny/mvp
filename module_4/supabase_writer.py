@@ -11,7 +11,7 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 try:
-    from supabase_client import get_conn, insert_row, is_configured
+    from supabase_client import get_conn, insert_row, is_configured, upsert_row
 except ImportError:
     def is_configured(): return False
 
@@ -23,13 +23,8 @@ def write_client_memory(run_id: str, raw_voice_note: str,
         return None
     conn = get_conn()
     conf = memory_obj.get("confidence_summary", {})
-    display = memory_obj.get("display_name") or memory_obj.get("name") or ""
     new_id = insert_row(conn, "module4_client_memories", {
         "run_id":               run_id,
-        "client_id":            memory_obj.get("client_id") or None,
-        "display_name":         display or None,
-        "persona_tag":          memory_obj.get("persona_tag") or None,
-        "vip_tier":             memory_obj.get("vip_tier") or None,
         "raw_voice_note":       raw_voice_note,
         "summary":              memory_obj.get("summary", ""),
         "life_event":           memory_obj.get("life_event", {}),
@@ -62,3 +57,60 @@ def write_run_log(run_id: str, model_used: str,
     })
     conn.close()
     return new_id
+
+
+def write_profile_visit(visit_payload: dict[str, Any]) -> int | None:
+    """
+    Write one Module 4 visit payload into the shared V2 table:
+    module4_client_visits
+    """
+    if not is_configured():
+        return None
+
+    meta = visit_payload.get("meta") or {}
+    profile = visit_payload.get("ai_profile_edited") or {}
+    visit_id = visit_payload.get("visit_id") or visit_payload.get("saved_at")
+    client_name = (
+        meta.get("client_display_name")
+        or (meta.get("new_customer") or {}).get("name")
+        or "未命名客户"
+    )
+
+    row = {
+        "visit_id": visit_id,
+        "client_name": client_name,
+        "customer_segment": meta.get("customer_segment"),
+        "saved_at": visit_payload.get("saved_at"),
+        "raw_transcript_ca": visit_payload.get("raw_transcript_ca") or "",
+        "summary": profile.get("summary", ""),
+        "target_recipients": profile.get("target_recipients"),
+        "life_event": profile.get("life_event"),
+        "timeline": profile.get("timeline"),
+        "aesthetic_preference": profile.get("aesthetic_preference"),
+        "size_height": profile.get("size_height"),
+        "budget": profile.get("budget"),
+        "mood": profile.get("mood"),
+        "trend_signals": profile.get("trend_signals"),
+        "next_step_intent": profile.get("next_step_intent"),
+        "interested_items": profile.get("interested_items"),
+        "client_constraints": profile.get("client_constraints"),
+        "purchase_frequency": profile.get("purchase_frequency"),
+        "visit_purpose": profile.get("visit_purpose"),
+        "purchase_decision_status": profile.get("purchase_decision_status"),
+        "positive_signals": profile.get("positive_signals"),
+        "negative_reasons": profile.get("negative_reasons"),
+        "client_timeline": profile.get("client_timeline"),
+        "ca_action_item": profile.get("ca_action_item"),
+        "l1_client_profile": profile.get("L1_Client_Profile"),
+        "l2_constraints": profile.get("L2_Constraints"),
+        "l3_visit_funnel": profile.get("L3_Visit_Funnel"),
+        "l4_next_steps": profile.get("L4_Next_Steps"),
+        "full_profile": profile,
+        "source": "module4_streamlit",
+    }
+
+    conn = get_conn()
+    try:
+        return upsert_row(conn, "module4_client_visits", row, conflict_col="visit_id")
+    finally:
+        conn.close()
