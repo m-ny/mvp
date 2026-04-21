@@ -122,32 +122,58 @@ Score each trend on the 6 LLM dimensions below (0–10 each).
 For EVERY score: cite a specific snippet, metric, or signal flag. No generic reasoning.
 
 SIGNAL FLAGS TO CHECK IN EACH TREND OBJECT:
+- "brand_context": one of "brand_specific" / "competitor" / "general_jewelry" — determines scoring caps (see dimension 1)
 - "extracted_product": a specific {brand_name} product name found organically in XHS posts
 - "celebrity_signal": true if posts contain celebrity/endorsement language (明星/同款/代言人)
 - "occasion_signal": true if posts contain purchase occasion triggers (求婚/纪念日/礼物/婚礼/生日)
 - "competitor_signal": true if posts mention competitor brands; "competitor_mentions" lists which ones
 
-If any signal flag is present, reference it explicitly in your reasoning and adjust scores accordingly.
+For every trend: check brand_context first — it sets hard caps on brand_engagement_depth.
 celebrity_signal or occasion_signal should raise client_touchpoint_specificity by 2+ points.
-competitor_signal with named brand should inform brand_engagement_depth scoring.
+competitor_signal with named brand must be addressed in competitor_tiffany_bridge output field.
 
 ──────────────────────────────────────────────────────────────
 DIMENSIONS:
 
 1. BRAND_ENGAGEMENT_DEPTH (0–10)  weight: 0.20
-Does this trend show consumers deeply engaged with {brand_name} specifically?
-Deep engagement: specific product names, specific {brand_name} behaviors, specific brand language.
-Generic luxury content that mentions the brand name scores 2–4.
-Cite the most brand-specific snippet. Use competitive context: if the content is more relevant
-to a competitor's positioning, score low (1–4).
+Apply scoring based on brand_context field — this is mandatory:
+
+  brand_context = "brand_specific": Score 1–10 normally.
+    Deep engagement = specific product names, specific {brand_name} behaviors, brand-specific language.
+    Cite the most brand-specific snippet. Generic mention of brand name = 3–4.
+
+  brand_context = "competitor": Score 4–6 MAXIMUM. Hard cap — do not exceed 6.
+    Competitors are useful signals for {brand_name} CAs only when a bridge exists.
+    You MUST populate competitor_tiffany_bridge in your output (see format below).
+    Score 4 if a clear product-level bridge to {brand_name} exists.
+    Score 5–6 only if the competitor trend maps directly to a {brand_name} hero product/occasion.
+    Example bridge: "Cartier Love bracelet stacking trend is directly comparable to Tiffany HardWear
+    link bracelet stacking — CA can reference this trend and position HardWear as the equivalent."
+
+  brand_context = "general_jewelry": Score 3–5 MAXIMUM. Hard cap — do not exceed 5.
+    You must explain specifically how this general jewelry trend applies to {brand_name}.
+    Score 3 if the connection to {brand_name} requires significant CA interpretation.
+    Score 4–5 only if a specific {brand_name} product or collection maps naturally.
 
 2. CLIENT_TOUCHPOINT_SPECIFICITY (0–10)  weight: 0.20
 Does this give a CA a specific, credible, non-pushy reason to contact a client this week?
-Score 9–10: celebrity_signal present OR occasion_signal present OR extracted_product from real posts
-Score 7–8: clearly links to a {brand_name} product category with specific vivid language
-Score 5–6: brand-relevant but requires CA effort to connect — the link is real but not immediate
-Score 3–4: too abstract for a specific CA conversation opener
-Score 1–2: no clear client conversation application
+
+  For brand_context = "brand_specific":
+    Score 9–10: celebrity_signal OR occasion_signal OR extracted_product from real posts
+    Score 7–8: clearly links to a {brand_name} product category with specific vivid language
+    Score 6+ MINIMUM: when the trend label or summary names a specific {brand_name} collection
+      (HardWear, Knot, T Wire, T1, Lock, Setting, Soleste, Smile, Atlas, Victoria, Return to Tiffany).
+      A named collection gives the CA an immediate, credible conversation anchor — score at least 6.
+    Score 5: brand-relevant but requires CA effort to connect; no named collection
+    Score 3–4: too abstract for a specific CA conversation opener
+    Score 1–2: no clear client conversation application
+
+  For brand_context = "competitor" or "general_jewelry":
+    Score based on whether the CA can BRIDGE this trend to a specific {brand_name} product or occasion.
+    Score 7–9: a clear {brand_name} product equivalent exists and the bridge is immediately obvious
+    Score 5–6: a reasonable bridge exists but requires CA to frame it
+    Score 3–4: bridge is weak or speculative
+    Score 1–2: no viable bridge to a {brand_name} client conversation
 
 3. VOCABULARY_TRANSFER_POTENTIAL (0–10)  weight: 0.15
 Can a CA borrow this language naturally in a client conversation?
@@ -174,8 +200,10 @@ Score 1–4: so generic it applies to everyone; no differentiation
 Is this trend connected to a specific purchase occasion or life event?
 Score 8–10: directly connected to proposal, anniversary, birthday, self-reward, gifting,
   graduation, milestone — check occasion_signal flag
-Score 5–7: loosely connected to an occasion type
-Score 1–4: purely aesthetic with no occasion trigger
+Score 5 (neutral): styling, layering, stacking, sizing, or collection discovery content —
+  no explicit occasion keyword present, but a CA can always open with collection awareness.
+  Use 5 for these topics rather than scoring 1–4 as "purely aesthetic."
+Score 1–4: purely aesthetic with no occasion trigger AND no styling/collection angle
 
 NOTE: trend_velocity (weight 0.15) and evidence_credibility (weight 0.10) are computed
 algorithmically from engagement recency and run_count. Do NOT score these yourself.
@@ -212,8 +240,9 @@ One object per trend, same order as input batch:
       "occasion_purchase_trigger": number
     }},
     "composite_score": number,
-    "reasoning": "3-5 sentences. Must: (1) cite the most brand-specific snippet or signal flag; (2) explain what a CA could specifically say or do with this trend; (3) name the pillar confirmed or extended for intelligence_value; (4) note any celebrity/occasion/competitor signals found.",
+    "reasoning": "3-5 sentences. Must: (1) cite the most brand-specific snippet or signal flag; (2) explain what a CA could specifically say or do with this trend; (3) name the pillar confirmed or extended for intelligence_value; (4) note any celebrity/occasion/competitor signals found; (5) for competitor/general_jewelry trends, name the specific {brand_name} product or collection that bridges this trend.",
     "confidence": "high" or "medium" or "low",
-    "disqualifying_reason": null or "exact dimension that failed and why"
+    "disqualifying_reason": null or "exact dimension that failed and why",
+    "competitor_tiffany_bridge": null or "string — REQUIRED when brand_context is competitor: name the specific {brand_name} product/collection comparable to the competitor trend and how a CA uses it"
   }}
 ]"""

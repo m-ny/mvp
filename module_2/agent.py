@@ -280,21 +280,26 @@ def load_synthetic_trends() -> list:
     return synthetic
 
 
+# Priority order: engagement_rings (strictest — bridal-only keywords) → bracelets
+# → rings → necklaces → earrings → general_jewelry fallback.
+# Bracelets before rings because hardwear/layering content contains "ring" as a substring.
+# Engagement rings requires explicit bridal language; general ring content classifies as rings.
 _SUBCATEGORY_SIGNALS = {
     "engagement_rings": [
-        "engagement", "solitaire", "propose", "proposal", "diamond ring", "求婚戒",
-        "求婚", "订婚", "tiffany setting", "soleste", "tiffany true",
-    ],
-    "rings": [
-        "ring", "band", "戒指", "指环", "t1", "atlas", "硬汉", "lock ring",
+        "婚戒", "婚礼", "求婚", "订婚",
+        "engagement ring", "bridal", "wedding band", "solitaire",
     ],
     "bracelets": [
         "bracelet", "bangle", "cuff", "手链", "手镯", "hardwear", "lock bracelet",
-        "t wire", "硬件系列",
+        "t wire", "硬件系列", "hand chain",
+    ],
+    "rings": [
+        "ring", "戒指", "指环", "t1", "atlas", "knot", "lock ring",
+        "六爪", "setting", "six-prong", "six prong", "soleste", "tiffany true",
     ],
     "necklaces": [
         "necklace", "pendant", "chain", "项链", "吊坠", "return to tiffany",
-        "heart tag", "keys", "smile", "victoria", "蒂芙尼项链",
+        "heart tag", "keys", "smile necklace", "victoria", "蒂芙尼项链",
     ],
     "earrings": [
         "earring", "stud", "hoop", "drop earring", "耳环", "耳坠", "耳钉",
@@ -302,10 +307,22 @@ _SUBCATEGORY_SIGNALS = {
 }
 
 
+def _signal_match(signal: str, text: str) -> bool:
+    """
+    Substring match for Chinese signals (no word boundaries needed).
+    Word-boundary match for pure ASCII signals to avoid partial matches
+    (e.g. 'ring' inside 'layering' or 'earring').
+    """
+    if any("\u4e00" <= c <= "\u9fff" for c in signal):
+        return signal in text
+    return bool(re.search(r"\b" + re.escape(signal) + r"\b", text))
+
+
 def _infer_subcategory(label: str, hero_product: str, why_selected: str) -> str:
     combined = f"{label} {hero_product or ''} {why_selected or ''}".lower()
+    # Check subcategories in priority order (dict preserves insertion order Python 3.7+)
     for subcategory, signals in _SUBCATEGORY_SIGNALS.items():
-        if any(sig in combined for sig in signals):
+        if any(_signal_match(sig, combined) for sig in signals):
             return subcategory
     return "general_jewelry"
 
@@ -361,10 +378,12 @@ def build_shortlist_output(
             "extracted_product": extracted_product,
             "hero_product": hero_product,
             "hero_product_source": hero_product_source,
+            "brand_context": original.get("brand_context", "general_jewelry"),
             "celebrity_signal": bool(original.get("celebrity_signal", False)),
             "occasion_signal": bool(original.get("occasion_signal", False)),
             "competitor_signal": bool(original.get("competitor_signal", False)),
             "competitor_mentions": original.get("competitor_mentions", []),
+            "competitor_tiffany_bridge": ev.get("competitor_tiffany_bridge"),
             "best_evidence_quote": ev.get("best_evidence_quote", ""),
             "confidence": ev.get("confidence"),
             "why_selected": why_selected,
@@ -404,6 +423,7 @@ def calculate_quality_metrics(
     beauty_skipped: list,
     total_input: int,
     all_trends_lookup: dict,
+    passed_trends: list = None,
 ) -> dict:
     brand_taboo_rejections = sum(
         1 for r in prefilter_rejected if "taboo" in r.get("reason", "").lower()
@@ -428,11 +448,13 @@ def calculate_quality_metrics(
     )
     synthetic_shortlisted = len(shortlisted) - real_shortlisted
 
-    # Signal counts from all evaluated trends
-    celebrity_count = sum(1 for t in all_trends_lookup.values() if t.get("celebrity_signal"))
-    occasion_count = sum(1 for t in all_trends_lookup.values() if t.get("occasion_signal"))
-    competitor_count = sum(1 for t in all_trends_lookup.values() if t.get("competitor_signal"))
-    evaluated_total = max(len(all_evaluations), 1)
+    # Signal counts from trends that passed pre-filter (passed_trends), not the full input.
+    # passed_trends is provided by main() after Step 1.5 syncs signals back to the lookup.
+    signal_source = passed_trends if passed_trends is not None else list(all_trends_lookup.values())
+    celebrity_count = sum(1 for t in signal_source if t.get("celebrity_signal"))
+    occasion_count = sum(1 for t in signal_source if t.get("occasion_signal"))
+    competitor_count = sum(1 for t in signal_source if t.get("competitor_signal"))
+    evaluated_total = max(len(signal_source), 1)
 
     return {
         "off_brand_rate": off_brand_rate,
@@ -529,10 +551,10 @@ def write_eval_report(
         f"- {quality['noise_reduction_rate']}% of input trends were filtered before reaching the shortlist.",
         "",
         "### 4. Signal Detection & New Dimensions",
-        f"- **Extracted product**: {sum(1 for ev in all_evaluations if ev.get('extracted_product'))} of {len(all_evaluations)} evaluated trends had a real XHS product mention.",
-        f"- **Celebrity signal**: {quality.get('signal_rates', {}).get('celebrity_signal_count', 0)} trends ({quality.get('signal_rates', {}).get('celebrity_signal_rate', 0)}%)",
-        f"- **Occasion signal**: {quality.get('signal_rates', {}).get('occasion_signal_count', 0)} trends ({quality.get('signal_rates', {}).get('occasion_signal_rate', 0)}%)",
-        f"- **Competitor signal**: {quality.get('signal_rates', {}).get('competitor_signal_count', 0)} trends ({quality.get('signal_rates', {}).get('competitor_signal_rate', 0)}%)",
+        f"- **Extracted product**: {sum(1 for ev in shortlisted if ev.get('extracted_product'))} of {len(shortlisted)} shortlisted trends had a real XHS product mention (hero_product set).",
+        f"- **Celebrity signal**: {quality.get('signal_rates', {}).get('celebrity_signal_count', 0)} of {len(all_evaluations)} evaluated trends ({quality.get('signal_rates', {}).get('celebrity_signal_rate', 0)}%)",
+        f"- **Occasion signal**: {quality.get('signal_rates', {}).get('occasion_signal_count', 0)} of {len(all_evaluations)} evaluated trends ({quality.get('signal_rates', {}).get('occasion_signal_rate', 0)}%)",
+        f"- **Competitor signal**: {quality.get('signal_rates', {}).get('competitor_signal_count', 0)} of {len(all_evaluations)} evaluated trends ({quality.get('signal_rates', {}).get('competitor_signal_rate', 0)}%)",
         "- **Trend Velocity**: computed from engagement_recency_pct (7-day recency) or save-ratio proxy when no dates available.",
         "- **Evidence Credibility**: computed from run_count × confidence weight.",
         "",
@@ -656,9 +678,11 @@ def convert_to_module3_format(
             "extracted_product": original.get("extracted_product"),
             "hero_product": ev.get("hero_product"),
             "hero_product_source": ev.get("hero_product_source"),
+            "brand_context": original.get("brand_context", "general_jewelry"),
             "celebrity_signal": bool(original.get("celebrity_signal", False)),
             "occasion_signal": bool(original.get("occasion_signal", False)),
             "best_evidence_quote": ev.get("best_evidence_quote", ""),
+            "competitor_tiffany_bridge": ev.get("competitor_tiffany_bridge"),
         })
 
     week = datetime.now(timezone.utc).strftime("%Y-W%W")
@@ -767,6 +791,22 @@ def main():
             if t.get("extracted_product"):
                 print(f"  ✓ [{t['trend_id']}] → {t['extracted_product']}")
 
+    # Propagate extracted_product, signals, and brand_context back into all_trends_lookup.
+    # passed_trends are NEW dict objects created by deduplicate_batch() — they are NOT
+    # the same references as the originals in all_trends_lookup. Without this sync,
+    # all downstream lookups (build_shortlist_output, EVAL_REPORT, convert_to_module3_format)
+    # read from the originals and see None for every signal field.
+    for trend in passed_trends:
+        tid = trend.get("trend_id")
+        if tid in all_trends_lookup:
+            if trend.get("extracted_product"):
+                all_trends_lookup[tid]["extracted_product"] = trend["extracted_product"]
+            all_trends_lookup[tid]["celebrity_signal"] = trend.get("celebrity_signal", False)
+            all_trends_lookup[tid]["occasion_signal"] = trend.get("occasion_signal", False)
+            all_trends_lookup[tid]["competitor_signal"] = trend.get("competitor_signal", False)
+            all_trends_lookup[tid]["competitor_mentions"] = trend.get("competitor_mentions", [])
+            all_trends_lookup[tid]["brand_context"] = trend.get("brand_context", "general_jewelry")
+
     # ── Step 2: LLM Evaluation ─────────────────────────────────────────────────
     print(f"\n{'─'*60}")
     print(f"STEP 2 — LLM Evaluation ({len(passed_trends)} trends)")
@@ -780,6 +820,9 @@ def main():
             original = all_trends_lookup[tid]
             ev["label"] = original.get("label", "")
             ev["category"] = original.get("category", "")
+            # Propagate extracted_product so EVAL_REPORT and shortlist table can read it
+            if original.get("extracted_product"):
+                ev["extracted_product"] = original["extracted_product"]
             metrics = original.get("metrics", {})
             ev["metric_signal"] = {
                 "total_engagement": metrics.get("total_engagement"),
@@ -822,7 +865,7 @@ def main():
     # ── Quality metrics ────────────────────────────────────────────────────────
     quality = calculate_quality_metrics(
         shortlisted, all_evaluations, prefilter_rejected, beauty_skipped,
-        total_input, all_trends_lookup,
+        total_input, all_trends_lookup, passed_trends=passed_trends,
     )
     failure_cases = find_failure_cases(all_evaluations, shortlisted_ids)
 

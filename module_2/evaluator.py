@@ -266,6 +266,9 @@ def _slim_for_prompt(trend: dict) -> dict:
         "engagement_recency_pct": trend.get("engagement_recency_pct"),
         "run_count": trend.get("run_count", 1),
     }
+    # Always include brand_context — LLM uses it for scoring caps
+    slimmed["brand_context"] = trend.get("brand_context", "general_jewelry")
+
     # Include flags and signal detection results if present
     for optional in (
         "extracted_product",
@@ -375,6 +378,10 @@ def evaluate_batch(
 
                 # Confidence weighting
                 conf_weight = CONFIDENCE_WEIGHTS.get(confidence, _CONFIDENCE_WEIGHT_DEFAULT)
+                print(
+                    f"  [Conf] {tid}: confidence={confidence!r} → weight={conf_weight} "
+                    f"raw={raw_composite:.2f} cwc={round(raw_composite * conf_weight, 2):.2f}"
+                )
                 ev["confidence_weight"] = conf_weight
                 ev["confidence_weighted_composite"] = round(raw_composite * conf_weight, 2)
 
@@ -438,8 +445,8 @@ def select_shortlist(evaluations: list, max_shortlist: int = 5) -> list:
             "brand_engagement_depth": 4,
             "client_touchpoint_specificity": 4,
             "evidence_credibility": 3,
-            "client_segment_clarity": 3,
-            "occasion_purchase_trigger": 3,
+            "client_segment_clarity": 2,   # scoring booster not a gate
+            "occasion_purchase_trigger": 1, # scoring booster not a gate
         }
         SKIP_DIM_MINIMUMS = {"trend_velocity"} if no_date else set()
 

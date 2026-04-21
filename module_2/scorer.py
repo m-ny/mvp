@@ -15,9 +15,27 @@ STALENESS_CUTOFF_DATE = datetime(2026, 3, 4, tzinfo=timezone.utc)
 
 MIN_POST_COUNT = 5
 MIN_SNIPPETS = 2
-MIN_BRAND_SIGNAL_SNIPPETS = 2  # min snippets containing brand-specific language
 # Categories where 2-4 posts passes with low_signal_warning instead of hard reject
 LENIENT_CATEGORIES = {"luxury_fashion", "luxury_jewelry"}
+
+# ── Competitor fashion brands — label-level rejection for Tiffany runs ─────────
+# These are fashion/leather-goods brands from old Celine scraping runs that are
+# irrelevant for a jewelry brand filter. Checked against trend label only.
+_COMPETITOR_FASHION_BRANDS = [
+    "celine", "céline", "赛琳",
+    "dior", "louis vuitton", " lv ", "loewe", "chanel", "bottega",
+]
+
+# ── Brand context classification terms ─────────────────────────────────────────
+_BRAND_SPECIFIC_TERMS = [
+    "tiffany", "蒂芙尼",
+    "hardwear", "lock", "knot", "t wire", "t smile", "t1", "soleste",
+    "setting", "六爪", "蓝盒子", "blue box", "return to tiffany", "atlas", "victoria",
+]
+_COMPETITOR_TERMS = [
+    "cartier", "卡地亚", "van cleef", "梵克雅宝", "bvlgari", "宝格丽",
+    "harry winston", "海瑞温斯顿",
+]
 SIMILARITY_THRESHOLD = 0.70   # Jaccard threshold for cross-run deduplication
 RECENCY_DAYS = 7              # window for engagement_recency_pct calculation
 
@@ -245,6 +263,37 @@ def _contains_taboo(text: str, taboos: list) -> Optional[str]:
     return None
 
 
+# ── Brand context classification ───────────────────────────────────────────────
+
+def classify_brand_context(trend: dict) -> str:
+    """
+    Classify a trend's brand context by scanning snippets, label, and summary.
+
+    Returns one of:
+      "brand_specific" — snippets directly mention Tiffany or known Tiffany products
+      "competitor"     — snippets mention a competitor brand (Cartier, Van Cleef, etc.)
+      "general_jewelry" — general jewelry content with no specific brand reference
+
+    Classification is set in-place as trend["brand_context"] and also returned.
+    Priority: brand_specific > competitor > general_jewelry.
+    """
+    evidence = trend.get("evidence", {})
+    texts = list(evidence.get("snippets", []))
+    texts.append(trend.get("label", ""))
+    texts.append(trend.get("summary", ""))
+    combined = " ".join(str(t) for t in texts if t).lower()
+
+    if any(term in combined for term in _BRAND_SPECIFIC_TERMS):
+        ctx = "brand_specific"
+    elif any(term in combined for term in _COMPETITOR_TERMS):
+        ctx = "competitor"
+    else:
+        ctx = "general_jewelry"
+
+    trend["brand_context"] = ctx
+    return ctx
+
+
 # ── Per-trend pre-filter ───────────────────────────────────────────────────────
 
 def pre_filter(trend: dict, brand_profile: dict) -> "tuple[bool, Optional[str]]":
@@ -309,29 +358,23 @@ def pre_filter(trend: dict, brand_profile: dict) -> "tuple[bool, Optional[str]]"
     if matched_taboo:
         return False, f"Brand taboo keyword '{matched_taboo}' detected in label/summary"
 
-    # Rule 7: Brand signal strength check — real XHS trends only (synthetic pass automatically)
-    # Requires at least MIN_BRAND_SIGNAL_SNIPPETS snippets containing Tiffany-specific language:
-    # brand name, hero product name, or aesthetic pillar keyword.
-    if data_type == "real":
-        brand_name = brand_profile.get("brand_name", "")
-        brand_name_cn = brand_profile.get("brand_name_cn", "")
-        hero_names = _get_hero_product_names(brand_profile)
-        pillar_keywords = _get_pillar_keywords(brand_profile)
-        signal_terms = [
-            t.lower() for t in [brand_name, brand_name_cn] + hero_names + pillar_keywords if t
-        ]
+    # Rule 8: Competitor fashion brand rejection (Tiffany runs only)
+    # Rejects trends whose label references fashion/leather-goods brands from
+    # old Celine scraping runs — these are irrelevant for a jewelry brand filter.
+    brand_name_lower = brand_profile.get("brand_name", "").lower()
+    if "tiffany" in brand_name_lower:
+        label_lower = label.lower()
+        for fashion_brand in _COMPETITOR_FASHION_BRANDS:
+            if fashion_brand.strip() in label_lower:
+                return False, (
+                    f"Competitor fashion brand '{fashion_brand.strip()}' detected in label "
+                    "— not relevant for Tiffany jewelry clienteling"
+                )
 
-        signal_count = sum(
-            1 for snippet in snippets
-            if any(term in snippet.lower() for term in signal_terms)
-        )
-        if signal_count < MIN_BRAND_SIGNAL_SNIPPETS:
-            return False, (
-                f"Insufficient brand signal in snippets — only {signal_count} of "
-                f"{len(snippets)} snippet(s) mention the brand name, "
-                f"a hero product, or an aesthetic pillar keyword "
-                f"(minimum required: {MIN_BRAND_SIGNAL_SNIPPETS})"
-            )
+    # Rule 7 REMOVED — brand signal is no longer a hard rejection gate.
+    # Brand context is classified by classify_brand_context() in run_prefilter_batch
+    # and stored on the trend as brand_context ("brand_specific" / "competitor" / "general_jewelry").
+    # The LLM uses brand_context to apply appropriate scoring caps for brand_engagement_depth.
 
     return True, None
 
@@ -343,9 +386,10 @@ def run_prefilter_batch(trends: list, brand_profile: dict) -> "tuple[list, list]
     Run pre-filter across all trends.
 
     Processing order:
-      Step A — Cross-run deduplication (batch-level, merges near-duplicates)
-      Step B — Engagement recency calculation (per trend, stores engagement_recency_pct)
-      Step C — Per-trend pre-filter rules 1–2, 4–7 (Rule 3 removed; menswear rule removed)
+      Step A   — Cross-run deduplication (batch-level, merges near-duplicates)
+      Step B   — Engagement recency calculation (per trend, stores engagement_recency_pct)
+      Step B.5 — Brand context classification (stores brand_context on each trend)
+      Step C   — Per-trend pre-filter rules 1–2, 4–6 (Rules 3 and 7 removed)
 
     Returns:
         (passed_trends: list, rejected_log: list)
@@ -368,7 +412,18 @@ def run_prefilter_batch(trends: list, brand_profile: dict) -> "tuple[list, list]
     for trend in trends:
         compute_engagement_recency(trend)
 
-    # Step C: Per-trend pre-filter
+    # Step B.5: Classify brand context for all trends
+    ctx_counts: dict = {"brand_specific": 0, "competitor": 0, "general_jewelry": 0}
+    for trend in trends:
+        ctx = classify_brand_context(trend)
+        ctx_counts[ctx] = ctx_counts.get(ctx, 0) + 1
+    print(
+        f"  [BrandCtx] brand_specific={ctx_counts['brand_specific']} "
+        f"competitor={ctx_counts['competitor']} "
+        f"general_jewelry={ctx_counts['general_jewelry']}"
+    )
+
+    # Step C: Per-trend pre-filter (rules 1–2, 4–6; rule 7 removed)
     passed = []
     rejected = []
 

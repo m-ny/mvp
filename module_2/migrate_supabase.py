@@ -43,10 +43,12 @@ NEW_COLUMNS = [
     ("velocity_method",               "TEXT",         "recency_pct | save_ratio_proxy | default_neutral"),
 
     # ── Signal flags ──────────────────────────────────────────────────────────
+    ("brand_context",       "TEXT",                  "'brand_specific' | 'competitor' | 'general_jewelry'"),
     ("celebrity_signal",    "BOOLEAN DEFAULT FALSE", "明星/代言人/同款 language found in posts"),
     ("occasion_signal",     "BOOLEAN DEFAULT FALSE", "求婚/纪念日/生日/礼物 language found in posts"),
     ("competitor_signal",   "BOOLEAN DEFAULT FALSE", "competitor brand name found in posts"),
     ("competitor_mentions", "JSONB DEFAULT '[]'",    "list of competitor brand names mentioned"),
+    ("competitor_tiffany_bridge", "TEXT",            "CA bridging note mapping competitor trend to a Tiffany product"),
     ("best_evidence_quote", "TEXT",                  "most transferable single snippet from evidence"),
 
     # ── Signal metadata ───────────────────────────────────────────────────────

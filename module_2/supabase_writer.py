@@ -149,10 +149,12 @@ def write_shortlist(run_id: str, shortlist_output: dict) -> None:
                 "velocity_method":              item.get("velocity_method"),
 
                 # ── Signal flags ──────────────────────────────────────────
+                "brand_context":      item.get("brand_context", "general_jewelry"),
                 "celebrity_signal":   bool(item.get("celebrity_signal", False)),
                 "occasion_signal":    bool(item.get("occasion_signal", False)),
                 "competitor_signal":  bool(item.get("competitor_signal", False)),
                 "competitor_mentions": item.get("competitor_mentions", []),
+                "competitor_tiffany_bridge": item.get("competitor_tiffany_bridge"),
                 "best_evidence_quote": item.get("best_evidence_quote", ""),
 
                 # ── Signal metadata ───────────────────────────────────────
