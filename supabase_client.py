@@ -60,6 +60,7 @@ def get_conn():
             "  SUPABASE_PASSWORD=your_password_here"
         )
 
+    print(f"[Supabase] Connecting → host={SUPABASE_HOST} port={SUPABASE_PORT} user={SUPABASE_USER}")
     return psycopg2.connect(
         host=SUPABASE_HOST,
         port=int(SUPABASE_PORT),

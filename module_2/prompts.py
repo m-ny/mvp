@@ -1,96 +1,248 @@
 """
 prompts.py — LLM prompt templates for Module 2 Trend Relevance & Materiality Filter Agent.
 
-Brand name and profile details are injected at runtime so the module works for any luxury brand.
+8-dimension scoring system.
+LLM scores 6 dimensions: brand_engagement_depth, client_touchpoint_specificity,
+  vocabulary_transfer_potential, intelligence_value, client_segment_clarity,
+  occasion_purchase_trigger.
+Algorithmic: trend_velocity (engagement recency / save-ratio proxy),
+             evidence_credibility (cross-run persistence × confidence weight).
+
+Definition of relevance: a trend is relevant if it is fresh, brand-specific,
+and gives a CA a concrete reason to contact a client this week.
 """
 
 import json
+from datetime import date
 
 
 def build_system_prompt(brand_profile: dict) -> str:
     brand_name = brand_profile.get("brand_name", "the brand")
-    aesthetic = brand_profile.get("aesthetic", "luxury and refined craftsmanship")
-    clientele = brand_profile.get("clientele", "affluent clients who value heritage")
-    tone = brand_profile.get("clienteling_tone", "expert, aspirational, warm but refined")
+    aesthetic = brand_profile.get("aesthetic_dna", brand_profile.get("aesthetic", "luxury"))
+    tone = brand_profile.get("clienteling_tone", "precise, expert, refined")
+    voice = brand_profile.get("brand_voice", "confident and refined")
+    director = brand_profile.get("current_creative_director", "")
+    director_str = f" under {director}" if director else ""
+
+    # Dynamic competitive context
+    competitive = brand_profile.get("competitive_differentiation", {})
+    if competitive:
+        comp_lines = [f"  vs {k}: {v}" for k, v in competitive.items()]
+        comp_str = "Competitive positioning:\n" + "\n".join(comp_lines)
+    else:
+        comp_str = ""
+
+    # Dynamic aesthetic pillars
+    pillars = brand_profile.get("aesthetic_pillars", [])
+    if pillars:
+        pillar_lines = [f"  • {p['name']}: {p.get('description', '')}" for p in pillars]
+        pillar_str = "Aesthetic pillars:\n" + "\n".join(pillar_lines)
+    else:
+        pillar_str = ""
+
     return (
-        f"You are a senior luxury retail trend analyst specializing in Chinese consumer behavior "
-        f"on Xiaohongshu, with deep expertise in the {brand_name} brand. "
-        f"You evaluate trend signals and decide which trends are truly material, brand-appropriate "
-        f"for {brand_name}, and actionable for {brand_name} Client Advisors. "
-        f"You are evidence-grounded and precise. "
-        f"You never shortlist a trend just because it is popular — it must reflect {brand_name}'s "
-        f"aesthetic ({aesthetic}), match the {brand_name} clientele ({clientele}), "
-        f"and be genuinely usable in a {brand_name} clienteling conversation (tone: {tone}). "
-        f"You always cite specific snippets or metrics in your reasoning. "
-        f"You never write generic statements like 'this trend aligns with {brand_name} values' "
-        f"without explaining exactly why with specific evidence from the trend object."
+        f"You are a senior luxury retail intelligence analyst specialising in Chinese consumer "
+        f"behaviour on Xiaohongshu, with deep expertise in {brand_name}{director_str}. "
+        f"You decide which XHS trend signals give {brand_name} Client Advisors a concrete, "
+        f"credible reason to contact a specific client this week. "
+        f"You are evidence-grounded and precise — you never generalise.\n\n"
+        f"{brand_name} aesthetic: {aesthetic}.\n"
+        f"Clienteling tone: {tone}. Brand voice: {voice}.\n\n"
+        f"{pillar_str}\n\n"
+        f"{comp_str}\n\n"
+        f"A trend is relevant ONLY if it is (1) fresh — real consumer language from the last "
+        f"3 weeks, not just brand identity confirmation; (2) brand-specific — deep engagement "
+        f"with {brand_name} products, language, or occasions, not generic luxury content; "
+        f"(3) actionable — gives a CA a specific, non-pushy conversation starter this week. "
+        f"You always cite specific snippets, metrics, or signal flags in your reasoning. "
+        f"You never write 'this aligns with {brand_name} values' without citing evidence."
     )
 
 
-def build_batch_evaluation_prompt(brand_profile: dict, trend_objects: list, today: str = "2026-03-25") -> str:
+def build_batch_evaluation_prompt(
+    brand_profile: dict,
+    trend_objects: list,
+    today: str = None,
+) -> str:
     """
-    Build a batch evaluation prompt for up to 5 trend objects at once.
-    Returns a prompt asking the LLM to return a JSON array of evaluations.
+    Build a batch evaluation prompt for up to 5 trend objects.
+    LLM scores 6 of the 8 dimensions. trend_velocity and evidence_credibility
+    are computed algorithmically after the LLM call.
     """
-    brand_name = brand_profile.get("brand_name", "the brand")
-    aesthetic = brand_profile.get("aesthetic", "luxury and refined craftsmanship")
-    clientele = brand_profile.get("clientele", "affluent clients who value heritage")
-    category_cadence = brand_profile.get("category_cadence", {})
-    rtw_pace = category_cadence.get("ready-to-wear", "fast")
-    lg_pace = category_cadence.get("leather goods", "medium")
-    preferred_sources = ", ".join(brand_profile.get("preferred_sources", ["luxury KOL", "fashion editorial"]))
+    if today is None:
+        today = date.today().isoformat()
 
-    brand_profile_str = json.dumps(brand_profile, ensure_ascii=False, indent=2)
+    brand_name = brand_profile.get("brand_name", "the brand")
+
+    # Aesthetic pillars (for intelligence_value scoring)
+    pillars = brand_profile.get("aesthetic_pillars", [])
+    if pillars:
+        pillar_lines = [
+            f"  • {p['name']}: {p.get('description', '')}" for p in pillars
+        ]
+        pillar_block = (
+            "AESTHETIC PILLARS (use when scoring intelligence_value — "
+            "trends that merely confirm existing pillars score low):\n"
+            + "\n".join(pillar_lines)
+        )
+        pillar_names_str = ", ".join(p.get("name", "") for p in pillars)
+    else:
+        pillar_block = ""
+        pillar_names_str = "the brand's aesthetic pillars"
+
+    # Competitive context (for brand_engagement_depth scoring)
+    competitive = brand_profile.get("competitive_differentiation", {})
+    if competitive:
+        comp_lines = [f"  vs {k}: {v}" for k, v in competitive.items()]
+        comp_note = (
+            "COMPETITIVE CONTEXT (use when scoring brand_engagement_depth — "
+            "content that is more relevant to a competitor scores lower):\n"
+            + "\n".join(comp_lines)
+        )
+    else:
+        comp_note = ""
+
     trends_str = json.dumps(trend_objects, ensure_ascii=False, indent=2)
 
-    return f"""You are evaluating a batch of trend objects for {brand_name}.
-
-Brand Profile:
-{brand_profile_str}
+    return f"""You are evaluating XHS trend signals for {brand_name} Client Advisors.
 
 Today's date: {today}
+
+{pillar_block}
+
+{comp_note}
 
 Trend Objects (batch of {len(trend_objects)}):
 {trends_str}
 
-For EACH trend object in the batch, score it on these 5 dimensions (0–10 each). For each score you must cite specific evidence from that trend object — a snippet, a metric, a keyword, a date. Do not write generic reasoning.
+──────────────────────────────────────────────────────────────
+SCORING INSTRUCTIONS
 
-Dimensions:
+Score each trend on the 6 LLM dimensions below (0–10 each).
+For EVERY score: cite a specific snippet, metric, or signal flag. No generic reasoning.
 
-1. FRESHNESS (0–10): Is this trend still gaining traction as of today? Look at the dates in evidence.posts — are the most recent posts within the last 2 weeks? Is there a pattern of growing or fading momentum across the post dates?
+SIGNAL FLAGS TO CHECK IN EACH TREND OBJECT:
+- "brand_context": one of "brand_specific" / "competitor" / "general_jewelry" — determines scoring caps (see dimension 1)
+- "extracted_product": a specific {brand_name} product name found organically in XHS posts
+- "celebrity_signal": true if posts contain celebrity/endorsement language (明星/同款/代言人)
+- "occasion_signal": true if posts contain purchase occasion triggers (求婚/纪念日/礼物/婚礼/生日)
+- "competitor_signal": true if posts mention competitor brands; "competitor_mentions" lists which ones
 
-2. BRAND FIT (0–10): Does this trend match {brand_name}'s aesthetic ({aesthetic})? Does it match the {brand_name} clientele ({clientele})? Do the creator types in evidence.posts align with {brand_name}'s preferred sources ({preferred_sources})? Would a {brand_name} CA feel genuinely comfortable raising this trend in a client conversation?
+For every trend: check brand_context first — it sets hard caps on brand_engagement_depth.
+celebrity_signal or occasion_signal should raise client_touchpoint_specificity by 2+ points.
+competitor_signal with named brand must be addressed in competitor_tiffany_bridge output field.
 
-3. CATEGORY FIT (0–10): Is this trend appropriate for this specific product category? Ready-to-wear moves {rtw_pace} — recency and momentum matter most. Leather goods moves at {lg_pace} pace — sustained signal across multiple weeks matters more than single viral moments.
+──────────────────────────────────────────────────────────────
+DIMENSIONS:
 
-4. MATERIALITY (0–10): Is total_engagement strong enough to be meaningful for a luxury brand audience on XHS? Is engagement spread across multiple posts rather than one viral outlier? Does post_count show real sustained interest over time?
+1. BRAND_ENGAGEMENT_DEPTH (0–10)  weight: 0.20
+Apply scoring based on brand_context field — this is mandatory:
 
-5. ACTIONABILITY (0–10): Can a {brand_name} CA mention this trend naturally in a refined client conversation? Is it specific enough to be useful — not just "feminine dressing is trending" but something concrete a CA can reference with a specific {brand_name} product or look? Would an affluent {brand_name} client respond positively and feel the CA is knowledgeable?
+  brand_context = "brand_specific": Score 1–10 normally.
+    Deep engagement = specific product names, specific {brand_name} behaviors, brand-specific language.
+    Cite the most brand-specific snippet. Generic mention of brand name = 3–4.
 
-Compute composite_score as:
-(freshness × 0.20) + (brand_fit × 0.30) + (category_fit × 0.20) + (materiality × 0.15) + (actionability × 0.15)
+  brand_context = "competitor": Score 4–6 MAXIMUM. Hard cap — do not exceed 6.
+    Competitors are useful signals for {brand_name} CAs only when a bridge exists.
+    You MUST populate competitor_tiffany_bridge in your output (see format below).
+    Score 4 if a clear product-level bridge to {brand_name} exists.
+    Score 5–6 only if the competitor trend maps directly to a {brand_name} hero product/occasion.
+    Example bridge: "Cartier Love bracelet stacking trend is directly comparable to Tiffany HardWear
+    link bracelet stacking — CA can reference this trend and position HardWear as the equivalent."
 
-A trend is shortlisted ONLY if:
-- composite_score >= 6.5
-- No individual dimension score is below 4
-- You judge it genuinely usable for {brand_name} CAs right now
+  brand_context = "general_jewelry": Score 3–5 MAXIMUM. Hard cap — do not exceed 5.
+    You must explain specifically how this general jewelry trend applies to {brand_name}.
+    Score 3 if the connection to {brand_name} requires significant CA interpretation.
+    Score 4–5 only if a specific {brand_name} product or collection maps naturally.
 
-Return ONLY a valid JSON array with no markdown and no text outside the JSON. One object per trend, in the same order as the input batch:
+2. CLIENT_TOUCHPOINT_SPECIFICITY (0–10)  weight: 0.20
+Does this give a CA a specific, credible, non-pushy reason to contact a client this week?
+
+  For brand_context = "brand_specific":
+    Score 9–10: celebrity_signal OR occasion_signal OR extracted_product from real posts
+    Score 7–8: clearly links to a {brand_name} product category with specific vivid language
+    Score 6+ MINIMUM: when the trend label or summary names a specific {brand_name} collection
+      (HardWear, Knot, T Wire, T1, Lock, Setting, Soleste, Smile, Atlas, Victoria, Return to Tiffany).
+      A named collection gives the CA an immediate, credible conversation anchor — score at least 6.
+    Score 5: brand-relevant but requires CA effort to connect; no named collection
+    Score 3–4: too abstract for a specific CA conversation opener
+    Score 1–2: no clear client conversation application
+
+  For brand_context = "competitor" or "general_jewelry":
+    Score based on whether the CA can BRIDGE this trend to a specific {brand_name} product or occasion.
+    Score 7–9: a clear {brand_name} product equivalent exists and the bridge is immediately obvious
+    Score 5–6: a reasonable bridge exists but requires CA to frame it
+    Score 3–4: bridge is weak or speculative
+    Score 1–2: no viable bridge to a {brand_name} client conversation
+
+3. VOCABULARY_TRANSFER_POTENTIAL (0–10)  weight: 0.15
+Can a CA borrow this language naturally in a client conversation?
+Reward: personal testimony (我/你/她/他), specific prices or numbers, comparison language
+  (比/还是/vs), emotional occasion words (求婚/纪念/第一次/礼物), sensory descriptors.
+Penalise: generic luxury adjectives (高端/奢华/精致 used vaguely), abstract aesthetic terms.
+Quote the single most transferable phrase from the snippets.
+
+4. INTELLIGENCE_VALUE (0–10)  weight: 0.10
+Does this tell a CA something genuinely new they couldn't figure out themselves?
+Reward: new consumer behaviors, specific competitive comparisons, emerging occasion triggers,
+  unexpected product usage patterns.
+Penalise: trends that merely confirm existing brand identity without a new angle.
+Compare against pillars: {pillar_names_str}. Name the pillar being confirmed OR extended.
+
+5. CLIENT_SEGMENT_CLARITY (0–10)  weight: 0.05
+Does this trend clearly map to a recognizable client type — without naming specific archetypes?
+Score 8–10: clearly maps to ONE client type (e.g. occasion buyers, first-luxury buyers,
+  investment collectors, self-reward buyers, gift buyers)
+Score 5–7: broadly maps to a lifestyle without being specific
+Score 1–4: so generic it applies to everyone; no differentiation
+
+6. OCCASION_PURCHASE_TRIGGER (0–10)  weight: 0.05
+Is this trend connected to a specific purchase occasion or life event?
+Score 8–10: directly connected to proposal, anniversary, birthday, self-reward, gifting,
+  graduation, milestone — check occasion_signal flag
+Score 5 (neutral): styling, layering, stacking, sizing, or collection discovery content —
+  no explicit occasion keyword present, but a CA can always open with collection awareness.
+  Use 5 for these topics rather than scoring 1–4 as "purely aesthetic."
+Score 1–4: purely aesthetic with no occasion trigger AND no styling/collection angle
+
+NOTE: trend_velocity (weight 0.15) and evidence_credibility (weight 0.10) are computed
+algorithmically from engagement recency and run_count. Do NOT score these yourself.
+
+──────────────────────────────────────────────────────────────
+COMPOSITE SCORE FORMULA (for reference — system recomputes with confidence weighting)
+brand_engagement_depth×0.20 + client_touchpoint_specificity×0.20 + trend_velocity×0.15
++ vocabulary_transfer_potential×0.15 + intelligence_value×0.10 + evidence_credibility×0.10
++ client_segment_clarity×0.05 + occasion_purchase_trigger×0.05
+
+SHORTLISTING CRITERIA
+Shortlist ONLY if:
+- client_touchpoint_specificity >= 4 (must give CA a genuine conversation reason)
+- brand_engagement_depth >= 4 (must show real brand engagement, not generic luxury)
+- All other LLM dimensions >= 3
+- composite_score >= 6.5 (system will apply confidence weighting after)
+- Genuinely actionable for {brand_name} CAs this week
+
+──────────────────────────────────────────────────────────────
+OUTPUT FORMAT
+
+Return ONLY a valid JSON array — no markdown, no text outside the JSON.
+One object per trend, same order as input batch:
 [
   {{
     "trend_id": "string",
     "shortlist": true or false,
     "scores": {{
-      "freshness": number,
-      "brand_fit": number,
-      "category_fit": number,
-      "materiality": number,
-      "actionability": number
+      "brand_engagement_depth": number,
+      "client_touchpoint_specificity": number,
+      "vocabulary_transfer_potential": number,
+      "intelligence_value": number,
+      "client_segment_clarity": number,
+      "occasion_purchase_trigger": number
     }},
     "composite_score": number,
-    "reasoning": "3-5 sentences, specific and evidence-grounded. Must cite at least one snippet or metric by name. Must explain why this is or is not right for {brand_name} specifically.",
+    "reasoning": "3-5 sentences. Must: (1) cite the most brand-specific snippet or signal flag; (2) explain what a CA could specifically say or do with this trend; (3) name the pillar confirmed or extended for intelligence_value; (4) note any celebrity/occasion/competitor signals found; (5) for competitor/general_jewelry trends, name the specific {brand_name} product or collection that bridges this trend.",
     "confidence": "high" or "medium" or "low",
-    "evidence_references": ["direct quote or metric from the trend object that supports the decision"],
-    "disqualifying_reason": null or "exact dimension that failed and why"
+    "disqualifying_reason": null or "exact dimension that failed and why",
+    "competitor_tiffany_bridge": null or "string — REQUIRED when brand_context is competitor: name the specific {brand_name} product/collection comparable to the competitor trend and how a CA uses it"
   }}
 ]"""

@@ -1,23 +1,296 @@
 {
   "brand_name": "Tiffany & Co.",
   "brand_name_cn": "蒂芙尼",
-  "aesthetic": "American heritage luxury jewelry, iconic robin’s-egg blue, timeless diamonds and precious metals, modern classics (T, Knot, Lock, HardWear)",
-  "clientele": "gift buyers, bridal and milestone jewelry shoppers, collectors of signature Tiffany lines, design-conscious luxury consumers",
-  "preferred_sources": ["jewelry KOL", "bridal and milestone content", "Tiffany brand and campaign imagery", "fine jewelry education creators", "luxury lifestyle editorial"],
-  "avoided_sources": ["counterfeit legit-check spam only", "unrelated fashion hauls with no jewelry signal", "fast fashion accounts"],
-  "active_categories": ["luxury_fashion", "jewelry", "fine_jewelry"],
-  "category_cadence": {
-    "jewelry": "medium",
-    "luxury_fashion": "medium"
-  },
-  "brand_taboos": ["counterfeit promotion", "misleading investment claims", "non-jewelry off-topic spam"],
-  "clienteling_tone": "warm, celebratory, precise about materials and occasions; confident in heritage without being stiff",
+  "current_creative_director": "Nathalie Verdeille",
+  "parent_company": "LVMH",
+  "founded": 1837,
+  "market_position": "Democratic luxury — broadest accessible entry range among major jewelry brands. American optimism vs European aristocratic heritage. Joy as core design philosophy.",
+  "aesthetic_dna": "Joy as core design philosophy — every piece designed to produce joy at first sight. Tiffany Blue (知更鸟蛋蓝 Robin's Egg Blue) maps to Chinese Qing (青) — vitality, spring renewal, new beginnings. American Dream narrative — achievement and aspiration not inherited prestige. Blue Box as ritual artifact carrying 面子 face value in gifting culture. Democratic accessibility plus aspirational status simultaneously.",
+  "current_direction": "Blue Book 2026 Hidden Garden (花语秘境) — nature motifs, pink sapphires, aquamarines, Rosé (BLACKPINK) and Song Yuqi ambassador activations launched April 2026. HardWear Black Titanium Edition dominant in quiet luxury and OOTD XHS content. Tiffany Knot 18K Rose Gold Pink Sapphires + Mini Key top gifting item in 520礼物推荐 content. Jean Schlumberger Pegasus 2026 Year of the Horse activation, Li Yunrui ambassador, freedom and dreams symbolism. 24-month interest-free installment plan launched April 2026, framed as smart shopping by XHS users. Tiffany.cn upgraded Q3 2025, enrolled in Alibaba Red Cat initiative linking XHS to Tmall.",
+  "atypica_source": "Panel #62187, N=10 personas, 5 market intelligence queries, Q2 2026",
+  "last_refreshed": "2026-04-21",
+  "client_archetypes": [
+    {
+      "cluster": "A",
+      "name": "Chloe Z. — Gen Z Dreamer",
+      "age_range": "22-26",
+      "city": "Shanghai Tier-1",
+      "typical_budget_rmb": 5500,
+      "entry_budget_rmb": 3000,
+      "stretch_budget_rmb": 8000,
+      "trigger": "Self-reward first luxury piece social currency",
+      "xhs_behavior": "Heavy user, posts unboxing tagged 我的第一件Tiffany, watches quiet luxury OOTD, researches installment plans",
+      "ca_strategy": "Lead with self-empowerment narrative. Frame T1 and Smile as genuine milestone not consolation. Introduce installment as smart purchase not budget accommodation.",
+      "trend_language": ["第一件Tiffany", "自己买", "小蓝盒", "蒂芙尼蓝", "静奢风"],
+      "preferred_collections": ["T1 ring in silver", "T smile pendant", "Return to Tiffany heart tag", "T wire bracelet"],
+      "occasion_triggers": ["Graduation", "First salary", "Self-birthday", "Singles Day self-purchase"]
+    },
+    {
+      "cluster": "A",
+      "name": "Victoria L. — Milestone Achiever",
+      "age_range": "28-38",
+      "city": "Beijing Tier-1",
+      "typical_budget_rmb": 40000,
+      "entry_budget_rmb": 25000,
+      "stretch_budget_rmb": 60000,
+      "trigger": "Promotion, professional achievement, personal declaration",
+      "xhs_behavior": "Follows HardWear and Knot content, saves professional woman and jewelry lifestyle posts",
+      "ca_strategy": "Position HardWear and Knot as power pieces. Speak to professional achievement, never frame as gift to receive.",
+      "trend_language": ["里程碑", "勋章", "HardWear", "职场穿搭", "悦己消费"],
+      "preferred_collections": ["HardWear link bracelet", "Knot ring", "T1 gold ring", "Lock bracelet in gold"],
+      "occasion_triggers": ["Promotion", "Business deal close", "Major birthday (30, 35)", "Anniversary self-gift"]
+    },
+    {
+      "cluster": "A",
+      "name": "Vicky C. — New-Tier Creative",
+      "age_range": "24-30",
+      "city": "Chengdu New-Tier",
+      "typical_budget_rmb": 14000,
+      "entry_budget_rmb": 8000,
+      "stretch_budget_rmb": 20000,
+      "trigger": "Cultural identity, uniqueness, anti-mainstream signal",
+      "xhs_behavior": "Engages with artist collaboration content, shares rare-find and limited-edition posts, creates original styling content",
+      "ca_strategy": "Emphasize exclusivity of designs, Jean Schlumberger heritage, Pegasus 2026 artistic origins. Position as connoisseur not buyer.",
+      "trend_language": ["独特", "艺术感", "限定", "飞马", "个性"],
+      "preferred_collections": ["Jean Schlumberger Pegasus pieces", "Atlas ring", "HardWear Black Titanium"],
+      "occasion_triggers": ["Artist collaboration launch", "Limited edition drop", "Personal creative milestone"]
+    },
+    {
+      "cluster": "A",
+      "name": "Momo H. — Aspirational Dreamer",
+      "age_range": "22-26",
+      "city": "Hefei Tier-2",
+      "typical_budget_rmb": 3500,
+      "entry_budget_rmb": 2000,
+      "stretch_budget_rmb": 5000,
+      "trigger": "Digital aspiration, peer group signaling, first step into luxury",
+      "xhs_behavior": "Heavy XHS consumer, light creator, saves gifting recommendation posts, engages with 蒂芙尼蓝色礼盒 content",
+      "ca_strategy": "Blue Box ritual is primary entry point. Treat as VIC-in-waiting — she will remember how she was made to feel at her first Tiffany moment.",
+      "trend_language": ["梦想", "小蓝盒", "入门", "第一步", "蒂芙尼蓝色礼盒"],
+      "preferred_collections": ["T smile pendant", "Return to Tiffany heart tag", "Lock pendant silver"],
+      "occasion_triggers": ["Birthday from parents", "New Year red envelope surplus", "First paycheck"]
+    },
+    {
+      "cluster": "A",
+      "name": "Elena S. — VIC High Jewelry Collector",
+      "age_range": "38-48",
+      "city": "Shanghai Tier-1",
+      "typical_budget_rmb": 500000,
+      "entry_budget_rmb": 200000,
+      "stretch_budget_rmb": 2000000,
+      "trigger": "Investment value, gemstone expertise, exclusive access, CA relationship",
+      "xhs_behavior": "Private curated, may share High Jewelry in closed circles, does not publicly post purchases",
+      "ca_strategy": "Proactive, personalized, never transactional. Relationship IS the product. Gemstone knowledge must be deep. Private Blue Book 2026 Hidden Garden viewing before public release.",
+      "trend_language": ["私人定制", "稀有", "收藏", "投资", "Blue Book"],
+      "preferred_collections": ["Blue Book Hidden Garden collection", "Jean Schlumberger Pegasus", "Bespoke engagement rings"],
+      "occasion_triggers": ["Blue Book Collection launch", "Auction preview", "Private viewing invitation"]
+    },
+    {
+      "cluster": "B",
+      "name": "Leo W. — Romantic Planner",
+      "age_range": "26-32",
+      "city": "Shenzhen Tier-1",
+      "typical_budget_rmb": 50000,
+      "entry_budget_rmb": 30000,
+      "stretch_budget_rmb": 80000,
+      "trigger": "Engagement, long-term commitment signaling",
+      "xhs_behavior": "Researches on XHS for months, arrives over-researched and under-confident",
+      "ca_strategy": "Needs emotional validation not information. Be confident ally not salesperson. Give storytelling ammunition to feel certain in choice.",
+      "trend_language": ["求婚", "六爪", "Setting", "承诺", "永恒"],
+      "preferred_collections": ["Tiffany Setting solitaire", "Six-prong classic engagement ring", "Tiffany True ring"],
+      "occasion_triggers": ["Engagement", "Valentine's Day proposal", "七夕 proposal"]
+    },
+    {
+      "cluster": "B",
+      "name": "David Z. — Efficiency Gifter",
+      "age_range": "44-55",
+      "city": "Beijing Tier-1",
+      "typical_budget_rmb": 180000,
+      "entry_budget_rmb": 80000,
+      "stretch_budget_rmb": 300000,
+      "trigger": "Status signaling, social face (面子), efficiency",
+      "xhs_behavior": "Minimal XHS presence, relies on CA recommendation",
+      "ca_strategy": "Pre-selection, curated presentation, decisive recommendation. Blue Box face value and LVMH provenance are primary purchase justifiers. Excessive explanation signals incompetence.",
+      "trend_language": ["面子", "最好的", "LVMH", "礼物", "高端"],
+      "preferred_collections": ["Blue Book Collection", "HardWear Black Titanium", "Investment diamond pieces"],
+      "occasion_triggers": ["Wife's major birthday", "Anniversary", "Business relationship gifting"]
+    },
+    {
+      "cluster": "B",
+      "name": "Kevin S. — Anxious Gifter",
+      "age_range": "28-34",
+      "city": "Shenzhen",
+      "typical_budget_rmb": 25000,
+      "entry_budget_rmb": 15000,
+      "stretch_budget_rmb": 40000,
+      "trigger": "Relationship milestone, fear of choosing wrong",
+      "xhs_behavior": "Heavy XHS research, reads reviews and buying guides extensively",
+      "ca_strategy": "Anxiety is the entry point. Fear of failure greater than price concern. Reassurance wins full trust and follow-up gifting relationship for years.",
+      "trend_language": ["选什么好", "她会喜欢吗", "Knot", "礼物推荐", "520"],
+      "preferred_collections": ["Knot ring", "Lock bracelet in gold", "Return to Tiffany heart tag"],
+      "occasion_triggers": ["520", "七夕", "Girlfriend birthday", "1st anniversary"]
+    },
+    {
+      "cluster": "B",
+      "name": "LaoLi W. — Pragmatic Family Gifter",
+      "age_range": "48-58",
+      "city": "Wuxi Tier-2",
+      "typical_budget_rmb": 35000,
+      "entry_budget_rmb": 20000,
+      "stretch_budget_rmb": 50000,
+      "trigger": "Family harmony, anniversary, practical durability",
+      "xhs_behavior": "Minimal social media, in-store focused",
+      "ca_strategy": "Responds to durability claims, warranty information, long-term investment narrative. Position craftsmanship legacy and lifetime cleaning service as value arguments.",
+      "trend_language": ["质量", "耐用", "保值", "纪念日", "家人"],
+      "preferred_collections": ["HardWear link bracelet", "Lock bracelet", "Victoria pendant"],
+      "occasion_triggers": ["Wedding anniversary", "Wife's birthday", "Mother's Day"]
+    },
+    {
+      "cluster": "C",
+      "name": "Eleanor H. — High Jewelry Connoisseur",
+      "age_range": "52-65",
+      "city": "Shanghai/Beijing Tier-1",
+      "typical_budget_rmb": 1000000,
+      "entry_budget_rmb": 500000,
+      "stretch_budget_rmb": 999999999,
+      "trigger": "Rarity, investment potential, craftsmanship mastery, social positioning",
+      "xhs_behavior": "Private closed-circle sharing, tracks auction results and gemstone market indices",
+      "ca_strategy": "Advance private preview, deep technical briefing on specific stones, certificate provenance. Consultation should feel like gallery preview not sales appointment.",
+      "trend_language": ["稀有", "艺术史", "收藏", "Blue Book", "私享"],
+      "preferred_collections": ["Blue Book 2026 Hidden Garden", "Jean Schlumberger Pegasus", "Bespoke exceptional diamonds"],
+      "occasion_triggers": ["Blue Book private preview", "Auction pre-sale", "Anniversary milestone"]
+    }
+  ],
   "hero_products": {
-    "jewelry": ["Tiffany T", "Knot", "Lock", "HardWear", "Atlas", "Six-prong engagement setting", "Victoria", "Keys"],
-    "accessories": ["Return to Tiffany", "heart tag"]
+    "entry_silver": [
+      "Return to Tiffany heart tag necklace",
+      "T wire bracelet",
+      "T smile pendant",
+      "T1 ring in silver",
+      "Smile necklace",
+      "Lock pendant silver"
+    ],
+    "core_gold": [
+      "T1 ring in 18k gold",
+      "HardWear link bracelet",
+      "Lock bracelet in gold",
+      "Knot ring",
+      "Atlas ring",
+      "HardWear handchain"
+    ],
+    "investment_diamond": [
+      "Tiffany Setting solitaire",
+      "Soleste halo ring",
+      "Victoria pendant",
+      "Six-prong classic engagement ring",
+      "Tiffany True ring"
+    ],
+    "high_jewelry": [
+      "Blue Book 2026 Hidden Garden collection",
+      "Jean Schlumberger Pegasus pieces",
+      "Bespoke engagement rings"
+    ]
   },
+  "hero_collections_2026": [
+    {
+      "name": "Blue Book Hidden Garden 花语秘境",
+      "description": "Pink sapphires, aquamarines, nature motifs. Rosé and Song Yuqi ambassador activations April 2026."
+    },
+    {
+      "name": "HardWear Black Titanium",
+      "description": "Quiet luxury dominant, professional woman aesthetic. Top in OOTD XHS content."
+    },
+    {
+      "name": "Knot Mini Key Rose Gold",
+      "description": "Top 520 gifting item. Tang Yan campaign. 18K Rose Gold Pink Sapphires variant."
+    },
+    {
+      "name": "Pegasus Schlumberger",
+      "description": "Year of the Horse. Li Yunrui ambassador. Freedom and dreams symbolism."
+    },
+    {
+      "name": "Daily Icons T1 Smile Lock",
+      "description": "Gateway collection. 24-month installment plan content driving entry purchases."
+    }
+  ],
   "aesthetic_pillars": [
-    {"name": "Heritage & craft", "description": "Diamond setting, precious metals, house codes"},
-    {"name": "Modern icons", "description": "T collection, Knot, sculptural metal"}
-  ]
+    {
+      "name": "Joy as Design Philosophy",
+      "description": "幸福是蒂芙尼的核心设计语言 — Every piece designed to produce joy at first sight"
+    },
+    {
+      "name": "The Self-Purchase Revolution",
+      "description": "悦己消费时代 — 42% of Chinese women self-purchase jewelry for professional milestones or emotional fitness"
+    },
+    {
+      "name": "185 Years of American Craft Mastery",
+      "description": "工艺传承与当代创新的对话 — American heritage as democratic achievement narrative not aristocratic inheritance"
+    },
+    {
+      "name": "The CA as Relationship Asset",
+      "description": "关系是服务的产品 — The CA relationship IS the brand asset. VIC top 21% maintained almost entirely through relationship quality"
+    }
+  ],
+  "competitive_differentiation": {
+    "Cartier": "Tiffany is American joy and achievement vs Cartier's aristocratic European status. Cartier Trinity +65% since 2020 creating value justification gap. Never say 'compared to Cartier' directly.",
+    "Van Cleef": "Tiffany is digitally native and XHS-fluent vs VCA's L'Ecole education barrier. Tiffany more approachable entry point.",
+    "Bvlgari": "Tiffany is quiet luxury understatement vs Bvlgari's celebrity-driven maximalism. Bvlgari alienates quiet luxury consumers who are major XHS segment.",
+    "Harry Winston": "Tiffany offers democratic accessibility at entry vs Harry Winston's ultra-exclusive positioning. Tiffany wins on self-purchase and gifting occasions."
+  },
+  "brand_voice": "Joy-first always. Achievement celebration not romantic gifting default. Never 'affordable' — always 'intelligent optionality'. Never compare to European rivals directly. Never assume gifting context for women. Personal and specific in WeCom. American Dream narrative: achievement and aspiration not inherited prestige.",
+  "clienteling_tone": "warm, precise, celebratory, personal — speak to the achievement and the emotion, not just the product. Never transactional with VICs. Self-purchase as primary frame for female clients.",
+  "brand_taboos": {
+    "quality_taboos": ["fake", "imitation", "replica", "dupe", "山寨", "仿制", "假货", "平替"],
+    "diamond_taboos": ["lab grown", "man made diamond", "CVD", "培育钻石", "人造钻石", "合成钻石"],
+    "price_taboos": ["overpriced", "markup", "贵得不值", "不值这个价", "性价比低"],
+    "aesthetic_taboos": ["tacky", "ostentatious", "俗气", "大妈款", "老气"]
+  },
+  "budget_tiers": {
+    "entry": {
+      "range_rmb": "¥2,000-8,000",
+      "products": ["T1 Smile", "Return to Tiffany", "Lock silver", "T wire"],
+      "ca_angle": "This is where your Tiffany story begins. Installment as smart purchase not budget accommodation."
+    },
+    "core": {
+      "range_rmb": "¥8,000-60,000",
+      "products": ["HardWear", "Knot", "Lock gold", "T1 gold"],
+      "ca_angle": "Milestone and achievement pieces. Power dressing. She's earned this."
+    },
+    "investment": {
+      "range_rmb": "¥30,000-100,000",
+      "products": ["Tiffany Setting", "Soleste", "Victoria"],
+      "ca_angle": "Commitment and milestone. A ring she'll wear to every important moment of her life."
+    },
+    "high_jewelry": {
+      "range_rmb": "¥100,000+",
+      "products": ["Blue Book", "VIC collection"],
+      "ca_angle": "Private preview. Collector intelligence. Relationship first."
+    }
+  },
+  "xhs_hashtags": [
+    "#蒂芙尼",
+    "#蒂芙尼花语秘境",
+    "#蒂芙尼蓝色礼盒",
+    "#我的第一件Tiffany",
+    "#这一秒靠近你",
+    "#520礼物推荐",
+    "#备婚必备",
+    "#小蓝盒请回答"
+  ],
+  "active_categories": [
+    "luxury_jewelry",
+    "luxury_fashion",
+    "rings",
+    "bracelets",
+    "necklaces",
+    "earrings",
+    "engagement_rings"
+  ],
+  "market_intelligence": {
+    "lvmh_q1_2026": "7% organic growth in Watches and Jewelry segment",
+    "self_purchase_rate": "42% of Chinese women self-purchase jewelry for professional milestones",
+    "gen_z_millennial_share": "50%+ of luxury jewelry sales from Gen Z and Millennials by 2025",
+    "ethical_sourcing": "30-40% of younger consumers prioritize ethical sourcing and blockchain traceability",
+    "tier2_spending": "Average luxury spend RMB 253,800 in Tier-2 cities, comparable to Tier-1 from 5 years ago"
+  }
 }
