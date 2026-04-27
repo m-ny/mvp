@@ -5,3 +5,8 @@ node_modules/
 __pycache__/
 .env
 .env.*
+# Local M5 offline snapshot (export_offline_snapshot.py); do not commit DB dumps
+_offline/*.json
+_cache/
+_*.log
+run_log_part*.json

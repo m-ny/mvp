@@ -207,18 +207,32 @@ def index():
                 error = "无效 memory_row_id: " + ", ".join(missing)
             else:
                 selected = [by_mid[str(i)] for i in ids]
-                system_prompt = m5.load_text(m5.SYSTEM_PROMPT_PATH)
+                system_prompt = m5.load_system_prompt()
                 retrieved = [client_src, trend_src]
                 m4_rid = src.get("module4_run_id")
+                trend_kb = m5.build_readonly_trend_kb(bundle.trends_data)
+                catalog_rows, catalog_load_meta = m5._load_brand_catalog_rows()
+                run_context = m5.M5RunContext(
+                    trend_kb=trend_kb,
+                    catalog_rows=catalog_rows,
+                    catalog_load_meta=catalog_load_meta,
+                )
+                full_selected = [
+                    m5.fetch_m4_client_full_by_pk(m4_rid, int(c["memory_row_id"]))
+                    if m4_rid and c.get("memory_row_id") is not None
+                    else c
+                    for c in selected
+                ]
                 run_logs = []
-                for client in selected:
+                for client in full_selected:
                     run_logs.append(
                         m5.run_for_client(
                             client,
                             bundle.trends_data,
                             system_prompt,
                             retrieved_sources=retrieved,
-                            m4_run_id=m4_rid,
+                            m4_run_id=None,
+                            run_context=run_context,
                         )
                     )
                 with open(m5.RUN_LOG_PATH, "w", encoding="utf-8") as f:

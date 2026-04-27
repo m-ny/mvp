@@ -1,16 +1,20 @@
 /**
- * 从 preview_data.json 渲染卡片与弹窗（需本地 HTTP 服务打开，见 README）
+ * Demo workspace: select clients, then expand generated outreach output.
  */
 
-const grid = document.getElementById("grid");
-const overlay = document.getElementById("overlay");
-const modalTitle = document.getElementById("modal-title");
-const modalSub = document.getElementById("modal-sub");
-const modalStrategy = document.getElementById("modal-strategy");
-const modalDrafts = document.getElementById("modal-drafts");
-const modalEvidence = document.getElementById("modal-evidence");
-const closeBtn = document.getElementById("modal-close");
+const clientList = document.getElementById("client-list");
+const outputList = document.getElementById("output-list");
+const outputEmpty = document.getElementById("output-empty");
 const emptyState = document.getElementById("empty-state");
+const selectedCount = document.getElementById("selected-count");
+const totalCount = document.getElementById("total-count");
+const generateBtn = document.getElementById("generate-outreach");
+const selectFirstBtn = document.getElementById("select-first");
+const clearSelectionBtn = document.getElementById("clear-selection");
+
+let allItems = [];
+let hasGenerated = false;
+const selectedIds = new Set();
 
 function esc(s) {
   const d = document.createElement("div");
@@ -18,75 +22,121 @@ function esc(s) {
   return d.innerHTML;
 }
 
-function openModal(item) {
-  modalTitle.textContent = item.name || item.client_id;
-  modalSub.textContent = [item.client_id, item.best_angle].filter(Boolean).join(" · ");
-  modalStrategy.innerHTML = esc(item.angle_summary || "—");
+function shortText(value, max = 86) {
+  const text = String(value || "").trim();
+  if (text.length <= max) return text;
+  return `${text.slice(0, max)}...`;
+}
 
+function renderDrafts(item) {
   const drafts = item.wechat_drafts || [];
   if (drafts.length === 0) {
-    modalDrafts.innerHTML = "<p class=\"draft-text\">（无草稿）</p>";
-  } else {
-    modalDrafts.innerHTML = drafts
-      .map(
-        (d, i) => `
-      <div class="draft-block">
-        <div class="draft-label">草稿 ${i + 1}${d.tone ? ` · ${esc(d.tone)}` : ""}</div>
-        <p class="draft-text">${esc(d.message || "")}</p>
-      </div>`
-      )
-      .join("");
+    return '<p class="muted-copy">No draft available in this sample.</p>';
   }
+  return drafts
+    .map(
+      (d, i) => `
+        <div class="draft-block">
+          <div class="draft-label">Draft ${i + 1}${d.tone ? ` · ${esc(d.tone)}` : ""}</div>
+          <p class="draft-text">${esc(d.message || "")}</p>
+        </div>`
+    )
+    .join("");
+}
 
+function renderEvidence(item) {
   const ev = item.evidence_used || [];
   if (ev.length === 0) {
-    modalEvidence.innerHTML = "<p>（无）</p>";
-  } else {
-    modalEvidence.innerHTML = `<ul class="evidence-list">${ev.map((x) => `<li>${esc(String(x))}</li>`).join("")}</ul>`;
+    return '<p class="muted-copy">The suggestion is based on the client profile and recent interests.</p>';
   }
-
-  overlay.classList.add("is-open");
-  document.body.style.overflow = "hidden";
-  closeBtn.focus();
+  return `<ul class="evidence-list">${ev.slice(0, 3).map((x) => `<li>${esc(String(x))}</li>`).join("")}</ul>`;
 }
 
-function closeModal() {
-  overlay.classList.remove("is-open");
-  document.body.style.overflow = "";
+function setSelected(id, value) {
+  if (value) selectedIds.add(id);
+  else selectedIds.delete(id);
+  hasGenerated = false;
+  render();
 }
 
-function renderCards(items) {
-  grid.innerHTML = "";
+function renderClientList(items) {
+  clientList.innerHTML = "";
   items.forEach((item, idx) => {
-    const card = document.createElement("article");
-    card.className = "card";
-    card.tabIndex = 0;
-    card.setAttribute("role", "button");
-    card.setAttribute("aria-label", `查看 ${item.name || item.client_id} 详情`);
-
-    card.innerHTML = `
-      <div class="card-top">
-        <div>
-          <p class="card-name">${esc(item.name)}</p>
-          <span class="card-id">${esc(item.client_id)}</span>
-        </div>
-        ${item.vip_tier ? `<span class="vip">${esc(item.vip_tier)}</span>` : ""}
-      </div>
-      <p class="persona">${esc(item.persona_tag || "")}</p>
-      <p class="card-snippet">${esc(item.summary || item.best_angle || "")}</p>
-      <p class="card-hint">点击查看策略与草稿</p>
+    const selected = selectedIds.has(item.client_id);
+    const row = document.createElement("label");
+    row.className = `client-row${selected ? " is-selected" : ""}`;
+    row.innerHTML = `
+      <input type="checkbox" ${selected ? "checked" : ""} aria-label="Select ${esc(item.name || item.client_id)}" />
+      <span class="client-index">${String(idx + 1).padStart(2, "0")}</span>
+      <span class="client-copy">
+        <span class="client-name-line">
+          <strong>${esc(item.name || item.client_id)}</strong>
+          ${item.vip_tier ? `<em>${esc(item.vip_tier)}</em>` : ""}
+        </span>
+        <span class="client-meta">${esc(item.persona_tag || "Client profile")}</span>
+        <span class="client-summary">${esc(shortText(item.summary || item.best_angle || "", 70))}</span>
+      </span>
     `;
-
-    const open = () => openModal(item);
-    card.addEventListener("click", open);
-    card.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        open();
-      }
+    row.querySelector("input").addEventListener("change", (e) => {
+      setSelected(item.client_id, e.target.checked);
     });
-    grid.appendChild(card);
+    clientList.appendChild(row);
   });
+}
+
+function renderOutput(items) {
+  const selectedItems = items.filter((item) => selectedIds.has(item.client_id));
+  selectedCount.textContent = selectedItems.length;
+  generateBtn.disabled = selectedItems.length === 0;
+  outputEmpty.hidden = hasGenerated && selectedItems.length > 0;
+  if (!hasGenerated || selectedItems.length === 0) {
+    outputList.innerHTML = "";
+    return;
+  }
+  outputList.innerHTML = selectedItems
+    .map(
+      (item) => `
+        <article class="output-card">
+          <div class="output-top">
+            <div>
+              <p class="output-client">${esc(item.name || item.client_id)}</p>
+              <p class="output-meta">${esc(item.persona_tag || "Client profile")}</p>
+            </div>
+            <span class="confidence ${esc(String(item.confidence || "medium").toLowerCase())}">
+              Ready to review
+            </span>
+          </div>
+
+          <div class="strategy-box">
+            <p class="label">Recommended approach</p>
+            <h3>${esc(item.best_angle || "Personalized follow-up")}</h3>
+            <p>${esc(item.angle_summary || "No strategy summary available.")}</p>
+          </div>
+
+          <div class="split">
+            <section>
+              <p class="label">Message options</p>
+              ${renderDrafts(item)}
+            </section>
+            <section>
+              <p class="label">Why this feels relevant</p>
+              <p class="client-note">${esc(item.summary || "Based on the client profile, recent interest, and preferred communication context.")}</p>
+              ${renderEvidence(item)}
+            </section>
+          </div>
+
+          <div class="next-step">
+            <span>Suggested next action</span>
+            <p>${esc(item.next_step || "Follow up based on client response.")}</p>
+          </div>
+        </article>`
+    )
+    .join("");
+}
+
+function render() {
+  renderClientList(allItems);
+  renderOutput(allItems);
 }
 
 async function load() {
@@ -100,7 +150,9 @@ async function load() {
       return;
     }
     emptyState.hidden = true;
-    renderCards(items);
+    allItems = items;
+    totalCount.textContent = items.length;
+    render();
   } catch (e) {
     emptyState.hidden = false;
     emptyState.innerHTML =
@@ -109,12 +161,23 @@ async function load() {
   }
 }
 
-closeBtn.addEventListener("click", closeModal);
-overlay.addEventListener("click", (e) => {
-  if (e.target === overlay) closeModal();
+selectFirstBtn.addEventListener("click", () => {
+  selectedIds.clear();
+  allItems.slice(0, 3).forEach((item) => selectedIds.add(item.client_id));
+  hasGenerated = false;
+  render();
 });
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") closeModal();
+
+generateBtn.addEventListener("click", () => {
+  if (selectedIds.size === 0) return;
+  hasGenerated = true;
+  render();
+});
+
+clearSelectionBtn.addEventListener("click", () => {
+  selectedIds.clear();
+  hasGenerated = false;
+  render();
 });
 
 load();

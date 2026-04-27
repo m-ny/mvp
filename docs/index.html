@@ -3,44 +3,56 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Module 5 · 客户 Outreach 预览</title>
+  <title>Module 5 · Outreach Agent Demo</title>
   <link rel="stylesheet" href="preview.css" />
 </head>
 <body>
   <header class="page-header">
-    <h1>客户 Outreach 预览</h1>
-    <p>点击卡片查看策略摘要、微信草稿与依据 · 共 20 位（数据来自 run_log + benchmark）</p>
+    <div>
+      <p class="eyebrow">CA Workspace Demo</p>
+      <h1>Personalized Client Outreach</h1>
+      <p>Select clients, generate ready-to-send WeChat outreach, then review before sending.</p>
+    </div>
+    <div class="header-card">
+      <span id="total-count">0</span>
+      <small>clients in queue</small>
+    </div>
   </header>
 
   <p id="empty-state" class="empty-hint" hidden>加载中…</p>
 
-  <main id="grid" class="grid" aria-live="polite"></main>
-
-  <div id="overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <div class="modal">
-      <div class="modal-header">
+  <main class="workspace" aria-live="polite">
+    <section class="client-panel" aria-labelledby="client-list-title">
+      <div class="panel-head">
         <div>
-          <h2 id="modal-title" class="modal-title"></h2>
-          <p id="modal-sub" class="modal-sub"></p>
+          <p class="section-kicker">Step 1</p>
+          <h2 id="client-list-title">Choose clients to follow up</h2>
         </div>
-        <button type="button" id="modal-close" class="modal-close" aria-label="关闭">×</button>
+        <span class="selected-pill"><span id="selected-count">0</span> selected</span>
       </div>
-      <div class="modal-body">
-        <section class="modal-section">
-          <h3>策略摘要</h3>
-          <p id="modal-strategy"></p>
-        </section>
-        <section class="modal-section">
-          <h3>微信草稿</h3>
-          <div id="modal-drafts"></div>
-        </section>
-        <section class="modal-section">
-          <h3>依据</h3>
-          <div id="modal-evidence"></div>
-        </section>
+      <div class="toolbar">
+        <button type="button" id="generate-outreach" class="primary">Generate Outreach</button>
+        <button type="button" id="select-first" class="secondary">Select first 3</button>
+        <button type="button" id="clear-selection" class="ghost">Clear</button>
       </div>
-    </div>
-  </div>
+      <div id="client-list" class="client-list"></div>
+    </section>
+
+    <section class="output-panel" aria-labelledby="output-title">
+      <div class="panel-head sticky-head">
+        <div>
+          <p class="section-kicker">Step 2</p>
+          <h2 id="output-title">Review suggested outreach</h2>
+        </div>
+      </div>
+      <div id="output-empty" class="output-empty">
+        <span class="empty-icon">✓</span>
+        <h3>Select clients, then generate outreach</h3>
+        <p>The CA-facing recommendation will appear here: why to reach out, what to send, and what to do next.</p>
+      </div>
+      <div id="output-list" class="output-list"></div>
+    </section>
+  </main>
 
   <script src="preview.js" defer></script>
 </body>
